@@ -2,8 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'home.dart';
 import 'themes/themes.dart';
+import '../websocket/simulation_api.dart';
 
 void main() {
+  SimulationAPI.connect();
   runApp(const MyApp());
 }
 
@@ -16,7 +18,7 @@ class MyApp extends StatefulWidget {
 
 class MyAppState extends State<MyApp> {
   // ignore: prefer_final_fields
-  static String _themeName = kDebugMode ? 'dark' : 'dark';
+  static String _themeName = kDebugMode ? 'light' : 'dark';
   final String _textThemeName = 'default';
 
   final ValueNotifier<String> _themeNotifier = ValueNotifier(_themeName);
