@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:convert';
 
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
@@ -7,7 +8,7 @@ import 'package:flame/palette.dart';
 import 'package:flame_svg/flame_svg.dart';
 // import 'package:flame/sprite.dart';
 import 'package:flutter/material.dart';
-import 'package:vector_graphics/src/listener.dart';
+// import 'package:vector_graphics/src/listener.dart';
 import '../logger.dart';
 import '../websocket/simulation_api.dart';
 
@@ -38,10 +39,11 @@ class SimVisualiser extends FlameGame with TapCallbacks {
     super.onTapDown(event);
     if (!event.handled) {
       final touchPoint = event.canvasPosition;
-      var car = Car(carCount.toString(), math.pi / 2, touchPoint);
-      add(car);
-      cars.add(car);
-      carCount++;
+      // var car = Car("CAR$carCount", math.pi / 2, touchPoint);
+      // add(car);
+      // cars.add(car);
+      // carCount++;
+      addCar("CAR$carCount", touchPoint);
       event.handled = true;
     }
   }
@@ -49,14 +51,51 @@ class SimVisualiser extends FlameGame with TapCallbacks {
   @override
   Color backgroundColor() => Theme.of(context).colorScheme.background;
 
-  // add a rectangle to the screen
-  // x value is the message's value * Square.Size * 2
+  // update all existing cars
   void onMessage(dynamic message) {
-    final x = double.parse(message) * Square.squareSize;
-    // add 1 to each car's x position
+    // l.i(message);
+    var decodedMessage = json.decode(message);
+    // l.i(decoded_message);
+
     for (final car in cars) {
-      car.addToPosition(Vector2(x, 0));
+      // l.i(decodedMessage[car.id]);
+      var carData = decodedMessage[car.id];
+
+      // remove this car's data
+      decodedMessage.remove(car.id);
+
+      // if (carData == null) {
+      //   addCar(car.id, car.position);
+      // }
+
+      if (carData != null) {
+        // l.i("carData['x'] = ${carData['x'].runtimeType}");
+
+        car.updatePosition(Vector2(
+          carData['x'],
+          carData['y'],
+        ));
+
+        car.updateHeading(carData['heading'] + math.pi / 2);
+      }
     }
+
+    // instantiate cars that don't exist yet
+    decodedMessage.forEach((key, value) {
+      addCar(
+          key,
+          Vector2(
+            value['x'],
+            value['y'],
+          ));
+    });
+  }
+
+  void addCar(String id, Vector2 position) {
+    var car = Car(id, math.pi / 2, position);
+    add(car);
+    cars.add(car);
+    carCount++;
   }
 }
 
@@ -93,6 +132,10 @@ class Car extends SvgComponent {
 
   void updatePosition(Vector2 position) {
     this.position = position;
+  }
+
+  void updateHeading(double heading) {
+    angle = heading;
   }
 
   void addToPosition(Vector2 position) {

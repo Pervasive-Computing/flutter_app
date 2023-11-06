@@ -7,19 +7,12 @@ outputs a json message to a websocket with x, y coordinates on a circle at a giv
 import math
 import json
 import time
-import websockets
 
 def circle(t):
-    return {
-        'x': math.cos(t),
-        'y': math.sin(t)
-    }
+    return (math.sin(t), math.cos(t))
 
 def square(t):
-    return {
-        'x': math.sin(t),
-        'y': math.sin(t)
-    }
+    return (math.sin(t), math.cos(t))
 
 time_factor = 1 / 10
 scale = 10
@@ -39,13 +32,12 @@ uri = f"ws://{ip}:{port}"
 while True:
     t = time.time() * time_factor
 
-    shape = circle(t)
-    shape['x'] *= scale
-    shape['y'] *= scale
-    shape['x'] += offset['x']
-    shape['y'] += offset['y']
+    cars = {
+        "CAR1": {
+            "x": circle(t)[0] * scale + offset['x'],
+            "y": circle(t)[1] * scale + offset['y'],
+        }
+    }
 
-
-
-    # print(json.dumps(shape))
-    time.sleep(0.1)
+    print(json.dumps(cars))
+    time.sleep(1)
