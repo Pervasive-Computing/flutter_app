@@ -1,3 +1,4 @@
+import 'package:catppuccin_flutter/catppuccin_flutter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'home.dart';
@@ -17,22 +18,12 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  // ignore: prefer_final_fields
-  static String _themeName = kDebugMode ? 'light' : 'dark';
-  final String _textThemeName = 'default';
-
-  final ValueNotifier<String> _themeNotifier = ValueNotifier(_themeName);
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<String>(
-        valueListenable: _themeNotifier,
-        builder: (_, themeValue, __) {
-          return MaterialApp(
-            title: 'What the heck do we call this app?',
-            theme: buildThemeData(themeValue, _textThemeName),
-            home: const Home(),
-          );
-        });
+    return MaterialApp(
+      title: 'What the heck do we call this app?',
+      theme: catppuccinTheme(catppuccin.latte),
+      home: const Home(),
+    );
   }
 }

@@ -30,26 +30,31 @@ class Home extends StatelessWidget {
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ),
+              // Expanded(
+              //   child: RawGestureDetector(
+              //     gestures: <Type, GestureRecognizerFactory>{
+              //       // Factory for pan (two-finger scroll) gestures
+              //       PanGestureRecognizer:
+              //           GestureRecognizerFactoryWithHandlers<PanGestureRecognizer>(
+              //         () => PanGestureRecognizer(),
+              //         (PanGestureRecognizer instance) {
+              //           instance.onUpdate = (details) {
+              //             // Handle two-finger scroll on touchpad
+              //             simulation.scrollZoom(details.delta.dy);
+              //             // Make sure to clamp your zoom level
+              //           };
+              //         },
+              //       ),
+              //     },
+              //     behavior: HitTestBehavior.opaque,
+              //     child: GameWidget(
+              //       game: simulation,
+              //     ),
+              //   ),
+              // ),
               Expanded(
-                child: RawGestureDetector(
-                  gestures: <Type, GestureRecognizerFactory>{
-                    // Factory for pan (two-finger scroll) gestures
-                    PanGestureRecognizer:
-                        GestureRecognizerFactoryWithHandlers<PanGestureRecognizer>(
-                      () => PanGestureRecognizer(),
-                      (PanGestureRecognizer instance) {
-                        instance.onUpdate = (details) {
-                          // Handle two-finger scroll on touchpad
-                          simulation.scrollZoom(details.delta.dy);
-                          // Make sure to clamp your zoom level
-                        };
-                      },
-                    ),
-                  },
-                  behavior: HitTestBehavior.opaque,
-                  child: GameWidget(
-                    game: simulation,
-                  ),
+                child: GameWidget(
+                  game: simulation,
                 ),
               ),
             ],

@@ -39,6 +39,7 @@ dependencies:
   flame: ^1.10.1
   web_socket_client: ^0.1.0
   flame_svg: ^1.8.5
+  catppuccin_flutter: ^1.0.0
 
 dev_dependencies:
   flutter_test:

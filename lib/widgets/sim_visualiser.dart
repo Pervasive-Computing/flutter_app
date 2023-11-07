@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'dart:convert';
 
 import 'package:flame/components.dart';
+import 'package:flame/effects.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame/palette.dart';
@@ -28,6 +29,9 @@ class SimVisualiser extends FlameGame
   bool isAdded = false;
   int carCount = 0;
   double zoomSensitivity = 0.001;
+  // Vector2 cameraPosition = Vector2.zero();
+  // NotifyingVector2 cameraPosition = NotifyingVector2.zero();
+  PositionComponent cameraTarget = PositionComponent(position: Vector2.zero());
   var cars = <Car>[];
 
   // Vector2 cameraPosition = Vector2.zero();
@@ -42,7 +46,10 @@ class SimVisualiser extends FlameGame
       isAdded = true;
     }
 
-    camera = CameraComponent(world: world)..viewfinder.zoom = 2.0;
+    // PositionComponent target = PositionComponent(position: cameraPosition);
+    camera = CameraComponent(world: world)..viewfinder.zoom = 1.0;
+    camera.follow(cameraTarget);
+    // camera.followVector2(cameraPosition);
     add(camera);
     // camera.followVector2(cameraPosition);
   }
@@ -54,10 +61,11 @@ class SimVisualiser extends FlameGame
   }
 
   void scaleZoom(double scale) {
-    l.w("scaleZoom: $scale");
+    // l.w("scaleZoom: $scale");
     // // scale is [0, 1] if scaling down, > 1 if scaling up
     // var offset = camera.viewfinder.zoom;
-    camera.viewfinder.zoom += scale;
+    var zoom = camera.viewfinder.zoom + scale;
+    setZoom(zoom);
   }
 
   // zoom on scroll
@@ -70,8 +78,48 @@ class SimVisualiser extends FlameGame
   }
 
   void scrollZoom(double difference) {
-    l.w("scrollZoom: $difference");
-    camera.viewfinder.zoom -= difference * zoomSensitivity;
+    // l.w("scrollZoom: $difference");
+    var zoom = camera.viewfinder.zoom - difference * zoomSensitivity * camera.viewfinder.zoom;
+    setZoom(zoom);
+  }
+
+  void setZoom(double zoom, {double min = 0.1, double max = 3}) {
+    l.w("zoom: $zoom");
+    var clampedZoom = zoom.clamp(min, max);
+    l.w("clampedZoom: $clampedZoom");
+    camera.viewfinder.zoom = clampedZoom;
+  }
+
+  // pan camera on arrow keys
+  @override
+  KeyEventResult onKeyEvent(RawKeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
+    // l.w("onKeyEvent: ${event.logicalKey.keyLabel}");
+    var key = event.logicalKey.keyLabel;
+    double offset = 10;
+    // Vector2 currentCameraPosition = Vector2(cameraPosition.x, cameraPosition.y);
+
+    switch (key) {
+      case 'ArrowUp':
+        cameraTarget.position.y -= offset;
+        break;
+      case 'ArrowDown':
+        cameraTarget.position.y += offset;
+        break;
+      case 'ArrowLeft':
+        cameraTarget.position.x -= offset;
+        break;
+      case 'ArrowRight':
+        cameraTarget.position.x += offset;
+        break;
+      default:
+        break;
+    }
+    camera.follow(cameraTarget);
+    // cameraTarget.position.y
+    // ReadOnlyPositionProvider target = ReadOnlyPositionProvider.;
+    // camera.follow(target)
+    // camera.follow(cameraPosition);
+    return KeyEventResult.handled;
   }
 
   @override
