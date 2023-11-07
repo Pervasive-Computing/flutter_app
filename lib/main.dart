@@ -18,12 +18,26 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
+  final _themeNotifier = ValueNotifier('latte');
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'What the heck do we call this app?',
-      theme: catppuccinTheme(catppuccin.latte),
-      home: const Home(),
+    return ValueListenableBuilder(
+      valueListenable: _themeNotifier,
+      builder: (_, themeName, __) {
+        return MaterialApp(
+          title: 'What the heck do we call this app?',
+          theme: catppuccinTheme(flavorMap[themeName]!),
+          home: Home(
+            themeNotifier: _themeNotifier,
+          ),
+        );
+      },
     );
+    // return MaterialApp(
+    //   title: 'What the heck do we call this app?',
+    //   theme: catppuccinTheme(catppuccin.latte),
+    //   home: const Home(),
+    // );
   }
 }

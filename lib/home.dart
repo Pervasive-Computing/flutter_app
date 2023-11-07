@@ -8,59 +8,76 @@ import 'package:flutter/gestures.dart';
 // import '../websocket/simulation_api.dart';
 
 class Home extends StatelessWidget {
-  const Home({super.key});
+  Home({
+    super.key,
+    required ValueNotifier<String> themeNotifier,
+  }) : _themeNotifier = themeNotifier {
+    // SimulationAPI.connect();
+    _simulation = SimVisualiser();
+  }
+
+  final ValueNotifier<String> _themeNotifier;
+  late final SimVisualiser _simulation;
 
   // SimulationAPI instance
   // final SimulationAPI _simulationAPI = SimulationAPI();
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final simulation = SimVisualiser(context: context);
-        // final size = constraints.biggest;
-        return Container(
-          color: Theme.of(context).colorScheme.background,
-          child: Column(
+    _simulation.context = context;
+    return Container(
+      color: Theme.of(context).colorScheme.background,
+      child: Column(
+        children: [
+          Row(
             children: [
-              Container(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                child: Text(
-                  "Simulation",
-                  style: Theme.of(context).textTheme.bodyLarge,
+              Expanded(
+                child: Center(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Text(
+                      "UrbanOS",
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineLarge
+                          ?.copyWith(fontWeight: FontWeight.w800),
+                    ),
+                  ),
                 ),
               ),
-              // Expanded(
-              //   child: RawGestureDetector(
-              //     gestures: <Type, GestureRecognizerFactory>{
-              //       // Factory for pan (two-finger scroll) gestures
-              //       PanGestureRecognizer:
-              //           GestureRecognizerFactoryWithHandlers<PanGestureRecognizer>(
-              //         () => PanGestureRecognizer(),
-              //         (PanGestureRecognizer instance) {
-              //           instance.onUpdate = (details) {
-              //             // Handle two-finger scroll on touchpad
-              //             simulation.scrollZoom(details.delta.dy);
-              //             // Make sure to clamp your zoom level
-              //           };
-              //         },
-              //       ),
-              //     },
-              //     behavior: HitTestBehavior.opaque,
-              //     child: GameWidget(
-              //       game: simulation,
-              //     ),
-              //   ),
-              // ),
-              Expanded(
-                child: GameWidget(
-                  game: simulation,
+              MaterialButton(
+                hoverColor: Theme.of(context).colorScheme.onBackground.withOpacity(0.25),
+                padding: const EdgeInsets.all(0),
+                minWidth: 0,
+                onPressed: () {
+                  if (_themeNotifier.value == 'latte') {
+                    _themeNotifier.value = 'mocha';
+                  } else {
+                    _themeNotifier.value = 'latte';
+                  }
+                },
+                shape: CircleBorder(
+                    side: BorderSide(
+                  color: Theme.of(context).colorScheme.onBackground,
+                  width: 2,
+                )),
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Icon(
+                    _themeNotifier.value == 'latte' ? Icons.dark_mode : Icons.light_mode,
+                    color: Theme.of(context).colorScheme.onBackground,
+                  ),
                 ),
               ),
             ],
           ),
-        );
-      },
+          Expanded(
+            child: GameWidget(
+              game: _simulation,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

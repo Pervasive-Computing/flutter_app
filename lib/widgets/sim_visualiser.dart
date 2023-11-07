@@ -24,7 +24,7 @@ import '../websocket/simulation_api.dart';
 /// If you press anywhere else, another square will be added.
 class SimVisualiser extends FlameGame
     with TapCallbacks, KeyboardEvents, ScrollDetector, ScaleDetector, PanDetector {
-  BuildContext context;
+  // BuildContext context;
 
   bool isAdded = false;
   int carCount = 0;
@@ -34,10 +34,10 @@ class SimVisualiser extends FlameGame
   PositionComponent cameraTarget = PositionComponent(position: Vector2.zero());
   var cars = <Car>[];
 
-  // Vector2 cameraPosition = Vector2.zero();
-  // late CameraComponent camera;
-
-  SimVisualiser({required this.context});
+  // set buildContext from parent FlameGame
+  // there is buildContext in FlameGame, but it's private, and no setter
+  // so we have to make our own
+  BuildContext? context;
 
   @override
   Future<void> onLoad() async {
@@ -84,9 +84,9 @@ class SimVisualiser extends FlameGame
   }
 
   void setZoom(double zoom, {double min = 0.1, double max = 3}) {
-    l.w("zoom: $zoom");
+    // l.w("zoom: $zoom");
     var clampedZoom = zoom.clamp(min, max);
-    l.w("clampedZoom: $clampedZoom");
+    // l.w("clampedZoom: $clampedZoom");
     camera.viewfinder.zoom = clampedZoom;
   }
 
@@ -104,28 +104,19 @@ class SimVisualiser extends FlameGame
   }
 
   @override
-  Color backgroundColor() => Theme.of(context).colorScheme.background;
+  Color backgroundColor() => Theme.of(context!).colorScheme.background;
 
   // update all existing cars
   void onMessage(dynamic message) {
-    // l.i(message);
     var decodedMessage = json.decode(message);
-    // l.i(decoded_message);
 
     for (final car in cars) {
-      // l.i(decodedMessage[car.id]);
       var carData = decodedMessage[car.id];
 
       // remove this car's data
       decodedMessage.remove(car.id);
 
-      // if (carData == null) {
-      //   addCar(car.id, car.position);
-      // }
-
       if (carData != null) {
-        // l.i("carData['x'] = ${carData['x'].runtimeType}");
-
         car.updatePosition(Vector2(
           carData['x'],
           carData['y'],
@@ -178,7 +169,7 @@ class Car extends SvgComponent {
     loadSvg("svg/car.svg").then((value) {
       svg = value;
     });
-    l.i('Car: "$id"');
+    // l.d('Instantiated car with ID: "$id"');
   }
 
   Future<Svg> loadSvg(String svg) async {

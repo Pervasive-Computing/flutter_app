@@ -128,6 +128,14 @@ final Map<String, ColorScheme> darkColorSchemesMap = {
   ),
 };
 
+// map string catppuccin flavors to catppuccin flavors
+final Map<String, Flavor> flavorMap = {
+  'latte': catppuccin.latte,
+  'frappe': catppuccin.frappe,
+  'macchiato': catppuccin.macchiato,
+  'mocha': catppuccin.mocha,
+};
+
 ThemeData catppuccinTheme(Flavor flavor) {
   Color primaryColor = flavor.mauve;
   Color secondaryColor = flavor.pink;
@@ -159,3 +167,50 @@ ThemeData catppuccinTheme(Flavor flavor) {
         elevation: 0,
       ));
 }
+
+Map<String, Color> getColorMap(Flavor flavor) {
+  Map<String, Color> colorMap = {
+    "rosewater": flavor.rosewater,
+    "flamingo": flavor.flamingo,
+    "pink": flavor.pink,
+    "mauve": flavor.mauve,
+    "red": flavor.red,
+    "maroon": flavor.maroon,
+    "peach": flavor.peach,
+    "yellow": flavor.yellow,
+    "green": flavor.green,
+    "teal": flavor.teal,
+    "sky": flavor.sky,
+    "sapphire": flavor.sapphire,
+    "blue": flavor.blue,
+    "lavender": flavor.lavender,
+    "text": flavor.text,
+    "subtext1": flavor.subtext1,
+    "subtext0": flavor.subtext0,
+    "overlay2": flavor.overlay2,
+    "overlay1": flavor.overlay1,
+    "overlay0": flavor.overlay0,
+    "surface2": flavor.surface2,
+    "surface1": flavor.surface1,
+    "surface0": flavor.surface0,
+    "crust": flavor.crust,
+    "mantle": flavor.mantle,
+    "base": flavor.base,
+  };
+  return colorMap;
+}
+
+// TextTheme tt = const TextTheme(
+//   bodyLarge: TextStyle(
+//     fontSize: 20,
+//     fontWeight: FontWeight.w400,
+//   ),
+//   bodyMedium: TextStyle(
+//     fontSize: 16,
+//     fontWeight: FontWeight.w400,
+//   ),
+//   bodySmall: TextStyle(
+//     fontSize: 13,
+//     fontWeight: FontWeight.w400,
+//   ),
+// );
