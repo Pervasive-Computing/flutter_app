@@ -19,9 +19,9 @@ class SimulationAPI {
   static void connect() {
     _socket.connection.listen((state) => l.i('state: "$state"'));
 
-    _socket.messages.listen((message) {
-      l.i('message: "$message"');
-    });
+    // _socket.messages.listen((message) {
+    //   l.i('message: "$message"');
+    // });
   }
 
   // add callbackk to listen to messages

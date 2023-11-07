@@ -6,6 +6,9 @@ import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame/palette.dart';
 import 'package:flame_svg/flame_svg.dart';
+import 'package:flame/camera.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/services.dart';
 // import 'package:flame/sprite.dart';
 import 'package:flutter/material.dart';
 // import 'package:vector_graphics/src/listener.dart';
@@ -18,11 +21,17 @@ import '../websocket/simulation_api.dart';
 /// This example simply adds a rotating white square on the screen.
 /// If you press on a square, it will be removed.
 /// If you press anywhere else, another square will be added.
-class SimVisualiser extends FlameGame with TapCallbacks {
+class SimVisualiser extends FlameGame
+    with TapCallbacks, KeyboardEvents, ScrollDetector, ScaleDetector {
+  BuildContext context;
+
   bool isAdded = false;
   int carCount = 0;
+  double zoomSensitivity = 0.001;
   var cars = <Car>[];
-  BuildContext context;
+
+  // Vector2 cameraPosition = Vector2.zero();
+  // late CameraComponent camera;
 
   SimVisualiser({required this.context});
 
@@ -32,20 +41,37 @@ class SimVisualiser extends FlameGame with TapCallbacks {
       SimulationAPI.addMessageListener(onMessage);
       isAdded = true;
     }
+
+    camera = CameraComponent(world: world)..viewfinder.zoom = 2.0;
+    add(camera);
+    // camera.followVector2(cameraPosition);
   }
 
+  // zoom camera on pinch
   @override
-  void onTapDown(TapDownEvent event) {
-    super.onTapDown(event);
-    if (!event.handled) {
-      final touchPoint = event.canvasPosition;
-      // var car = Car("CAR$carCount", math.pi / 2, touchPoint);
-      // add(car);
-      // cars.add(car);
-      // carCount++;
-      addCar("CAR$carCount", touchPoint);
-      event.handled = true;
-    }
+  void onScaleUpdate(ScaleUpdateInfo info) {
+    scaleZoom(info.scale.global.x);
+  }
+
+  void scaleZoom(double scale) {
+    l.w("scaleZoom: $scale");
+    // // scale is [0, 1] if scaling down, > 1 if scaling up
+    // var offset = camera.viewfinder.zoom;
+    camera.viewfinder.zoom += scale;
+  }
+
+  // zoom on scroll
+  @override
+  void onScroll(PointerScrollInfo info) {
+    // Handle scroll info for zooming
+    final scrollDelta = info.scrollDelta.global.y;
+    scrollZoom(scrollDelta);
+    // Make sure to clamp your zoom level to prevent it from inverting or becoming too large
+  }
+
+  void scrollZoom(double difference) {
+    l.w("scrollZoom: $difference");
+    camera.viewfinder.zoom -= difference * zoomSensitivity;
   }
 
   @override
@@ -93,7 +119,7 @@ class SimVisualiser extends FlameGame with TapCallbacks {
 
   void addCar(String id, Vector2 position) {
     var car = Car(id, math.pi / 2, position);
-    add(car);
+    world.add(car);
     cars.add(car);
     carCount++;
   }
