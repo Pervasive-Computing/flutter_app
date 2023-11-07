@@ -23,7 +23,7 @@ import '../websocket/simulation_api.dart';
 /// If you press on a square, it will be removed.
 /// If you press anywhere else, another square will be added.
 class SimVisualiser extends FlameGame
-    with TapCallbacks, KeyboardEvents, ScrollDetector, ScaleDetector {
+    with TapCallbacks, KeyboardEvents, ScrollDetector, ScaleDetector, PanDetector {
   BuildContext context;
 
   bool isAdded = false;
@@ -90,36 +90,17 @@ class SimVisualiser extends FlameGame
     camera.viewfinder.zoom = clampedZoom;
   }
 
-  // pan camera on arrow keys
+  // pan camera on mouse drag
   @override
-  KeyEventResult onKeyEvent(RawKeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
-    // l.w("onKeyEvent: ${event.logicalKey.keyLabel}");
-    var key = event.logicalKey.keyLabel;
-    double offset = 10;
-    // Vector2 currentCameraPosition = Vector2(cameraPosition.x, cameraPosition.y);
+  bool onPanUpdate(DragUpdateInfo info) {
+    // Calculate the difference in position since the start of the drag
+    Vector2 delta = info.delta.global.clone();
+    delta.scale(-1 / camera.viewfinder.zoom);
 
-    switch (key) {
-      case 'ArrowUp':
-        cameraTarget.position.y -= offset;
-        break;
-      case 'ArrowDown':
-        cameraTarget.position.y += offset;
-        break;
-      case 'ArrowLeft':
-        cameraTarget.position.x -= offset;
-        break;
-      case 'ArrowRight':
-        cameraTarget.position.x += offset;
-        break;
-      default:
-        break;
-    }
-    camera.follow(cameraTarget);
-    // cameraTarget.position.y
-    // ReadOnlyPositionProvider target = ReadOnlyPositionProvider.;
-    // camera.follow(target)
-    // camera.follow(cameraPosition);
-    return KeyEventResult.handled;
+    // Move the camera by the difference in position
+    cameraTarget.position += delta;
+
+    return true;
   }
 
   @override
