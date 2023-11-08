@@ -125,7 +125,7 @@ async def time_coordinates(websocket, path):
         connected.remove(websocket)
 
 
-start_server = websockets.serve(time_coordinates, "localhost", 9000)
+start_server = websockets.serve(time_coordinates, "localhost", 10000)
 
 asyncio.get_event_loop().run_until_complete(start_server)
 try:
