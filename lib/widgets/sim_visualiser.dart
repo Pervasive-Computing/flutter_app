@@ -8,8 +8,9 @@ import 'package:flame/palette.dart';
 import 'package:flame_svg/flame_svg.dart';
 // import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-// import '../logger.dart';
+import '../logger.dart';
 import '../websocket/simulation_api.dart';
+import '../misc/network_converter.dart';
 
 /// This is a visualiser for the simulation.
 /// Receiving the simulation data from the a websocket,
@@ -23,6 +24,13 @@ class SimVisualiser extends FlameGame
   final double _zoomSensitivity = 0.001;
   final PositionComponent _cameraTarget = PositionComponent(position: Vector2.zero());
   final _cars = <CarComponent>[];
+
+  // all roads and junctions
+  final _roads = <PolygonComponent>[];
+  final _junctions = <PolygonComponent>[];
+
+  late final Color _roadColor;
+  late final Color _junctionColor;
 
   // there is buildContext in FlameGame, but it's private, and no setter
   // so we have to make our own
@@ -40,7 +48,39 @@ class SimVisualiser extends FlameGame
     camera = CameraComponent(world: world)..viewfinder.zoom = 1.0;
     camera.follow(_cameraTarget);
     add(camera);
+
+    if (context != null) {
+      _roadColor = Theme.of(context!).colorScheme.surface;
+      _junctionColor = Theme.of(context!).colorScheme.error;
+    } else {
+      _roadColor = const Color.fromARGB(255, 127, 127, 127);
+      _junctionColor = const Color.fromARGB(255, 127, 127, 127);
+    }
+
+    var (roads, junctions) = await NetworkUtils.createPolygonsFromJson("assets/json/network.json");
+
+    // Color the roads and junctions
+    for (var road in roads) {
+      // l.w("road: $road");
+      road.paint = Paint()..color = _roadColor;
+    }
+    for (var junction in junctions) {
+      // l.w("junction: $junction");
+      junction.paint = Paint()..color = _junctionColor;
+    }
+
+    // Load the roads and junctions from the JSON file
+    _roads.addAll(roads);
+    _junctions.addAll(junctions);
+
+    // Add the roads and junctions to the world
+    world.addAll(_roads);
+    world.addAll(_junctions);
   }
+
+  // ╒═════════════════════════════════════════════════════════════════════════╕
+  // │                         🎥 Camera Controls                              │
+  // ╘═════════════════════════════════════════════════════════════════════════╛
 
   // Zoom camera on pinch
   @override
@@ -89,6 +129,10 @@ class SimVisualiser extends FlameGame
 
   @override
   Color backgroundColor() => Theme.of(context!).colorScheme.background;
+
+  // ╒═════════════════════════════════════════════════════════════════════════╕
+  // │                        ⬅️ Message Callbacks                             │
+  // ╘═════════════════════════════════════════════════════════════════════════╛
 
   // Instantiate cars if they don't already exist.
   // Update car positions if they do exist.
