@@ -2,8 +2,8 @@ import 'package:flame/game.dart';
 // import 'package:flame/text.dart';
 import 'package:flutter/material.dart';
 import 'widgets/sim_visualiser.dart';
-import 'widgets/sim_world.dart';
-import 'package:flutter/gestures.dart';
+// import 'widgets/sim_world.dart';
+// import 'package:flutter/gestures.dart';
 // import '../logger.dart';
 // import '../websocket/simulation_api.dart';
 

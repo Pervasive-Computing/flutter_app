@@ -1,5 +1,3 @@
-import 'package:catppuccin_flutter/catppuccin_flutter.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'home.dart';
 import 'themes/themes.dart';

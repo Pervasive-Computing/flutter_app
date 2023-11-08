@@ -2,18 +2,13 @@ import 'dart:math' as math;
 import 'dart:convert';
 
 import 'package:flame/components.dart';
-import 'package:flame/effects.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame/palette.dart';
 import 'package:flame_svg/flame_svg.dart';
-import 'package:flame/camera.dart';
-import 'package:flutter/gestures.dart';
-import 'package:flutter/services.dart';
-// import 'package:flame/sprite.dart';
+// import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-// import 'package:vector_graphics/src/listener.dart';
-import '../logger.dart';
+// import '../logger.dart';
 import '../websocket/simulation_api.dart';
 
 // TAKEN FROM
