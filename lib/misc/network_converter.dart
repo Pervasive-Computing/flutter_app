@@ -74,9 +74,11 @@ class NetworkUtils {
   }
 
   // Convert a list of shapes that represents a path to a list of PolygonComponents
-  static List<PolygonComponent> createPolygonsFromPaths(List<String> shapes) {
+  static List<PolygonComponent> createPolygonsFromPaths(List<String> shapes,
+      {double width = 1.625}) {
     List<PolygonComponent> polygons = [];
-    double width = 1.6 / parentSize.x;
+    // double width = 1.625 / parentSize.x;
+    width /= parentSize.x;
 
     for (final shape in shapes) {
       List<Vector2> path = shape.split(' ').map((pair) {
@@ -113,26 +115,30 @@ class NetworkUtils {
         Vector2 p2 = path[i + 1];
         Vector2 p3 = path[i + 2];
         // find the vector between the vectors path[i]+path[i+1] and path[i+1]+path[i+2]
-        Vector2 v1 = p2 - p1;
-        Vector2 v2 = p3 - p2;
-        Vector2 v12 = (v1 + v2);
+        Vector2 v1 = (p2 - p1).normalized();
+        Vector2 v2 = (p3 - p2).normalized();
+        Vector2 v12 = (v1 + v2).normalized();
         // find the perpendicular vector to v12
-        Vector2 widthDirection = Vector2(v12.y, -v12.x).normalized();
+        Vector2 widthDirection = Vector2(v12.y, -v12.x);
 
         // if we're at the beginning we also want to add the perpendicular vector to the first point
         if (i == 0) {
-          Vector2 perpv1 = Vector2(v1.y, -v1.x).normalized();
+          Vector2 perpv1 = Vector2(v1.y, -v1.x);
           verticesLHS.add(p1 + perpv1 * width);
           verticesRHS.add(p1 - perpv1 * width);
         }
 
         // add the perpendicular vectors to the path points to create vertices
-        verticesLHS.add(p2 + widthDirection * width);
-        verticesRHS.add(p2 - widthDirection * width);
+        // while taking the angle to perpendicular vector into account
+        // to account for a "kinking" factor of a bending path
+        double kinkingFactor = (1 - v1.dot(v2)) * width / 2;
+        double kinkedWidth = width + kinkingFactor;
+        verticesLHS.add(p2 + widthDirection * kinkedWidth);
+        verticesRHS.add(p2 - widthDirection * kinkedWidth);
 
         // if we're at the end we also want to add the perpendicular vector to the last point
         if (i == path.length - 3) {
-          Vector2 perpv2 = Vector2(v2.y, -v2.x).normalized();
+          Vector2 perpv2 = Vector2(v2.y, -v2.x);
           verticesLHS.add(p3 + perpv2 * width);
           verticesRHS.add(p3 - perpv2 * width);
         }
