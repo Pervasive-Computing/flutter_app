@@ -76,7 +76,7 @@ class NetworkUtils {
   // Convert a list of shapes that represents a path to a list of PolygonComponents
   static List<PolygonComponent> createPolygonsFromPaths(List<String> shapes) {
     List<PolygonComponent> polygons = [];
-    double width = 2 / parentSize.x;
+    double width = 1.6 / parentSize.x;
 
     for (final shape in shapes) {
       List<Vector2> path = shape.split(' ').map((pair) {

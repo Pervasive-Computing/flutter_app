@@ -25,7 +25,10 @@ class MyAppState extends State<MyApp> {
       builder: (_, themeName, __) {
         return MaterialApp(
           title: 'What the heck do we call this app?',
-          theme: catppuccinTheme(flavorMap[themeName]!),
+          theme: catppuccinTheme(
+            flavorMap[themeName]!,
+            context: context,
+          ),
           home: Home(
             themeNotifier: _themeNotifier,
           ),

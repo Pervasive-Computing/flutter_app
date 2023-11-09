@@ -136,36 +136,39 @@ final Map<String, Flavor> flavorMap = {
   'mocha': catppuccin.mocha,
 };
 
-ThemeData catppuccinTheme(Flavor flavor) {
-  Color primaryColor = flavor.mauve;
+ThemeData catppuccinTheme(Flavor flavor, {required BuildContext context}) {
+  Color primaryColor = flavor.lavender;
   Color secondaryColor = flavor.pink;
   return ThemeData(
-      useMaterial3: true,
-      appBarTheme: AppBarTheme(
-          elevation: 0,
-          titleTextStyle: TextStyle(color: flavor.text, fontSize: 20, fontWeight: FontWeight.bold),
-          backgroundColor: flavor.crust,
-          foregroundColor: flavor.mantle),
-      colorScheme: ColorScheme(
-        background: flavor.base,
-        brightness: Brightness.light,
-        error: flavor.surface2,
-        onBackground: flavor.text,
-        onError: flavor.red,
-        onPrimary: primaryColor,
-        onSecondary: secondaryColor,
-        onSurface: flavor.text,
-        primary: flavor.crust,
-        secondary: flavor.mantle,
-        surface: flavor.surface0,
-      ),
-      textTheme: const TextTheme().apply(
-        bodyColor: flavor.text,
-        displayColor: primaryColor,
-      ),
-      floatingActionButtonTheme: const FloatingActionButtonThemeData(
-        elevation: 0,
-      ));
+    useMaterial3: true,
+    appBarTheme: AppBarTheme(
+      elevation: 0,
+      titleTextStyle: TextStyle(color: flavor.text, fontSize: 20, fontWeight: FontWeight.bold),
+      backgroundColor: flavor.crust,
+      foregroundColor: flavor.mantle,
+    ),
+    colorScheme: ColorScheme(
+      background: flavor.base,
+      brightness: Brightness.light,
+      error: flavor.surface2,
+      onBackground: flavor.text,
+      onError: flavor.red,
+      onPrimary: primaryColor,
+      onSecondary: secondaryColor,
+      onSurface: flavor.text,
+      primary: flavor.crust,
+      secondary: flavor.mantle,
+      surface: flavor.surface0,
+    ),
+    textTheme: Theme.of(context).textTheme.apply(
+          fontFamily: 'Inter',
+          bodyColor: flavor.text,
+          displayColor: primaryColor,
+        ),
+    // floatingActionButtonTheme: const FloatingActionButtonThemeData(
+    //   elevation: 0,
+    // ),
+  );
 }
 
 Map<String, Color> getColorMap(Flavor flavor) {
@@ -199,18 +202,3 @@ Map<String, Color> getColorMap(Flavor flavor) {
   };
   return colorMap;
 }
-
-// TextTheme tt = const TextTheme(
-//   bodyLarge: TextStyle(
-//     fontSize: 20,
-//     fontWeight: FontWeight.w400,
-//   ),
-//   bodyMedium: TextStyle(
-//     fontSize: 16,
-//     fontWeight: FontWeight.w400,
-//   ),
-//   bodySmall: TextStyle(
-//     fontSize: 13,
-//     fontWeight: FontWeight.w400,
-//   ),
-// );

@@ -62,13 +62,77 @@ flutter:
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
+
   uses-material-design: true
 
   assets:
     - assets/images/car.jpg
     - assets/svg/car.svg
     - assets/json/network.json
+    - assets/fonts/
 
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter-Thin.ttf
+          weight: 200
+        - asset: assets/fonts/Inter-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Inter-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Inter-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Inter-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Inter-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Inter-ExtraBold.ttf
+          weight: 800
+        - asset: assets/fonts/Inter-Black.ttf
+          weight: 900
+    - family: JetBrainsMono
+      fonts:
+        - asset: assets/fonts/JetBrainsMonoNerdFont-Thin.ttf
+          weight: 100
+        - asset: assets/fonts/JetBrainsMonoNerdFont-ThinItalic.ttf
+          weight: 100
+          style: italic
+        - asset: assets/fonts/JetBrainsMonoNerdFont-ExtraLight.ttf
+          weight: 200
+        - asset: assets/fonts/JetBrainsMonoNerdFont-ExtraLightItalic.ttf
+          weight: 200
+          style: italic
+        - asset: assets/fonts/JetBrainsMonoNerdFont-Light.ttf
+          weight: 300
+        - asset: assets/fonts/JetBrainsMonoNerdFont-LightItalic.ttf
+          weight: 300
+          style: italic
+        - asset: assets/fonts/JetBrainsMonoNerdFont-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/JetBrainsMonoNerdFont-Italic.ttf
+          weight: 400
+          style: italic
+        - asset: assets/fonts/JetBrainsMonoNerdFont-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/JetBrainsMonoNerdFont-MediumItalic.ttf
+          weight: 500
+          style: italic
+        - asset: assets/fonts/JetBrainsMonoNerdFont-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/JetBrainsMonoNerdFont-SemiBoldItalic.ttf
+          weight: 600
+          style: italic
+        - asset: assets/fonts/JetBrainsMonoNerdFont-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/JetBrainsMonoNerdFont-BoldItalic.ttf
+          weight: 700
+          style: italic
+        - asset: assets/fonts/JetBrainsMonoNerdFont-ExtraBold.ttf
+          weight: 800
+        - asset: assets/fonts/JetBrainsMonoNerdFont-ExtraBoldItalic.ttf
+          weight: 800
+          style: italic
+  
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

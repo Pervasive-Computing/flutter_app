@@ -37,10 +37,11 @@ class Home extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     child: Text(
                       "UrbanOS",
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineLarge
-                          ?.copyWith(fontWeight: FontWeight.w800),
+                      style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                            color: Theme.of(context).colorScheme.onBackground,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w300,
+                          ),
                     ),
                   ),
                 ),
@@ -64,7 +65,9 @@ class Home extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(10),
                   child: Icon(
-                    _themeNotifier.value == 'latte' ? Icons.dark_mode : Icons.light_mode,
+                    _themeNotifier.value == 'latte'
+                        ? Icons.dark_mode_outlined
+                        : Icons.light_mode_outlined,
                     color: Theme.of(context).colorScheme.onBackground,
                   ),
                 ),
