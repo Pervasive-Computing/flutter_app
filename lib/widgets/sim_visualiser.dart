@@ -22,7 +22,8 @@ class SimVisualiser extends FlameGame
     with TapCallbacks, KeyboardEvents, ScrollDetector, ScaleDetector, PanDetector {
   bool _carSimCallbackIsAdded = false;
   final double _zoomSensitivity = 0.001;
-  final PositionComponent _cameraTarget = PositionComponent(position: Vector2.zero());
+  late final startingPosition = Vector2.zero();
+  late final PositionComponent _cameraTarget = PositionComponent(position: Vector2.zero());
   final _cars = <CarComponent>[];
 
   // all roads and junctions
@@ -45,7 +46,8 @@ class SimVisualiser extends FlameGame
 
     // Initialise the camera to follow the the vector _cameraTarget,
     // such that when _cameraTarget moves, the camera follows
-    camera = CameraComponent(world: world)..viewfinder.zoom = 1.0;
+    camera = CameraComponent(world: world)..viewfinder.zoom = 0.1;
+    _cameraTarget.position = Vector2(5000, 5000);
     camera.follow(_cameraTarget);
     add(camera);
 

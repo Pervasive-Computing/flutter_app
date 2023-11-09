@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:flame/components.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import '../logger.dart';
 
 class NetworkUtils {
-  static Vector2 parentSize = Vector2(0.5, 0.5);
+  static Vector2 parentSize = Vector2(0.1, 0.1);
 
   // Parses the JSON and returns a list of PolygonComponents for the shapes
   static Future<(List<PolygonComponent>, List<PolygonComponent>)> createPolygonsFromJson(
@@ -15,7 +16,7 @@ class NetworkUtils {
     var (roads, junctions) = _extractShapes(jsonData);
 
     // Create and return the list of PolygonComponents
-    return (createPolygonsFromPathShapes(roads), createPolygonsFromShapes(junctions));
+    return (createPolygonsFromPaths(roads), createPolygonsFromShapes(junctions));
   }
 
   // Private helper method to extract shape strings from JSON data
@@ -66,20 +67,16 @@ class NetworkUtils {
         continue;
       }
 
-      // Create a PolygonComponent.relative with the vertices
-      polygons.add(PolygonComponent.relative(
-        vertices,
-        parentSize: parentSize, // Use the static parent size
-      ));
+      polygons.add(PolygonComponent(vertices));
     }
 
     return polygons;
   }
 
   // Convert a list of shapes that represents a path to a list of PolygonComponents
-  static List<PolygonComponent> createPolygonsFromPathShapes(List<String> shapes) {
+  static List<PolygonComponent> createPolygonsFromPaths(List<String> shapes) {
     List<PolygonComponent> polygons = [];
-    double width = 3.75;
+    double width = 2 / parentSize.x;
 
     for (final shape in shapes) {
       List<Vector2> path = shape.split(' ').map((pair) {
@@ -92,25 +89,56 @@ class NetworkUtils {
         continue;
       }
 
-      // between each pair of points in the path find the perpendicular vector
-      // and add the perpendicular vectors to the path points to create vertices
-      List<Vector2> vertices = [];
-      for (int i = 0; i < path.length - 1; i++) {
-        Vector2 p1 = path[i];
-        Vector2 p2 = path[i + 1];
-        Vector2 v = p2 - p1;
-        Vector2 perp = Vector2(v.y, -v.x).normalized();
-        vertices.add(p1 + perp * width);
-        vertices.add(p2 + perp * width);
-        vertices.add(p2 - perp * width);
-        vertices.add(p1 - perp * width);
+      // make a simple rectangle if the path only has 2 points
+      if (path.length == 2) {
+        Vector2 p1 = path[0];
+        Vector2 p2 = path[1];
+        Vector2 v1 = p2 - p1;
+        Vector2 widthDirection = Vector2(v1.y, -v1.x).normalized();
+        List<Vector2> vertices = [
+          p1 + widthDirection * width,
+          p2 + widthDirection * width,
+          p2 - widthDirection * width,
+          p1 - widthDirection * width,
+        ];
+        polygons.add(PolygonComponent(vertices));
+        continue;
       }
 
-      // Create a PolygonComponent.relative with the vertices
-      polygons.add(PolygonComponent.relative(
-        vertices,
-        parentSize: parentSize, // Use the static parent size
-      ));
+      List<Vector2> verticesLHS = [];
+      List<Vector2> verticesRHS = [];
+      // go through the path list with window of 3
+      for (int i = 0; i < path.length - 2; i++) {
+        Vector2 p1 = path[i];
+        Vector2 p2 = path[i + 1];
+        Vector2 p3 = path[i + 2];
+        // find the vector between the vectors path[i]+path[i+1] and path[i+1]+path[i+2]
+        Vector2 v1 = p2 - p1;
+        Vector2 v2 = p3 - p2;
+        Vector2 v12 = (v1 + v2);
+        // find the perpendicular vector to v12
+        Vector2 widthDirection = Vector2(v12.y, -v12.x).normalized();
+
+        // if we're at the beginning we also want to add the perpendicular vector to the first point
+        // or if we're at the end we also want to add the perpendicular vector to the last point
+        if (i == 0) {
+          Vector2 perpv1 = Vector2(v1.y, -v1.x).normalized();
+          verticesLHS.add(p1 + perpv1 * width);
+          verticesRHS.add(p1 - perpv1 * width);
+        } else if (i == path.length - 3) {
+          Vector2 perpv2 = Vector2(v2.y, -v2.x).normalized();
+          verticesLHS.add(p3 + perpv2 * width);
+          verticesRHS.add(p3 - perpv2 * width);
+        }
+
+        // add the perpendicular vectors to the path points to create vertices
+        verticesLHS.add(p2 + widthDirection * width);
+        verticesRHS.add(p2 - widthDirection * width);
+      }
+
+      // collect the vertices in the correct order
+      List<Vector2> vertices = [...verticesLHS, ...verticesRHS.reversed.toList()];
+      polygons.add(PolygonComponent(vertices));
     }
 
     return polygons;
