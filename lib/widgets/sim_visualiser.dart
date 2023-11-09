@@ -43,6 +43,7 @@ class SimVisualiser extends FlameGame
       SimulationAPI.addMessageListener(_addCarOnMessage);
       _carSimCallbackIsAdded = true;
     }
+    // debugMode = true;
 
     // Initialise the camera to follow the the vector _cameraTarget,
     // such that when _cameraTarget moves, the camera follows

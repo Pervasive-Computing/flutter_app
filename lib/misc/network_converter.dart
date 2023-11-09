@@ -120,20 +120,22 @@ class NetworkUtils {
         Vector2 widthDirection = Vector2(v12.y, -v12.x).normalized();
 
         // if we're at the beginning we also want to add the perpendicular vector to the first point
-        // or if we're at the end we also want to add the perpendicular vector to the last point
         if (i == 0) {
           Vector2 perpv1 = Vector2(v1.y, -v1.x).normalized();
           verticesLHS.add(p1 + perpv1 * width);
           verticesRHS.add(p1 - perpv1 * width);
-        } else if (i == path.length - 3) {
-          Vector2 perpv2 = Vector2(v2.y, -v2.x).normalized();
-          verticesLHS.add(p3 + perpv2 * width);
-          verticesRHS.add(p3 - perpv2 * width);
         }
 
         // add the perpendicular vectors to the path points to create vertices
         verticesLHS.add(p2 + widthDirection * width);
         verticesRHS.add(p2 - widthDirection * width);
+
+        // if we're at the end we also want to add the perpendicular vector to the last point
+        if (i == path.length - 3) {
+          Vector2 perpv2 = Vector2(v2.y, -v2.x).normalized();
+          verticesLHS.add(p3 + perpv2 * width);
+          verticesRHS.add(p3 - perpv2 * width);
+        }
       }
 
       // collect the vertices in the correct order
