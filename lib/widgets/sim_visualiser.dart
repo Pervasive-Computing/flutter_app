@@ -20,7 +20,7 @@ import '../misc/network_converter.dart';
 /// - Street lamps will be drawn and show their status
 class SimVisualiser extends FlameGame
     with TapCallbacks, KeyboardEvents, ScrollDetector, ScaleDetector, PanDetector {
-  bool _carSimCallbackIsAdded = false;
+  bool _initialised = false;
   final double _zoomSensitivity = 0.001;
   late final startingPosition = Vector2.zero();
   late final PositionComponent _cameraTarget = PositionComponent(position: Vector2.zero());
@@ -39,27 +39,43 @@ class SimVisualiser extends FlameGame
 
   @override
   Future<void> onLoad() async {
-    if (!_carSimCallbackIsAdded) {
+    if (!_initialised) {
       SimulationAPI.addMessageListener(_addCarOnMessage);
-      _carSimCallbackIsAdded = true;
+      initialiseCamera();
+      setColors();
+      await initialiseNetwork();
+      _initialised = true;
+      // debugMode = true;
     }
-    // debugMode = true;
+  }
 
+  // ╒════════════════════════════════════════════════════════════════════════════╕
+  // │                          🌍 Scene Initialisation                         │
+  // ╘════════════════════════════════════════════════════════════════════════════╛
+
+  void initialiseCamera() {
     // Initialise the camera to follow the the vector _cameraTarget,
     // such that when _cameraTarget moves, the camera follows
     camera = CameraComponent(world: world)..viewfinder.zoom = 0.1;
     _cameraTarget.position = Vector2(5000, 5000);
     camera.follow(_cameraTarget);
     add(camera);
+  }
 
+  void setColors() {
     if (context != null) {
-      _roadColor = Theme.of(context!).colorScheme.surface;
-      _junctionColor = Theme.of(context!).colorScheme.error;
+      _roadColor = Theme.of(context!).colorScheme.onPrimary.darken(0.3).brighten(0.3);
+      _junctionColor = Theme.of(context!).colorScheme.onPrimary.darken(0.3).brighten(0.3);
     } else {
+      l.w("context is null");
       _roadColor = const Color.fromARGB(255, 127, 127, 127);
       _junctionColor = const Color.fromARGB(255, 127, 127, 127);
     }
+  }
 
+  // Initialise the network
+  Future<void> initialiseNetwork() async {
+    // Add the network to the world
     var (roads, junctions) = await NetworkUtils.createPolygonsFromJson("assets/json/network.json");
 
     // Color the roads and junctions
@@ -81,9 +97,9 @@ class SimVisualiser extends FlameGame
     world.addAll(_junctions);
   }
 
-  // ╒═════════════════════════════════════════════════════════════════════════╕
-  // │                         🎥 Camera Controls                              │
-  // ╘═════════════════════════════════════════════════════════════════════════╛
+  // ╒════════════════════════════════════════════════════════════════════════════╕
+  // │                            🎥 Camera Controls                            │
+  // ╘════════════════════════════════════════════════════════════════════════════╛
 
   // Zoom camera on pinch
   @override
@@ -133,9 +149,9 @@ class SimVisualiser extends FlameGame
   @override
   Color backgroundColor() => Theme.of(context!).colorScheme.background;
 
-  // ╒═════════════════════════════════════════════════════════════════════════╕
-  // │                        ⬅️ Message Callbacks                             │
-  // ╘═════════════════════════════════════════════════════════════════════════╛
+  // ╒════════════════════════════════════════════════════════════════════════════╕
+  // │                           ⬅️ Message Callbacks                           │
+  // ╘════════════════════════════════════════════════════════════════════════════╛
 
   // Instantiate cars if they don't already exist.
   // Update car positions if they do exist.
@@ -192,6 +208,9 @@ class SimVisualiser extends FlameGame
   }
 }
 
+// ╒══════════════════════════════════════════════════════════════════════════════╕
+// │                              🚗 Car Component                              │
+// ╘══════════════════════════════════════════════════════════════════════════════╛
 // CarComponent is a Flame Engine Component
 // Based on the SvgComponent, such that it can be instantiated from an svg file
 // The component reflects the position and heading of the car
