@@ -64,8 +64,8 @@ class SimVisualiser extends FlameGame
 
   void setColors() {
     if (context != null) {
-      _roadColor = Theme.of(context!).colorScheme.onPrimary.darken(0.3).brighten(0.3);
-      _junctionColor = Theme.of(context!).colorScheme.onPrimary.darken(0.3).brighten(0.3);
+      _roadColor = Theme.of(context!).colorScheme.primary;
+      _junctionColor = Theme.of(context!).colorScheme.primary;
     } else {
       l.w("context is null");
       _roadColor = const Color.fromARGB(255, 127, 127, 127);
