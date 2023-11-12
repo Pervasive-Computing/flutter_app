@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import '../logger.dart';
 import '../websocket/simulation_api.dart';
 import '../misc/network_converter.dart';
+import 'package:cbor/cbor.dart';
 
 /// This is a visualiser for the simulation.
 /// Receiving the simulation data from the a websocket,
@@ -128,7 +129,7 @@ class SimVisualiser extends FlameGame
     setZoom(zoom);
   }
 
-  void setZoom(double zoom, {double min = 0.1, double max = 3}) {
+  void setZoom(double zoom, {double min = 0.05, double max = 3}) {
     var clampedZoom = zoom.clamp(min, max);
     camera.viewfinder.zoom = clampedZoom;
   }
@@ -157,11 +158,12 @@ class SimVisualiser extends FlameGame
   // Update car positions if they do exist.
   // Remove cars that don't exist anymore.
   void _addCarOnMessage(dynamic message) {
-    var decodedMessage = json.decode(message);
+    // var decodedMessage = json.decode(message);
+    var jsonMessage = message.toJson();
 
     // looking through existing cars in the world
     for (final car in _cars) {
-      var carData = decodedMessage[car.id];
+      var carData = jsonMessage[car.id];
 
       // for all cars that do already exist,
       // update their position and heading
@@ -172,17 +174,19 @@ class SimVisualiser extends FlameGame
         // when carData is null,
         // the car is not part of the received message,
         // and should therefore be removed
+        l.w("removing car: ${car.id}");
         remove(car);
         _cars.remove(car);
       }
 
       // then remove them from the message,
       // such that they are not instantiated again
-      decodedMessage.remove(car.id);
+      jsonMessage.remove(car.id);
     }
 
     // instantiate cars that don't exist yet.
-    decodedMessage.forEach((key, value) {
+    jsonMessage.forEach((key, value) {
+      l.w("adding car: $key");
       addCar(
         id: key,
         position: Vector2(value['x'], value['y']),
