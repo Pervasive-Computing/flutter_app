@@ -2,7 +2,7 @@ import 'package:flame/game.dart';
 // import 'package:flame/text.dart';
 import 'package:flutter/material.dart';
 import 'widgets/sim_visualiser.dart';
-import 'package:glass_kit/glass_kit.dart';
+import 'widgets/glass.dart';
 // import 'widgets/sim_world.dart';
 // import 'package:flutter/gestures.dart';
 // import '../logger.dart';
@@ -46,34 +46,8 @@ class Home extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(20),
-            child: GlassContainer(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
+            child: Glass(
               height: 100,
-              width: windowWidth,
-              blur: 15,
-              borderRadius: const BorderRadius.all(Radius.circular(50)),
-              borderWidth: 2,
-              // borderColor: Theme.of(context).colorScheme.onPrimary.withOpacity(0.75),
-              // color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.15),
-              gradient: LinearGradient(
-                colors: [
-                  Theme.of(context).colorScheme.onPrimary.withOpacity(0.15),
-                  Theme.of(context).colorScheme.onPrimary.withOpacity(0.10),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderGradient: LinearGradient(
-                colors: [
-                  Theme.of(context).colorScheme.onPrimary.withOpacity(0.20),
-                  Theme.of(context).colorScheme.onPrimary.withOpacity(0.10),
-                  Theme.of(context).colorScheme.onPrimary.withOpacity(0.05),
-                  Theme.of(context).colorScheme.onPrimary.withOpacity(0.3)
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                stops: const [0.0, 0.39, 0.40, 1.0],
-              ),
               child: Row(
                 children: [
                   Expanded(
