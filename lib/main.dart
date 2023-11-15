@@ -21,7 +21,7 @@ class MyAppState extends State<MyApp> {
   final _themeNotifier = ValueNotifier('mocha');
 
   final ZContext _context = ZContext();
-  late final ZSocket _socket = _context.createSocket(SocketType.req);
+  late final ZSocket _socket = _context.createSocket(SocketType.sub);
 
   // construvtor
   MyAppState() {
