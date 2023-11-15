@@ -16,7 +16,7 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  final _themeNotifier = ValueNotifier('latte');
+  final _themeNotifier = ValueNotifier('mocha');
 
   @override
   Widget build(BuildContext context) {
