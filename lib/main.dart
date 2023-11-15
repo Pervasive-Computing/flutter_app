@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'home.dart';
 import 'themes/themes.dart';
-import '../websocket/simulation_api.dart';
+// import '../websocket/simulation_api.dart';
+import 'logger.dart';
+import 'package:dartzmq/dartzmq.dart';
 
 void main() {
-  SimulationAPI.connect();
+  // SimulationAPI.connect();
   runApp(const MyApp());
 }
 
@@ -17,6 +19,18 @@ class MyApp extends StatefulWidget {
 
 class MyAppState extends State<MyApp> {
   final _themeNotifier = ValueNotifier('mocha');
+
+  final ZContext _context = ZContext();
+  late final ZSocket _socket = _context.createSocket(SocketType.req);
+
+  // construvtor
+  MyAppState() {
+    _socket.connect('tcp://localhost:9001');
+
+    _socket.payloads.listen((message) {
+      l.i(message);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

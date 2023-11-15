@@ -41,7 +41,7 @@ class SimVisualiser extends FlameGame
   @override
   Future<void> onLoad() async {
     if (!_initialised) {
-      SimulationAPI.addMessageListener(_addCarOnMessage);
+      // SimulationAPI.addMessageListener(_addCarOnMessage);
       initialiseCamera();
       setColors();
       await initialiseNetwork();
