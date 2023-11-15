@@ -9,7 +9,7 @@ import 'package:dartzmq/dartzmq.dart';
 class SimulationAPI {
   static const String _host = 'localhost';
   static const int _port = 9001;
-  static const String _path = '/cars';
+  static const String _path = '';
 
   static final uri = Uri(
     scheme: 'ws',
@@ -19,15 +19,26 @@ class SimulationAPI {
   );
 
   static final _zcontext = ZContext();
-  static late final MonitoredZSocket _socket;
+  static late final ZSocket _socket;
   // late StreamSubscription _subscription;
 
   static void connect() {
-    _socket = _zcontext.createMonitoredSocket(SocketType.sub);
+    _socket = _zcontext.createSocket(SocketType.sub);
+    _socket.setOption(ZMQ_SUBSCRIBE, "");
     _socket.connect(uri.toString());
 
-    addMessageListener((message) {
-      l.i(message);
+    // _socket.events.listen((event) {
+    //   l.i(event);
+    // });
+
+    // addMessageListener((message) {
+    //   l.i(message);
+    // });
+    _socket.payloads.listen((message) {
+      final decoded = cbor.decode(message);
+      final map = decoded.toObject();
+      // callback(decoded);
+      l.i(map.runtimeType);
     });
   }
 
@@ -35,8 +46,6 @@ class SimulationAPI {
   static void addMessageListener(Function(dynamic) callback) {
     // listen for messages
     _socket.payloads.listen((message) {
-      // decode CBor
-      // final decoded = await message.transform(cbor.decoder).single;
       final decoded = cbor.decode(message);
       callback(decoded);
     });
