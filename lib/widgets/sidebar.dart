@@ -2,16 +2,41 @@ import 'package:flutter/material.dart';
 import 'package:glass_kit/glass_kit.dart';
 import 'glass.dart';
 import '../logger.dart';
+import 'circle_icon_button.dart';
 
 class Sidebar extends StatefulWidget {
-  const Sidebar({super.key});
+  final double height;
+  final double width;
+  // final double left;
+  final double top;
+  // final double right;
+  // final double bottom;
+
+  const Sidebar({
+    super.key,
+    this.height = double.infinity,
+    this.width = double.infinity,
+    // this.left = 0,
+    this.top = 0,
+    // this.right = 0,
+    // this.bottom = 0,
+  });
 
   @override
   State<Sidebar> createState() => SidebarState();
 }
 
 class SidebarState extends State<Sidebar> {
-  bool isSidebarOpen = true;
+  bool isSidebarOpen = false;
+  late double height;
+  late double width;
+
+  @override
+  void initState() {
+    super.initState();
+    height = widget.height;
+    width = widget.width;
+  }
 
   void openSidebar() {
     setState(() {
@@ -25,15 +50,22 @@ class SidebarState extends State<Sidebar> {
     });
   }
 
+  void toggleSidebar() {
+    setState(() {
+      isSidebarOpen = !isSidebarOpen;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return AnimatedPositioned(
       duration: const Duration(milliseconds: 100),
       left: isSidebarOpen ? 0 : -500,
+      top: widget.top,
       child: Glass(
         padding: const EdgeInsets.all(30),
-        width: 400,
-        height: 400,
+        width: width,
+        height: height,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,13 +75,15 @@ class SidebarState extends State<Sidebar> {
               children: [
                 Text(
                   'Sidebar',
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onBackground),
+                  style: Theme.of(context)
+                      .textTheme
+                      .headlineMedium
+                      ?.copyWith(color: Theme.of(context).colorScheme.onBackground),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: closeSidebar,
-                ),
+                // CircleIconButton(
+                //   color: Theme.of(context).colorScheme.onBackground,
+                //   icon: Icons.chevron_left,
+                // ),
               ],
             ),
           ],

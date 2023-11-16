@@ -5,71 +5,72 @@ import 'widgets/sim_visualiser.dart';
 import 'widgets/header.dart';
 // import 'widgets/sim_world.dart';
 // import 'package:flutter/gestures.dart';
-// import '../logger.dart';
+import '../logger.dart';
 // import '../websocket/simulation_api.dart';
 import 'widgets/sidebar.dart';
 
 class Home extends StatelessWidget {
+  final ValueNotifier<String> _themeNotifier;
+  late final SimVisualiser _simulation;
+  final GlobalKey<SidebarState> sidebarKey = GlobalKey<SidebarState>();
+  final double headerHeight = 70;
+  final double padding = 20;
+
   Home({
     super.key,
     required ValueNotifier<String> themeNotifier,
   }) : _themeNotifier = themeNotifier {
-    // SimulationAPI.connect();
     _simulation = SimVisualiser();
   }
-
-  final ValueNotifier<String> _themeNotifier;
-  late final SimVisualiser _simulation;
-
-  // SimulationAPI instance
-  // final SimulationAPI _simulationAPI = SimulationAPI();
-
-  final GlobalKey<SidebarState> sidebarKey = GlobalKey<SidebarState>();
 
   @override
   Widget build(BuildContext context) {
     _simulation.context = context;
-    var windowWidth = MediaQuery.of(context).size.width;
-    return Container(
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height,
-        maxWidth: windowWidth,
-      ),
-      color: Theme.of(context).colorScheme.background,
-      child: Stack(
-        children: [
-          Container(
-            constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height,
-              maxWidth: windowWidth,
-            ),
-            child: GameWidget(
-              game: _simulation,
-            ),
+    // var windowWidth = MediaQuery.of(context).size.width;
+    // var windowHeight = MediaQuery.of(context).size.height;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        double windowHeight = constraints.maxHeight;
+        double windowWidth = constraints.maxWidth;
+        double sidebarHeight = windowHeight - padding * 3 - headerHeight;
+        sidebarKey.currentState?.height = sidebarHeight;
+
+        return Container(
+          constraints: BoxConstraints(
+            maxHeight: windowHeight,
+            maxWidth: windowWidth,
           ),
-          // TEMP BUTTON, TO TEST SIDEBAR
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                Header(
-                  themeNotifier: _themeNotifier,
+          color: Theme.of(context).colorScheme.background,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              GameWidget(
+                game: _simulation,
+              ),
+              Padding(
+                padding: EdgeInsets.all(padding),
+                child: Stack(
+                  // fit: StackFit.expand,
+                  children: [
+                    Header(
+                      themeNotifier: _themeNotifier,
+                      onMenuPressed: () {
+                        sidebarKey.currentState?.toggleSidebar();
+                      },
+                    ),
+                    Sidebar(
+                      key: sidebarKey,
+                      height: sidebarHeight,
+                      width: 500,
+                      top: headerHeight + padding,
+                    ),
+                  ],
                 ),
-                Sidebar(key: sidebarKey),
-              ],
-            ),
+              ),
+            ],
           ),
-          Center(
-            child: ElevatedButton(
-              onPressed: () {
-                sidebarKey.currentState?.openSidebar();
-              },
-              child: const Text('Open Sidebar'),
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

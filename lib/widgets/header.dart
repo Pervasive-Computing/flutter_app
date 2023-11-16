@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'glass.dart';
-import 'outline_button.dart';
+import 'circle_icon_button.dart';
 
 class Header extends StatelessWidget {
   final ValueNotifier<String> _themeNotifier;
+  final double height;
+  final Function()? onMenuPressed;
 
   const Header({
     super.key,
+    this.height = 70,
     required ValueNotifier<String> themeNotifier,
+    this.onMenuPressed,
   }) : _themeNotifier = themeNotifier;
 
   void toggleTheme() {
@@ -22,11 +26,13 @@ class Header extends StatelessWidget {
   Widget build(BuildContext context) {
     return Glass(
       padding: const EdgeInsets.symmetric(horizontal: 17),
-      height: 70,
+      height: height,
       child: Row(
         children: [
           CircleIconButton(
-            onPressed: () {},
+            onPressed: () {
+              onMenuPressed?.call();
+            },
             icon: Icons.menu,
             color: Theme.of(context).colorScheme.onBackground,
           ),
