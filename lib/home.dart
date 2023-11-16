@@ -24,6 +24,8 @@ class Home extends StatelessWidget {
   // SimulationAPI instance
   // final SimulationAPI _simulationAPI = SimulationAPI();
 
+  final GlobalKey<SidebarState> sidebarKey = GlobalKey<SidebarState>();
+
   @override
   Widget build(BuildContext context) {
     _simulation.context = context;
@@ -45,21 +47,25 @@ class Home extends StatelessWidget {
               game: _simulation,
             ),
           ),
+          // TEMP BUTTON, TO TEST SIDEBAR
           Padding(
             padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Stack(
+              fit: StackFit.expand,
               children: [
                 Header(
                   themeNotifier: _themeNotifier,
                 ),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 20),
-                    child: Sidebar(),
-                  ),
-                ),
+                Sidebar(key: sidebarKey),
               ],
+            ),
+          ),
+          Center(
+            child: ElevatedButton(
+              onPressed: () {
+                sidebarKey.currentState?.openSidebar();
+              },
+              child: const Text('Open Sidebar'),
             ),
           ),
         ],
