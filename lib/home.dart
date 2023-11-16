@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flame/game.dart';
 // import 'package:flame/text.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +30,11 @@ class HomeState extends State<Home> {
   final double headerHeight = 70;
   final double padding = 20;
 
+  double windowWidth = 0;
+  double windowHeight = 0;
+  double sidebarHeight = 0;
+  double sidebarWidth = 0;
+
   // Home({
   //   super.key,
   //   // required ValueNotifier<String> themeNotifier,
@@ -39,55 +46,64 @@ class HomeState extends State<Home> {
   void initState() {
     super.initState();
     _simulation = SimVisualiser();
+
+    // setstate with window width and height
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      setState(() {
+        windowHeight = MediaQuery.of(context).size.height;
+        windowWidth = MediaQuery.of(context).size.width;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     _simulation.context = context;
     _simulation.setColors();
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        double windowHeight = constraints.maxHeight;
-        double windowWidth = constraints.maxWidth;
-        double sidebarHeight = windowHeight - padding * 3 - headerHeight;
-        sidebarKey.currentState?.height = sidebarHeight;
 
-        return Container(
-          constraints: BoxConstraints(
-            maxHeight: windowHeight,
-            maxWidth: windowWidth,
+    windowHeight = MediaQuery.of(context).size.height;
+    windowWidth = MediaQuery.of(context).size.width;
+
+    sidebarHeight = windowHeight - padding * 3 - headerHeight;
+    sidebarWidth = min(windowWidth - padding * 2, 500);
+    sidebarKey.currentState?.height = sidebarHeight;
+    sidebarKey.currentState?.width = sidebarWidth;
+
+    return Container(
+      constraints: BoxConstraints(
+        maxHeight: windowHeight,
+        maxWidth: windowWidth,
+      ),
+      color: Theme.of(context).colorScheme.background,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          GameWidget(
+            game: _simulation,
           ),
-          color: Theme.of(context).colorScheme.background,
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              GameWidget(
-                game: _simulation,
-              ),
-              Padding(
-                padding: EdgeInsets.all(padding),
-                child: Stack(
-                  // fit: StackFit.expand,
-                  children: [
-                    Header(
-                      themeNotifier: widget.themeNotifier,
-                      onMenuPressed: () {
-                        sidebarKey.currentState?.toggleSidebar();
-                      },
-                    ),
-                    Sidebar(
-                      key: sidebarKey,
-                      height: sidebarHeight,
-                      width: 500,
-                      top: headerHeight + padding,
-                    ),
-                  ],
+          Padding(
+            padding: EdgeInsets.all(padding),
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Header(
+                  themeNotifier: widget.themeNotifier,
+                  onMenuPressed: () {
+                    sidebarKey.currentState?.toggleSidebar();
+                  },
                 ),
-              ),
-            ],
+                Sidebar(
+                  key: sidebarKey,
+                  height: sidebarHeight,
+                  width: 500,
+                  top: headerHeight + padding,
+                  extraMovement: padding,
+                ),
+              ],
+            ),
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 }
