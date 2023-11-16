@@ -4,7 +4,8 @@ import 'themes/themes.dart';
 import '../websocket/simulation_api.dart';
 import 'logger.dart';
 import 'package:dartzmq/dartzmq.dart';
-import 'package:cbor/cbor.dart';
+// import 'package:cbor/cbor.dart';
+import 'package:cbor/simple.dart';
 import 'dart:convert';
 import 'package:protobuf/protobuf.dart';
 
@@ -29,7 +30,7 @@ void main() {
 
   // listen on status
   _socket.payloads.listen((payload) {
-    final decoded = cbor.decode(payload);
+    final decoded = cbor.decode(payload) as Map;
     l.i(decoded);
   });
   // SimulationAPI.connect();
