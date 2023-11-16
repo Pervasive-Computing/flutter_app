@@ -66,9 +66,9 @@ class SimVisualiser extends FlameGame
   }
 
   void setColors() {
-    l.w("setting colors");
+    // l.w("setting colors");
     if (context != null) {
-      l.d("context is not null");
+      // l.d("context is not null");
       _roadColor = Theme.of(context!).colorScheme.onBackground;
       _junctionColor = Theme.of(context!).colorScheme.onBackground;
     } else {
