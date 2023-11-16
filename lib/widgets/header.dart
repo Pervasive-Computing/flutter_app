@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'glass.dart';
 import 'circle_icon_button.dart';
 
@@ -48,6 +49,14 @@ class Header extends StatelessWidget {
               ),
             ),
           ),
+          // CircleIconButton(
+          //   onPressed: () {
+          //     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+          //         overlays: [SystemUiOverlay.bottom]);
+          //   },
+          //   icon: Icons.search,
+          //   color: Theme.of(context).colorScheme.onBackground,
+          // ),
           CircleIconButton(
             onPressed: () {
               toggleTheme();

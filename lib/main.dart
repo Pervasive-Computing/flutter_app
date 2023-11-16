@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'home.dart';
 import 'themes/themes.dart';
 import '../websocket/simulation_api.dart';
@@ -37,5 +38,12 @@ class MyAppState extends State<MyApp> {
         );
       },
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _themeNotifier.dispose();
+    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
   }
 }
