@@ -17,6 +17,7 @@ class MyApp extends StatefulWidget {
 
 class MyAppState extends State<MyApp> {
   final _themeNotifier = ValueNotifier('mocha');
+  final GlobalKey<HomeState> _homeKey = GlobalKey<HomeState>();
 
   @override
   Widget build(BuildContext context) {
@@ -24,21 +25,17 @@ class MyAppState extends State<MyApp> {
       valueListenable: _themeNotifier,
       builder: (_, themeName, __) {
         return MaterialApp(
-          title: 'What the heck do we call this app?',
+          title: 'UrbanOS',
           theme: catppuccinTheme(
             flavorMap[themeName]!,
             context: context,
           ),
           home: Home(
+            key: _homeKey,
             themeNotifier: _themeNotifier,
           ),
         );
       },
     );
-    // return MaterialApp(
-    //   title: 'What the heck do we call this app?',
-    //   theme: catppuccinTheme(catppuccin.latte),
-    //   home: const Home(),
-    // );
   }
 }

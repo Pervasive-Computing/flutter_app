@@ -7,19 +7,13 @@ import 'circle_icon_button.dart';
 class Sidebar extends StatefulWidget {
   final double height;
   final double width;
-  // final double left;
   final double top;
-  // final double right;
-  // final double bottom;
 
   const Sidebar({
     super.key,
     this.height = double.infinity,
     this.width = double.infinity,
-    // this.left = 0,
     this.top = 0,
-    // this.right = 0,
-    // this.bottom = 0,
   });
 
   @override

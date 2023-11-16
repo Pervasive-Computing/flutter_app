@@ -9,18 +9,37 @@ import '../logger.dart';
 // import '../websocket/simulation_api.dart';
 import 'widgets/sidebar.dart';
 
-class Home extends StatelessWidget {
-  final ValueNotifier<String> _themeNotifier;
+class Home extends StatefulWidget {
+  final ValueNotifier<String> themeNotifier;
+
+  const Home({
+    super.key,
+    required this.themeNotifier,
+  });
+
+  @override
+  State<Home> createState() => HomeState();
+}
+
+class HomeState extends State<Home> {
+  // final ValueNotifier<String> _themeNotifier;
   late final SimVisualiser _simulation;
   final GlobalKey<SidebarState> sidebarKey = GlobalKey<SidebarState>();
   final double headerHeight = 70;
   final double padding = 20;
 
-  Home({
-    super.key,
-    required ValueNotifier<String> themeNotifier,
-  }) : _themeNotifier = themeNotifier {
+  // Home({
+  //   super.key,
+  //   // required ValueNotifier<String> themeNotifier,
+  // }) : _themeNotifier = themeNotifier {
+  //   _simulation = SimVisualiser();
+  // }
+
+  @override
+  void initState() {
+    super.initState();
     _simulation = SimVisualiser();
+    // _simulation.onLoad();
   }
 
   @override
@@ -53,7 +72,7 @@ class Home extends StatelessWidget {
                   // fit: StackFit.expand,
                   children: [
                     Header(
-                      themeNotifier: _themeNotifier,
+                      themeNotifier: widget.themeNotifier,
                       onMenuPressed: () {
                         sidebarKey.currentState?.toggleSidebar();
                       },
