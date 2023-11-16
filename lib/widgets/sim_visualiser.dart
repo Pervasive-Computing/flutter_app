@@ -22,6 +22,7 @@ import 'package:cbor/cbor.dart';
 class SimVisualiser extends FlameGame
     with TapCallbacks, KeyboardEvents, ScrollDetector, ScaleDetector, PanDetector {
   bool _initialised = false;
+  bool _coloursSet = false;
   final double _zoomSensitivity = 0.001;
   late final startingPosition = Vector2.zero();
   late final PositionComponent _cameraTarget = PositionComponent(position: Vector2.zero());
@@ -31,23 +32,24 @@ class SimVisualiser extends FlameGame
   final _roads = <PolygonComponent>[];
   final _junctions = <PolygonComponent>[];
 
-  late final Color _roadColor;
-  late final Color _junctionColor;
+  late Color _roadColor;
+  late Color _junctionColor;
 
   // there is buildContext in FlameGame, but it's private, and no setter
   // so we have to make our own
   BuildContext? context;
+  ThemeData? theme;
 
   @override
   Future<void> onLoad() async {
     if (!_initialised) {
       SimulationAPI.addMessageListener(_addCarOnMessage);
       initialiseCamera();
-      setColors();
       await initialiseNetwork();
       _initialised = true;
       // debugMode = true;
     }
+    setColors();
   }
 
   // ╒════════════════════════════════════════════════════════════════════════════╕
@@ -64,13 +66,23 @@ class SimVisualiser extends FlameGame
   }
 
   void setColors() {
+    l.w("setting colors");
     if (context != null) {
-      _roadColor = Theme.of(context!).colorScheme.primary;
-      _junctionColor = Theme.of(context!).colorScheme.primary;
+      l.d("context is not null");
+      _roadColor = Theme.of(context!).colorScheme.onBackground;
+      _junctionColor = Theme.of(context!).colorScheme.onBackground;
     } else {
       l.w("context is null");
       _roadColor = const Color.fromARGB(255, 127, 127, 127);
       _junctionColor = const Color.fromARGB(255, 127, 127, 127);
+    }
+
+    // Set the color of the roads and junctions
+    for (var road in _roads) {
+      road.paint = Paint()..color = _roadColor;
+    }
+    for (var junction in _junctions) {
+      junction.paint = Paint()..color = _junctionColor;
     }
   }
 
@@ -80,14 +92,14 @@ class SimVisualiser extends FlameGame
     var (roads, junctions) = await NetworkUtils.createPolygonsFromJson("assets/json/network.json");
 
     // Color the roads and junctions
-    for (var road in roads) {
-      // l.w("road: $road");
-      road.paint = Paint()..color = _roadColor;
-    }
-    for (var junction in junctions) {
-      // l.w("junction: $junction");
-      junction.paint = Paint()..color = _junctionColor;
-    }
+    // for (var road in roads) {
+    //   // l.w("road: $road");
+    //   road.paint = Paint()..color = _roadColor;
+    // }
+    // for (var junction in junctions) {
+    //   // l.w("junction: $junction");
+    //   junction.paint = Paint()..color = _junctionColor;
+    // }
 
     // Load the roads and junctions from the JSON file
     _roads.addAll(roads);

@@ -39,14 +39,12 @@ class HomeState extends State<Home> {
   void initState() {
     super.initState();
     _simulation = SimVisualiser();
-    // _simulation.onLoad();
   }
 
   @override
   Widget build(BuildContext context) {
     _simulation.context = context;
-    // var windowWidth = MediaQuery.of(context).size.width;
-    // var windowHeight = MediaQuery.of(context).size.height;
+    _simulation.setColors();
     return LayoutBuilder(
       builder: (context, constraints) {
         double windowHeight = constraints.maxHeight;
