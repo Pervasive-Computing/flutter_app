@@ -22,7 +22,7 @@ class Glass extends StatelessWidget {
       height: height,
       width: width,
       blur: 15,
-      borderRadius: const BorderRadius.all(Radius.circular(50)),
+      borderRadius: const BorderRadius.all(Radius.circular(35)),
       borderWidth: 2,
       gradient: LinearGradient(
         colors: [

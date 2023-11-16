@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'glass.dart';
+import 'outline_button.dart';
 
 class Header extends StatelessWidget {
   final ValueNotifier<String> _themeNotifier;
@@ -9,54 +10,46 @@ class Header extends StatelessWidget {
     required ValueNotifier<String> themeNotifier,
   }) : _themeNotifier = themeNotifier;
 
+  void toggleTheme() {
+    if (_themeNotifier.value == 'latte') {
+      _themeNotifier.value = 'mocha';
+    } else {
+      _themeNotifier.value = 'latte';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Glass(
-      padding: const EdgeInsets.all(30),
-      height: 100,
+      padding: const EdgeInsets.symmetric(horizontal: 17),
+      height: 70,
       child: Row(
         children: [
+          OutlineIconButton(
+            onPressed: () {},
+            icon: Icons.menu,
+            color: Theme.of(context).colorScheme.onBackground,
+          ),
           Expanded(
             child: Center(
-              child: Container(
-                //padding: const EdgeInsets.symmetric(vertical: 16),
-                child: Text(
-                  "UrbanOS",
-                  style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                        color: Theme.of(context).colorScheme.onBackground,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w300,
-                      ),
-                ),
+              child: Text(
+                "UrbanOS",
+                style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                      color: Theme.of(context).colorScheme.onBackground,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w300,
+                    ),
               ),
             ),
           ),
-          MaterialButton(
-            hoverColor:
-                Theme.of(context).colorScheme.onBackground.withOpacity(0.25),
-            padding: const EdgeInsets.all(0),
-            minWidth: 0,
+          OutlineIconButton(
             onPressed: () {
-              if (_themeNotifier.value == 'latte') {
-                _themeNotifier.value = 'mocha';
-              } else {
-                _themeNotifier.value = 'latte';
-              }
+              toggleTheme();
             },
-            shape: CircleBorder(
-                side: BorderSide(
-              color: Theme.of(context).colorScheme.onBackground,
-              width: 2,
-            )),
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Icon(
-                _themeNotifier.value == 'latte'
-                    ? Icons.dark_mode_outlined
-                    : Icons.light_mode_outlined,
-                color: Theme.of(context).colorScheme.onBackground,
-              ),
-            ),
+            icon: _themeNotifier.value == 'latte'
+                ? Icons.dark_mode_outlined
+                : Icons.light_mode_outlined,
+            color: Theme.of(context).colorScheme.onBackground,
           ),
         ],
       ),
