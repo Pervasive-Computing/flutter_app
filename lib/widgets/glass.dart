@@ -6,38 +6,45 @@ class Glass extends StatelessWidget {
   final double height;
   final double width;
   final EdgeInsets padding;
+  final double opacity;
+  final double blur;
+  Color? color;
 
-  const Glass({
+  Glass({
     super.key,
     required this.child,
     this.height = double.infinity,
     this.width = double.infinity,
     this.padding = const EdgeInsets.all(0),
+    this.opacity = 0.2,
+    this.blur = 25,
+    this.color,
   });
 
   @override
   Widget build(BuildContext context) {
+    color ??= Theme.of(context).colorScheme.onPrimary;
     return GlassContainer(
       padding: padding,
       height: height,
       width: width,
-      blur: 15,
+      blur: blur,
       borderRadius: const BorderRadius.all(Radius.circular(35)),
       borderWidth: 2,
       gradient: LinearGradient(
         colors: [
-          Theme.of(context).colorScheme.onPrimary.withOpacity(0.15),
-          Theme.of(context).colorScheme.onPrimary.withOpacity(0.10),
+          color!.withOpacity((opacity).clamp(0, 1)),
+          color!.withOpacity((opacity * 0.75).clamp(0, 1)),
         ],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       ),
       borderGradient: LinearGradient(
         colors: [
-          Theme.of(context).colorScheme.onPrimary.withOpacity(0.20),
-          Theme.of(context).colorScheme.onPrimary.withOpacity(0.10),
-          Theme.of(context).colorScheme.onPrimary.withOpacity(0.05),
-          Theme.of(context).colorScheme.onPrimary.withOpacity(0.3)
+          color!.withOpacity((opacity * 0.75).clamp(0, 1)),
+          color!.withOpacity((opacity * 0.5).clamp(0, 1)),
+          color!.withOpacity((opacity * 0.2).clamp(0, 1)),
+          color!.withOpacity((opacity * 1.2).clamp(0, 1))
         ],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,

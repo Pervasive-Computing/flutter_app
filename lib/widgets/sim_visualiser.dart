@@ -129,7 +129,7 @@ class SimVisualiser extends FlameGame
     setZoom(zoom);
   }
 
-  void setZoom(double zoom, {double min = 0.05, double max = 3}) {
+  void setZoom(double zoom, {double min = 0.005, double max = 3}) {
     var clampedZoom = zoom.clamp(min, max);
     camera.viewfinder.zoom = clampedZoom;
   }

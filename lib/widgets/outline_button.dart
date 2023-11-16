@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 
-class OutlineIconButton extends StatelessWidget {
+class CircleIconButton extends StatelessWidget {
   final Color color;
   final IconData icon;
   final Function()? onPressed;
+  final bool hasBorder;
 
-  const OutlineIconButton({
+  const CircleIconButton({
     Key? key,
     this.color = Colors.blue,
     this.icon = Icons.add,
     this.onPressed,
+    this.hasBorder = true,
   }) : super(key: key);
 
   @override
@@ -23,11 +25,13 @@ class OutlineIconButton extends StatelessWidget {
         // call all callbacks here
         onPressed?.call();
       },
-      shape: CircleBorder(
-          side: BorderSide(
-        color: color,
-        width: 2,
-      )),
+      shape: hasBorder
+          ? CircleBorder(
+              side: BorderSide(
+              color: color,
+              width: 2,
+            ))
+          : const CircleBorder(),
       child: Padding(
         padding: const EdgeInsets.all(8),
         child: Icon(

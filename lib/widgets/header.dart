@@ -25,7 +25,7 @@ class Header extends StatelessWidget {
       height: 70,
       child: Row(
         children: [
-          OutlineIconButton(
+          CircleIconButton(
             onPressed: () {},
             icon: Icons.menu,
             color: Theme.of(context).colorScheme.onBackground,
@@ -34,7 +34,7 @@ class Header extends StatelessWidget {
             child: Center(
               child: Text(
                 "UrbanOS",
-                style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       color: Theme.of(context).colorScheme.onBackground,
                       fontFamily: 'Inter',
                       fontWeight: FontWeight.w300,
@@ -42,7 +42,7 @@ class Header extends StatelessWidget {
               ),
             ),
           ),
-          OutlineIconButton(
+          CircleIconButton(
             onPressed: () {
               toggleTheme();
             },
