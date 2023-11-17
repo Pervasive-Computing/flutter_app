@@ -41,7 +41,7 @@ class SimVisualiser extends FlameGame
   @override
   Future<void> onLoad() async {
     if (!_initialised) {
-      // SimulationAPI.addMessageListener(_addCarOnMessage);
+      SimulationAPI.addMessageListener(_manageCarsOnMessage);
       initialiseCamera();
       setColors();
       await initialiseNetwork();
@@ -157,19 +157,24 @@ class SimVisualiser extends FlameGame
   // Instantiate cars if they don't already exist.
   // Update car positions if they do exist.
   // Remove cars that don't exist anymore.
-  void _addCarOnMessage(dynamic message) {
+  void _manageCarsOnMessage(dynamic message) {
     // var decodedMessage = json.decode(message);
-    var jsonMessage = message.toJson();
+    // var jsonMessage = message.toJson();
 
     // looking through existing cars in the world
     for (final car in _cars) {
-      var carData = jsonMessage[car.id];
+      var carData = message[car.id];
 
       // for all cars that do already exist,
       // update their position and heading
       if (carData != null) {
-        car.updatePosition(Vector2(carData['x'], carData['y']));
-        car.updateHeading(carData['heading'] + math.pi / 2);
+        car.updatePosition(
+          Vector2(
+            (carData['x'] as num).toDouble(),
+            (carData['y'] as num).toDouble(),
+          ),
+        );
+        car.updateHeading((carData['heading'] as num) + math.pi / 2);
       } else {
         // when carData is null,
         // the car is not part of the received message,
@@ -181,15 +186,18 @@ class SimVisualiser extends FlameGame
 
       // then remove them from the message,
       // such that they are not instantiated again
-      jsonMessage.remove(car.id);
+      message.remove(car.id);
     }
 
     // instantiate cars that don't exist yet.
-    jsonMessage.forEach((key, value) {
+    message.forEach((key, value) {
       l.w("adding car: $key");
       addCar(
         id: key,
-        position: Vector2(value['x'], value['y']),
+        position: Vector2(
+          (value['x'] as num).toDouble(),
+          (value['y'] as num).toDouble(),
+        ),
         heading: value['heading'],
       );
     });

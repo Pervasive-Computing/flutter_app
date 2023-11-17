@@ -11,7 +11,6 @@ import 'package:protobuf/protobuf.dart';
 
 void main() {
   l.w("Starting app");
-  // SimulationAPI.connect();
   ZContext _context = ZContext();
   // late MonitoredZSocket _socket = _context.createMonitoredSocket(SocketType.sub);
   ZSocket _socket = _context.createSocket(SocketType.sub);
@@ -33,7 +32,7 @@ void main() {
     final decoded = cbor.decode(payload) as Map;
     l.i(decoded);
   });
-  // SimulationAPI.connect();
+  SimulationAPI.connect();
   runApp(const MyApp());
 }
 

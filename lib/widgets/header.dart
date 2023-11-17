@@ -32,8 +32,7 @@ class Header extends StatelessWidget {
             ),
           ),
           MaterialButton(
-            hoverColor:
-                Theme.of(context).colorScheme.onBackground.withOpacity(0.25),
+            hoverColor: Theme.of(context).colorScheme.onBackground.withOpacity(0.25),
             padding: const EdgeInsets.all(0),
             minWidth: 0,
             onPressed: () {
