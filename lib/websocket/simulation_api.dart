@@ -23,6 +23,8 @@ class SimulationAPI {
   static var callbacks = <Function(dynamic)>[];
   // late StreamSubscription _subscription;
 
+  static var lastCallTime = DateTime.now();
+
   static void connect() {
     _socket = _zcontext.createMonitoredSocket(SocketType.sub);
     _socket.setOption(ZMQ_SUBSCRIBE, "");
@@ -36,6 +38,13 @@ class SimulationAPI {
     //   l.i(message);
     // });
     _socket.payloads.listen((message) {
+      var nowTime = DateTime.now();
+      var deltaTime = nowTime.difference(lastCallTime);
+      if (deltaTime.inMilliseconds < 100) {
+        return;
+      }
+      lastCallTime = nowTime;
+
       var decoded = cbor.decode(message) as Map;
       // call all callbacks
       for (var callback in callbacks) {

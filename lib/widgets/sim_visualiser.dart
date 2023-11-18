@@ -157,12 +157,14 @@ class SimVisualiser extends FlameGame
   // Instantiate cars if they don't already exist.
   // Update car positions if they do exist.
   // Remove cars that don't exist anymore.
-  var lastCallTime = DateTime.now();
+  // var lastCallTime = DateTime.now();
   void _manageCarsOnMessage(dynamic message) {
-    var deltaTime = DateTime.now().difference(lastCallTime);
-    if (deltaTime.inMilliseconds < 100) {
-      return;
-    }
+    // var nowTime = DateTime.now();
+    // var deltaTime = nowTime.difference(lastCallTime);
+    // if (deltaTime.inMilliseconds < 100) {
+    //   return;
+    // }
+    // lastCallTime = nowTime;
     // var decodedMessage = json.decode(message);
     // var jsonMessage = message.toJson();
 
@@ -175,11 +177,11 @@ class SimVisualiser extends FlameGame
       if (carData != null) {
         car.updatePosition(
           Vector2(
-            preprocessCoordinate(carData['x']),
-            preprocessCoordinate(carData['y']),
+            _preprocessCoordinate(carData['x']),
+            _preprocessCoordinate(carData['y']),
           ),
         );
-        car.updateHeading((carData['heading'] as num) + math.pi / 2);
+        car.updateHeading(_preprocessHeading(carData['heading']));
       } else {
         // when carData is null,
         // the car is not part of the received message,
@@ -200,16 +202,22 @@ class SimVisualiser extends FlameGame
       addCar(
         id: key,
         position: Vector2(
-          preprocessCoordinate(value['x']),
-          preprocessCoordinate(value['y']),
+          _preprocessCoordinate(value['x']),
+          _preprocessCoordinate(value['y']),
         ),
         heading: value['heading'],
       );
     });
   }
 
-  double preprocessCoordinate(dynamic coordinate) {
-    return (coordinate as num).toDouble() / NetworkUtils.parentSize.x;
+  double _preprocessHeading(dynamic heading) {
+    heading = (heading as num).toDouble();
+    return math.pi - heading * math.pi / 180;
+  }
+
+  double _preprocessCoordinate(dynamic coordinate) {
+    coordinate = (coordinate as num).toDouble();
+    return coordinate / NetworkUtils.parentSize.x;
   }
 
   // Instantiate a car,
