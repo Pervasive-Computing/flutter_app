@@ -52,3 +52,5 @@ android/*
 ios/*
 
 .vscode/
+
+pubspec.lock

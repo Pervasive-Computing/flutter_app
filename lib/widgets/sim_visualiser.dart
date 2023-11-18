@@ -1,17 +1,14 @@
 import 'dart:math' as math;
-import 'dart:convert';
 
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame/palette.dart';
 import 'package:flame_svg/flame_svg.dart';
-// import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import '../logger.dart';
 import '../websocket/simulation_api.dart';
 import '../misc/network_converter.dart';
-import 'package:cbor/cbor.dart';
 
 /// This is a visualiser for the simulation.
 /// Receiving the simulation data from the a websocket,
@@ -22,7 +19,6 @@ import 'package:cbor/cbor.dart';
 class SimVisualiser extends FlameGame
     with TapCallbacks, KeyboardEvents, ScrollDetector, ScaleDetector, PanDetector {
   bool _initialised = false;
-  bool _coloursSet = false;
   final double _zoomSensitivity = 0.001;
   late final startingPosition = Vector2.zero();
   late final PositionComponent _cameraTarget = PositionComponent(position: Vector2.zero());
@@ -38,12 +34,11 @@ class SimVisualiser extends FlameGame
   // there is buildContext in FlameGame, but it's private, and no setter
   // so we have to make our own
   BuildContext? context;
-  ThemeData? theme;
 
   @override
   Future<void> onLoad() async {
     if (!_initialised) {
-      SimulationAPI.addMessageListener(_addCarOnMessage);
+      SimulationAPI.addMessageListener(_manageCarsOnMessage);
       initialiseCamera();
       await initialiseNetwork();
       _initialised = true;
@@ -66,11 +61,9 @@ class SimVisualiser extends FlameGame
   }
 
   void setColors() {
-    // l.w("setting colors");
     if (context != null) {
-      // l.d("context is not null");
-      _roadColor = Theme.of(context!).colorScheme.onBackground;
-      _junctionColor = Theme.of(context!).colorScheme.onBackground;
+      _roadColor = Theme.of(context!).colorScheme.primary;
+      _junctionColor = Theme.of(context!).colorScheme.primary;
     } else {
       l.w("context is null");
       _roadColor = const Color.fromARGB(255, 127, 127, 127);
@@ -91,7 +84,7 @@ class SimVisualiser extends FlameGame
     // Add the network to the world
     var (roads, junctions) = await NetworkUtils.createPolygonsFromJson("assets/json/network.json");
 
-    // Color the roads and junctions
+    // // Color the roads and junctions
     // for (var road in roads) {
     //   // l.w("road: $road");
     //   road.paint = Paint()..color = _roadColor;
@@ -141,7 +134,7 @@ class SimVisualiser extends FlameGame
     setZoom(zoom);
   }
 
-  void setZoom(double zoom, {double min = 0.005, double max = 3}) {
+  void setZoom(double zoom, {double min = 0.05, double max = 3}) {
     var clampedZoom = zoom.clamp(min, max);
     camera.viewfinder.zoom = clampedZoom;
   }
@@ -169,19 +162,31 @@ class SimVisualiser extends FlameGame
   // Instantiate cars if they don't already exist.
   // Update car positions if they do exist.
   // Remove cars that don't exist anymore.
-  void _addCarOnMessage(dynamic message) {
+  // var lastCallTime = DateTime.now();
+  void _manageCarsOnMessage(dynamic message) {
+    // var nowTime = DateTime.now();
+    // var deltaTime = nowTime.difference(lastCallTime);
+    // if (deltaTime.inMilliseconds < 100) {
+    //   return;
+    // }
+    // lastCallTime = nowTime;
     // var decodedMessage = json.decode(message);
-    var jsonMessage = message.toJson();
+    // var jsonMessage = message.toJson();
 
     // looking through existing cars in the world
     for (final car in _cars) {
-      var carData = jsonMessage[car.id];
+      var carData = message[car.id];
 
       // for all cars that do already exist,
       // update their position and heading
       if (carData != null) {
-        car.updatePosition(Vector2(carData['x'], carData['y']));
-        car.updateHeading(carData['heading'] + math.pi / 2);
+        car.updatePosition(
+          Vector2(
+            _preprocessCoordinate(carData['x']),
+            _preprocessCoordinate(carData['y']),
+          ),
+        );
+        car.updateHeading(_preprocessHeading(carData['heading']));
       } else {
         // when carData is null,
         // the car is not part of the received message,
@@ -193,18 +198,31 @@ class SimVisualiser extends FlameGame
 
       // then remove them from the message,
       // such that they are not instantiated again
-      jsonMessage.remove(car.id);
+      message.remove(car.id);
     }
 
     // instantiate cars that don't exist yet.
-    jsonMessage.forEach((key, value) {
+    message.forEach((key, value) {
       l.w("adding car: $key");
       addCar(
         id: key,
-        position: Vector2(value['x'], value['y']),
+        position: Vector2(
+          _preprocessCoordinate(value['x']),
+          _preprocessCoordinate(value['y']),
+        ),
         heading: value['heading'],
       );
     });
+  }
+
+  double _preprocessHeading(dynamic heading) {
+    heading = (heading as num).toDouble();
+    return math.pi - heading * math.pi / 180;
+  }
+
+  double _preprocessCoordinate(dynamic coordinate) {
+    coordinate = (coordinate as num).toDouble();
+    return coordinate / NetworkUtils.parentSize.x;
   }
 
   // Instantiate a car,

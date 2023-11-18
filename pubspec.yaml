@@ -42,6 +42,8 @@ dependencies:
   catppuccin_flutter: ^1.0.0
   glass_kit: ^3.0.0
   cbor: ^6.1.1
+  dartzmq: ^1.0.0-dev.11
+  protobuf: ^3.1.0
 
 dev_dependencies:
   flutter_test:
