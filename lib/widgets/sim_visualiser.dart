@@ -157,7 +157,12 @@ class SimVisualiser extends FlameGame
   // Instantiate cars if they don't already exist.
   // Update car positions if they do exist.
   // Remove cars that don't exist anymore.
+  var lastCallTime = DateTime.now();
   void _manageCarsOnMessage(dynamic message) {
+    var deltaTime = DateTime.now().difference(lastCallTime);
+    if (deltaTime.inMilliseconds < 100) {
+      return;
+    }
     // var decodedMessage = json.decode(message);
     // var jsonMessage = message.toJson();
 
@@ -170,8 +175,8 @@ class SimVisualiser extends FlameGame
       if (carData != null) {
         car.updatePosition(
           Vector2(
-            (carData['x'] as num).toDouble(),
-            (carData['y'] as num).toDouble(),
+            preprocessCoordinate(carData['x']),
+            preprocessCoordinate(carData['y']),
           ),
         );
         car.updateHeading((carData['heading'] as num) + math.pi / 2);
@@ -195,12 +200,16 @@ class SimVisualiser extends FlameGame
       addCar(
         id: key,
         position: Vector2(
-          (value['x'] as num).toDouble(),
-          (value['y'] as num).toDouble(),
+          preprocessCoordinate(value['x']),
+          preprocessCoordinate(value['y']),
         ),
         heading: value['heading'],
       );
     });
+  }
+
+  double preprocessCoordinate(dynamic coordinate) {
+    return (coordinate as num).toDouble() / NetworkUtils.parentSize.x;
   }
 
   // Instantiate a car,

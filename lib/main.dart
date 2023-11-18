@@ -10,28 +10,28 @@ import 'dart:convert';
 import 'package:protobuf/protobuf.dart';
 
 void main() {
-  l.w("Starting app");
-  ZContext _context = ZContext();
-  // late MonitoredZSocket _socket = _context.createMonitoredSocket(SocketType.sub);
-  ZSocket _socket = _context.createSocket(SocketType.sub);
-  _socket.setOption(ZMQ_SUBSCRIBE, "");
-  // ZMonitor _monitor = ZMonitor(
-  //   context: _context,
-  //   socket: _socket,
-  // );
+  l.i("Starting app");
+  // ZContext _context = ZContext();
+  // // late MonitoredZSocket _socket = _context.createMonitoredSocket(SocketType.sub);
+  // ZSocket _socket = _context.createSocket(SocketType.sub);
+  // _socket.setOption(ZMQ_SUBSCRIBE, "");
+  // // ZMonitor _monitor = ZMonitor(
+  // //   context: _context,
+  // //   socket: _socket,
+  // // );
 
-  _socket.connect('tcp://localhost:9001');
+  // _socket.connect('tcp://localhost:9001');
 
-  // _monitor.events.listen((event) {
-  //   l.w("Listening on events");
-  //   l.i(event);
+  // // _monitor.events.listen((event) {
+  // //   l.w("Listening on events");
+  // //   l.i(event);
+  // // });
+
+  // // listen on status
+  // _socket.payloads.listen((payload) {
+  //   final decoded = cbor.decode(payload) as Map;
+  //   l.i(decoded);
   // });
-
-  // listen on status
-  _socket.payloads.listen((payload) {
-    final decoded = cbor.decode(payload) as Map;
-    l.i(decoded);
-  });
   SimulationAPI.connect();
   runApp(const MyApp());
 }
