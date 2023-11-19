@@ -149,7 +149,7 @@ ThemeData catppuccinTheme(Flavor flavor, {required BuildContext context}) {
     ),
     colorScheme: ColorScheme(
       background: flavor.base,
-      brightness: Brightness.light,
+      brightness: flavor.base.computeLuminance() > 0.5 ? Brightness.light : Brightness.dark,
       error: flavor.surface2,
       onBackground: flavor.text,
       onError: flavor.red,

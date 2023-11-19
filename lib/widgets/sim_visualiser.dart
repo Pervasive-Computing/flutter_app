@@ -2,13 +2,14 @@ import 'dart:math' as math;
 
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
+import 'package:flame/extensions.dart';
 import 'package:flame/game.dart';
-import 'package:flame/palette.dart';
-import 'package:flame_svg/flame_svg.dart';
 import 'package:flutter/material.dart';
 import '../logger.dart';
 import '../websocket/simulation_api.dart';
-import '../misc/network_converter.dart';
+import '../misc/network_utils.dart';
+import '../components/car_component.dart';
+import '../components/infrastructure_component.dart';
 
 /// This is a visualiser for the simulation.
 /// Receiving the simulation data from the a websocket,
@@ -27,6 +28,7 @@ class SimVisualiser extends FlameGame
   // all roads and junctions
   final _roads = <PolygonComponent>[];
   final _junctions = <PolygonComponent>[];
+  final _infrastructure = <InfrastructureComponent>[];
 
   late Color _roadColor;
   late Color _junctionColor;
@@ -61,9 +63,16 @@ class SimVisualiser extends FlameGame
   }
 
   void setColors() {
-    if (context != null) {
-      _roadColor = Theme.of(context!).colorScheme.primary;
-      _junctionColor = Theme.of(context!).colorScheme.primary;
+    ThemeData? theme = context != null ? Theme.of(context!) : null;
+    bool? isLight = theme != null ? theme.colorScheme.brightness == Brightness.light : null;
+
+    if (theme != null) {
+      _roadColor = isLight!
+          ? theme.colorScheme.background.darken(0.9)
+          : theme.colorScheme.background.brighten(0.9);
+      _junctionColor = isLight
+          ? theme.colorScheme.background.darken(0.9)
+          : theme.colorScheme.background.brighten(0.9);
     } else {
       l.w("context is null");
       _roadColor = const Color.fromARGB(255, 127, 127, 127);
@@ -77,6 +86,98 @@ class SimVisualiser extends FlameGame
     for (var junction in _junctions) {
       junction.paint = Paint()..color = _junctionColor;
     }
+
+    for (var infrastructure in _infrastructure) {
+      switch (infrastructure.type) {
+        case "amenity":
+          if (theme != null) {
+            infrastructure.paint = Paint()..color = theme.colorScheme.primary;
+          } else {
+            infrastructure.paint = Paint()..color = Colors.blue;
+          }
+          break;
+        case "building":
+          if (theme != null) {
+            infrastructure.paint = Paint()..color = theme.colorScheme.onSecondary;
+          } else {
+            infrastructure.paint = Paint()..color = Colors.green;
+          }
+          break;
+        case "commercial":
+          if (theme != null) {
+            infrastructure.paint = Paint()..color = theme.colorScheme.error;
+            // ..color = isLight!
+            //     ? theme.colorScheme.secondary.darken(0.1)
+            //     : theme.colorScheme.secondary.brighten(0.1);
+          } else {
+            infrastructure.paint = Paint()..color = Colors.yellow;
+          }
+          break;
+        case "landuse":
+          if (theme != null) {
+            infrastructure.paint = Paint()..color = theme.colorScheme.onPrimary;
+          } else {
+            infrastructure.paint = Paint()..color = Colors.purple;
+          }
+          break;
+        case "shop":
+          if (theme != null) {
+            infrastructure.paint = Paint()..color = theme.colorScheme.surface;
+          } else {
+            infrastructure.paint = Paint()..color = Colors.orange;
+          }
+          break;
+        case "parking":
+          if (theme != null) {
+            infrastructure.paint = Paint()..color = theme.colorScheme.surface;
+          } else {
+            infrastructure.paint = Paint()..color = Colors.red;
+          }
+          break;
+        case "residential":
+          if (theme != null) {
+            infrastructure.paint = Paint()..color = theme.colorScheme.surface;
+          } else {
+            infrastructure.paint = Paint()..color = Colors.brown;
+          }
+          break;
+        case "school":
+          if (theme != null) {
+            infrastructure.paint = Paint()..color = theme.colorScheme.surface;
+          } else {
+            infrastructure.paint = Paint()..color = Colors.teal;
+          }
+          break;
+        case "university":
+          if (theme != null) {
+            infrastructure.paint = Paint()..color = theme.colorScheme.surface;
+          } else {
+            infrastructure.paint = Paint()..color = Colors.teal;
+          }
+          break;
+        case "tourism":
+          if (theme != null) {
+            infrastructure.paint = Paint()..color = theme.colorScheme.error;
+          } else {
+            infrastructure.paint = Paint()..color = Colors.lime;
+          }
+          break;
+        case "leisure":
+          if (theme != null) {
+            infrastructure.paint = Paint()..color = theme.colorScheme.primary;
+          } else {
+            infrastructure.paint = Paint()..color = Colors.indigo;
+          }
+          break;
+        case "sport":
+          if (theme != null) {
+            infrastructure.paint = Paint()..color = theme.colorScheme.error;
+          } else {
+            infrastructure.paint = Paint()..color = Colors.cyan;
+          }
+          break;
+      }
+    }
   }
 
   // Initialise the network
@@ -84,21 +185,18 @@ class SimVisualiser extends FlameGame
     // Add the network to the world
     var (roads, junctions) = await NetworkUtils.createPolygonsFromJson("assets/json/network.json");
 
-    // // Color the roads and junctions
-    // for (var road in roads) {
-    //   // l.w("road: $road");
-    //   road.paint = Paint()..color = _roadColor;
-    // }
-    // for (var junction in junctions) {
-    //   // l.w("junction: $junction");
-    //   junction.paint = Paint()..color = _junctionColor;
-    // }
+    // other
+    var infrastructure = await NetworkUtils.infrastructureComponentsFromXml(
+      "assets/xml/poly.xml",
+    );
 
     // Load the roads and junctions from the JSON file
     _roads.addAll(roads);
     _junctions.addAll(junctions);
+    _infrastructure.addAll(infrastructure);
 
     // Add the roads and junctions to the world
+    world.addAll(infrastructure);
     world.addAll(_roads);
     world.addAll(_junctions);
   }
@@ -239,48 +337,5 @@ class SimVisualiser extends FlameGame
     );
     world.add(car);
     _cars.add(car);
-  }
-}
-
-// ╒══════════════════════════════════════════════════════════════════════════════╕
-// │                              🚗 Car Component                              │
-// ╘══════════════════════════════════════════════════════════════════════════════╛
-// CarComponent is a Flame Engine Component
-// Based on the SvgComponent, such that it can be instantiated from an svg file
-// The component reflects the position and heading of the car
-class CarComponent extends SvgComponent {
-  // meta data
-  String id;
-  double heading;
-  static final Paint yellow = BasicPalette.yellow.paint();
-
-  CarComponent({required this.id, required Vector2 position, required this.heading})
-      : super(
-          position: position,
-          size: Vector2.all(100),
-          anchor: Anchor.center,
-          scale: Vector2.all(.5),
-          angle: heading,
-          paint: yellow,
-        ) {
-    loadSvg("svg/car.svg").then((value) {
-      svg = value;
-    });
-  }
-
-  Future<Svg> loadSvg(String svg) async {
-    return await Svg.load(svg);
-  }
-
-  void updatePosition(Vector2 position) {
-    this.position = position;
-  }
-
-  void updateHeading(double heading) {
-    angle = heading;
-  }
-
-  void addToPosition(Vector2 position) {
-    this.position += position;
   }
 }

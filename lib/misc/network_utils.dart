@@ -1,10 +1,31 @@
 import 'dart:convert';
 import 'package:flame/components.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:xml/xml.dart';
+import 'package:xml/xpath.dart';
+import '../components/infrastructure_component.dart';
 import '../logger.dart';
+
+// enum InfrastructureType {
+//   amenity,
+//   building,
+//   commercial,
+//   landuse,
+//   shop,
+//   parking,
+//   residential,
+//   school,
+//   university,
+//   tourism,
+//   leisure,
+//   sport
+// }
 
 class NetworkUtils {
   static Vector2 parentSize = Vector2(0.1, 0.1);
+  // enum of different types of infrastructure
+  // {amenity, building, commercial, landuse, shop, parking, residential, school, university, tourism, leisure, sport}
+  // static final
 
   // Parses the JSON and returns a list of PolygonComponents for the shapes
   static Future<(List<PolygonComponent>, List<PolygonComponent>)> createPolygonsFromJson(
@@ -13,14 +34,17 @@ class NetworkUtils {
     var jsonData = await _loadJsonData(path);
 
     // Extract shapes from edges and junctions
-    var (roads, junctions) = _extractShapes(jsonData);
+    var (roads, junctions) = _extractJsonShapes(jsonData);
 
     // Create and return the list of PolygonComponents
-    return (createPolygonsFromPaths(roads), createPolygonsFromShapes(junctions));
+    return (
+      createPolygonsFromPaths(roads),
+      createPolygonsFromShapes(junctions),
+    );
   }
 
   // Private helper method to extract shape strings from JSON data
-  static (List<String>, List<String>) _extractShapes(dynamic jsonData) {
+  static (List<String>, List<String>) _extractJsonShapes(dynamic jsonData) {
     List<String> roads = [];
     List<String> junctions = [];
 
@@ -52,16 +76,83 @@ class NetworkUtils {
     return jsonDecode(jsonString);
   }
 
+  static Future<List<InfrastructureComponent>> infrastructureComponentsFromXml(String path) async {
+    // Load the XML file
+    l.d("Loading XML file from path: $path");
+    XmlDocument document = await _loadXmlData(path);
+
+    // Extract the element maps from the XML document
+    l.d("Extracting element maps from XML document");
+    List<Map<String, String>> elementMaps = mapsFromXml(document, "additional/poly");
+    l.d("Extracted ${elementMaps.length} element maps from XML document");
+
+    // Create and return the list of InfrastructureComponents
+    l.d("Creating InfrastructureComponents from element maps");
+    return infrastructureComponentsFromMaps(elementMaps);
+  }
+
+  static Future<XmlDocument> _loadXmlData(String path) async {
+    // Load the XML file
+    String xmlString = await rootBundle.loadString(path);
+    // Decode the XML data to a Dart object
+    return XmlDocument.parse(xmlString);
+  }
+
+  // creates InfrastructureComponents from XML element Maps
+  static List<InfrastructureComponent> infrastructureComponentsFromMaps(
+      List<Map<String, String>> elementMaps) {
+    List<InfrastructureComponent> infrastructureComponents = [];
+
+    for (var elementMap in elementMaps) {
+      // get the id and type of the element
+      String id = elementMap["id"]!;
+      String type = elementMap["type"]!;
+
+      // get the shape of the element
+      String shape = elementMap["shape"]!;
+
+      var vertices = _shapeStringToVertices(shape);
+
+      if (vertices.length < 3) {
+        continue;
+      }
+
+      InfrastructureComponent infrastructureComponent = InfrastructureComponent(
+        id: id,
+        type: type,
+        points: vertices,
+      );
+
+      infrastructureComponents.add(infrastructureComponent);
+    }
+
+    return infrastructureComponents;
+  }
+
+  static List<Map<String, String>> mapsFromXml(XmlDocument document, String identifier) {
+    // identifier could be "additional/poly", "net/edge/lane", or "net/junction"
+    final elements = document.xpath(identifier);
+
+    List<Map<String, String>> elementMaps = [];
+
+    for (var element in elements) {
+      var elementMap = {};
+      for (var attribute in element.attributes) {
+        elementMap.addAll({attribute.name.toXmlString(): attribute.value});
+      }
+
+      elementMaps.add(elementMap.cast<String, String>());
+    }
+
+    return elementMaps;
+  }
+
   // Convert a list of shape strings to a list of PolygonComponents
   static List<PolygonComponent> createPolygonsFromShapes(List<String> shapes) {
     List<PolygonComponent> polygons = [];
 
     for (final shape in shapes) {
-      List<Vector2> vertices = shape.split(' ').map((pair) {
-        var coords = pair.split(',').map((coord) => double.parse(coord)).toList();
-        // Normalize the absolute coordinates to be relative to the parent size
-        return Vector2(coords[0] / parentSize.x, coords[1] / parentSize.y);
-      }).toList();
+      List<Vector2> vertices = _shapeStringToVertices(shape);
 
       if (vertices.length < 3) {
         continue;
@@ -81,11 +172,7 @@ class NetworkUtils {
     width /= parentSize.x;
 
     for (final shape in shapes) {
-      List<Vector2> path = shape.split(' ').map((pair) {
-        var coords = pair.split(',').map((coord) => double.parse(coord)).toList();
-        // Normalize the absolute coordinates to be relative to the parent size
-        return Vector2(coords[0] / parentSize.x, coords[1] / parentSize.y);
-      }).toList();
+      List<Vector2> path = _shapeStringToVertices(shape);
 
       if (path.length < 2) {
         continue;
@@ -150,5 +237,13 @@ class NetworkUtils {
     }
 
     return polygons;
+  }
+
+  static List<Vector2> _shapeStringToVertices(String shape) {
+    return shape.split(' ').map((pair) {
+      var coords = pair.split(',').map((coord) => double.parse(coord)).toList();
+      // Normalize the absolute coordinates to be relative to the parent size
+      return Vector2(coords[0] / parentSize.x, coords[1] / parentSize.y);
+    }).toList();
   }
 }

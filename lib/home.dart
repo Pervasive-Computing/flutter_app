@@ -28,7 +28,7 @@ class HomeState extends State<Home> {
   late final SimVisualiser _simulation;
   final GlobalKey<SidebarState> sidebarKey = GlobalKey<SidebarState>();
   final double headerHeight = 70;
-  final double padding = 20;
+  final double padding = 10;
 
   double windowWidth = 0;
   double windowHeight = 0;
@@ -48,7 +48,7 @@ class HomeState extends State<Home> {
     _simulation = SimVisualiser();
 
     // setstate with window width and height
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
         windowHeight = MediaQuery.of(context).size.height;
         windowWidth = MediaQuery.of(context).size.width;
