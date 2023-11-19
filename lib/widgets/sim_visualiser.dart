@@ -270,7 +270,14 @@ class SimVisualiser extends FlameGame
 
     // looking through existing cars in the world
     for (final car in _cars) {
-      var carData = message[car.id];
+      Map<Object?, Object?>? carData = message[car.id];
+
+      if (_cars.first == car && message.length < _cars.length) {
+        l.w("message.length < _cars.length");
+      }
+
+      l.w("car with id ${car.id} has data: $carData");
+      l.w("_cars.length: ${_cars.length}");
 
       // for all cars that do already exist,
       // update their position and heading
@@ -287,7 +294,7 @@ class SimVisualiser extends FlameGame
         // the car is not part of the received message,
         // and should therefore be removed
         l.w("removing car: ${car.id}");
-        remove(car);
+        world.remove(car);
         _cars.remove(car);
       }
 
@@ -295,6 +302,8 @@ class SimVisualiser extends FlameGame
       // such that they are not instantiated again
       message.remove(car.id);
     }
+
+    l.d("cars to add: ${message.length}");
 
     // instantiate cars that don't exist yet.
     message.forEach((key, value) {
