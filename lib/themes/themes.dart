@@ -138,7 +138,8 @@ final Map<String, Flavor> flavorMap = {
 
 ThemeData catppuccinTheme(Flavor flavor, {required BuildContext context}) {
   Color primaryColor = flavor.lavender;
-  Color secondaryColor = flavor.pink;
+  Color secondaryColor = flavor.mauve;
+  // Color secondaryColor = flavor.yellow;
   return ThemeData(
     useMaterial3: true,
     appBarTheme: AppBarTheme(

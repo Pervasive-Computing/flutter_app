@@ -98,7 +98,7 @@ class SimVisualiser extends FlameGame
           break;
         case "building":
           if (theme != null) {
-            infrastructure.paint = Paint()..color = theme.colorScheme.onSecondary;
+            infrastructure.paint = Paint()..color = theme.colorScheme.onPrimary;
           } else {
             infrastructure.paint = Paint()..color = Colors.green;
           }
@@ -106,16 +106,13 @@ class SimVisualiser extends FlameGame
         case "commercial":
           if (theme != null) {
             infrastructure.paint = Paint()..color = theme.colorScheme.error;
-            // ..color = isLight!
-            //     ? theme.colorScheme.secondary.darken(0.1)
-            //     : theme.colorScheme.secondary.brighten(0.1);
           } else {
             infrastructure.paint = Paint()..color = Colors.yellow;
           }
           break;
         case "landuse":
           if (theme != null) {
-            infrastructure.paint = Paint()..color = theme.colorScheme.onPrimary;
+            infrastructure.paint = Paint()..color = theme.colorScheme.onSecondary;
           } else {
             infrastructure.paint = Paint()..color = Colors.purple;
           }
