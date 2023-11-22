@@ -232,7 +232,7 @@ class NetworkUtils {
       }
 
       // collect the vertices in the correct order
-      List<Vector2> vertices = [...verticesLHS, ...verticesRHS.reversed.toList()];
+      List<Vector2> vertices = [...verticesLHS, ...verticesRHS.reversed];
       polygons.add(PolygonComponent(vertices));
     }
 
