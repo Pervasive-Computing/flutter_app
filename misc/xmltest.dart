@@ -22,7 +22,7 @@ void main() {
   final filePoly = File(pathPoly);
   final documentPoly = XmlDocument.parse(filePoly.readAsStringSync());
 
-  final out = documentPoly.xpath("net/edge/lane");
+  final out = documentPoly.xpath("net/edge");
 
   Set types = {};
 
@@ -34,9 +34,9 @@ void main() {
 
     map = map.cast<String, String>();
 
-    print(map["allow"]);
-
-    types.add(map["allow"]);
+    var thing = map["type"];
+    print(thing);
+    types.add(thing);
 
     // print((map.cast<String, String>())["type"]);
   }
