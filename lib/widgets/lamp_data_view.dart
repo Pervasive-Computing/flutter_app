@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import '../components/lamp.dart';
+import '../logger.dart';
 
 class LampDataView extends StatefulWidget {
   final Lamp lamp;
+  final Function onPressed;
 
   const LampDataView({
     super.key,
     this.lamp = const Lamp(id: 'NaN', lightLevel: 0),
+    required this.onPressed,
   });
 
   @override
@@ -22,14 +25,32 @@ class LampDataViewState extends State<LampDataView> {
     lamp = widget.lamp;
   }
 
+  void updateContent(Lamp lamp) {
+    l.d("before setstate");
+    setState(() {
+      this.lamp = lamp;
+      l.d("updateContent, lamp id: ${this.lamp.id}");
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(
-          'Lamp ID: ${lamp.id}',
-          style: Theme.of(context).textTheme.headlineLarge,
+        Row(
+          children: [
+            IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                widget.onPressed();
+              },
+            ),
+            Text(
+              'Lamp ID: ${lamp.id}',
+              style: Theme.of(context).textTheme.headlineLarge,
+            ),
+          ],
         ),
         const SizedBox(height: 10),
         Row(

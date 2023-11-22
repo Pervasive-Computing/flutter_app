@@ -7,7 +7,7 @@ import 'widgets/sim_visualiser.dart';
 import 'widgets/header.dart';
 // import 'widgets/sim_world.dart';
 // import 'package:flutter/gestures.dart';
-import '../logger.dart';
+import 'logger.dart';
 // import '../websocket/simulation_api.dart';
 import 'widgets/sidebar.dart';
 
@@ -37,6 +37,9 @@ class HomeState extends State<Home> {
   // final ValueNotifier<String> _themeNotifier;
   late final SimVisualiser _simulation;
   final GlobalKey<SidebarState> sidebarKey = GlobalKey<SidebarState>();
+  final GlobalKey<LampDataViewState> lampDataKey =
+      GlobalKey<LampDataViewState>();
+
   final double headerHeight = 70;
   final double padding = 10;
 
@@ -79,6 +82,9 @@ class HomeState extends State<Home> {
     sidebarKey.currentState?.height = sidebarHeight;
     sidebarKey.currentState?.width = sidebarWidth;
 
+    final PageController controller = PageController(
+        initialPage: 0, viewportFraction: 0.999); //very bad, very hacky
+
     return Container(
       constraints: BoxConstraints(
         maxHeight: windowHeight,
@@ -110,13 +116,35 @@ class HomeState extends State<Home> {
                   extraMovement: padding,
                   // Create "box" 2x width of sidebar, contains listview and dataview
                   // When item in listview is clicked, it is shown in dataview
-                  child: Column(
+                  child: PageView(
+                    /// [PageView.scrollDirection] defaults to [Axis.horizontal].
+                    /// Use [Axis.vertical] to scroll vertically.
+                    controller: controller,
                     children: [
-                      Expanded(
-                        //child: LampListView(),
-                        child: LampDataView(
-                          lamp: widget.lamps[0],
-                        ),
+                      LampListView(
+                        lamps: widget.lamps,
+                        onPressed: (int index) {
+                          controller.animateToPage(
+                            1,
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                          );
+                          //l.d("before updatecontent");
+                          lampDataKey.currentState
+                              ?.updateContent(widget.lamps[index]);
+                          //l.d("after updatecontent ${lampDataKey.currentState == null}");
+                        },
+                      ),
+                      LampDataView(
+                        key: lampDataKey,
+                        lamp: widget.lamps[0],
+                        onPressed: () {
+                          controller.animateToPage(
+                            0,
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                          );
+                        },
                       ),
                     ],
                   ),
