@@ -1,8 +1,8 @@
 class Lamp {
-  double lightLevel; // 0 = fully off, 1 = fully on
-  String id;
+  final double lightLevel; // 0 = fully off, 1 = fully on
+  final String id;
 
-  Lamp({
+  const Lamp({
     required this.id,
     this.lightLevel = 0,
   });

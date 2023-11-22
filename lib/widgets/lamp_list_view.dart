@@ -2,16 +2,12 @@ import 'package:flutter/material.dart';
 import 'lamp_item.dart';
 import '../components/lamp.dart';
 
-Lamp lamp1 = Lamp(id: 'lamp1', lightLevel: 0.5);
-Lamp lamp2 = Lamp(id: 'lamp2', lightLevel: 1);
-Lamp lamp3 = Lamp(id: 'lamp3', lightLevel: 0);
+class LampListView extends StatelessWidget {
+  final List<Lamp> lamps;
 
-class LampList extends StatelessWidget {
-  final List<Lamp> lamps = [lamp1, lamp2, lamp3];
-
-  LampList({
+  const LampListView({
     super.key,
-    //required ValueNotifier<String> themeNotifier,
+    required this.lamps,
   });
 
   @override

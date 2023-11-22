@@ -11,8 +11,18 @@ import '../logger.dart';
 // import '../websocket/simulation_api.dart';
 import 'widgets/sidebar.dart';
 
+import 'components/lamp.dart';
+import 'widgets/lamp_data_view.dart';
+import 'widgets/lamp_list_view.dart';
+
 class Home extends StatefulWidget {
   final ValueNotifier<String> themeNotifier;
+
+  final List<Lamp> lamps = const [
+    Lamp(id: 'lamp1', lightLevel: 0.5),
+    Lamp(id: 'lamp2', lightLevel: 1),
+    Lamp(id: 'lamp3', lightLevel: 0),
+  ];
 
   const Home({
     super.key,
@@ -98,6 +108,18 @@ class HomeState extends State<Home> {
                   width: 500,
                   top: headerHeight + padding,
                   extraMovement: padding,
+                  // Create "box" 2x width of sidebar, contains listview and dataview
+                  // When item in listview is clicked, it is shown in dataview
+                  child: Column(
+                    children: [
+                      Expanded(
+                        //child: LampListView(),
+                        child: LampDataView(
+                          lamp: widget.lamps[0],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

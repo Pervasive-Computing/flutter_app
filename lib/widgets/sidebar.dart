@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'glass.dart';
 import '../logger.dart';
 import 'circle_icon_button.dart';
-import 'lamp_list.dart';
+import 'lamp_list_view.dart';
+import 'lamp_data_view.dart';
 
 class Sidebar extends StatefulWidget {
   final double height;
@@ -11,6 +12,7 @@ class Sidebar extends StatefulWidget {
   final Duration duration;
   final bool animateOpacity;
   final double extraMovement;
+  final Widget child;
 
   const Sidebar({
     super.key,
@@ -20,6 +22,7 @@ class Sidebar extends StatefulWidget {
     this.duration = const Duration(milliseconds: 200),
     this.animateOpacity = false,
     this.extraMovement = 0,
+    required this.child,
   });
 
   @override
@@ -70,13 +73,7 @@ class SidebarState extends State<Sidebar> {
           padding: const EdgeInsets.all(30),
           width: width,
           height: height,
-          child: Column(
-            children: [
-              Expanded(
-                child: LampList(),
-              ),
-            ],
-          ),
+          child: widget.child,
         ),
       ),
     );
