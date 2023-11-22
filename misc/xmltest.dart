@@ -17,12 +17,12 @@ void main() {
   // final out = document.findAllElements("edge");
   // final out = documentNet.xpath("net/edge/lane/@shape");
 
-  final pathPoly = p.join(Directory.current.path, 'misc/sumo/katrinebjerg.poly.xml');
+  final pathPoly = p.join(Directory.current.path, 'misc/sumo/katrinebjerg.net.xml');
 
   final filePoly = File(pathPoly);
   final documentPoly = XmlDocument.parse(filePoly.readAsStringSync());
 
-  final out = documentPoly.xpath("additional/poly");
+  final out = documentPoly.xpath("net/edge/lane");
 
   Set types = {};
 
@@ -34,7 +34,9 @@ void main() {
 
     map = map.cast<String, String>();
 
-    types.add(map["type"]);
+    print(map["allow"]);
+
+    types.add(map["allow"]);
 
     // print((map.cast<String, String>())["type"]);
   }
