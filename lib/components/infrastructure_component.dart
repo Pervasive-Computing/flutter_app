@@ -10,10 +10,12 @@ class InfrastructureComponent extends PolygonComponent {
   // meta data
   String id;
   String type;
+  List<String> tags = [];
 
   InfrastructureComponent({
     required this.id,
     required this.type,
+    required this.tags,
     required List<Vector2> points,
   }) : super(points);
 }
