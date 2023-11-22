@@ -37,8 +37,7 @@ class HomeState extends State<Home> {
   // final ValueNotifier<String> _themeNotifier;
   late final SimVisualiser _simulation;
   final GlobalKey<SidebarState> sidebarKey = GlobalKey<SidebarState>();
-  final GlobalKey<LampDataViewState> lampDataKey =
-      GlobalKey<LampDataViewState>();
+  final GlobalKey<LampDataViewState> lampDataKey = GlobalKey<LampDataViewState>();
 
   final double headerHeight = 70;
   final double padding = 10;
@@ -47,13 +46,6 @@ class HomeState extends State<Home> {
   double windowHeight = 0;
   double sidebarHeight = 0;
   double sidebarWidth = 0;
-
-  // Home({
-  //   super.key,
-  //   // required ValueNotifier<String> themeNotifier,
-  // }) : _themeNotifier = themeNotifier {
-  //   _simulation = SimVisualiser();
-  // }
 
   @override
   void initState() {
@@ -82,8 +74,8 @@ class HomeState extends State<Home> {
     sidebarKey.currentState?.height = sidebarHeight;
     sidebarKey.currentState?.width = sidebarWidth;
 
-    final PageController controller = PageController(
-        initialPage: 0, viewportFraction: 0.999); //very bad, very hacky
+    final PageController controller =
+        PageController(initialPage: 0, viewportFraction: 0.999); //very bad, very hacky
 
     return Container(
       constraints: BoxConstraints(
@@ -107,6 +99,7 @@ class HomeState extends State<Home> {
                   onMenuPressed: () {
                     sidebarKey.currentState?.toggleSidebar();
                   },
+                  sidebarKey: sidebarKey,
                 ),
                 Sidebar(
                   key: sidebarKey,
@@ -130,8 +123,7 @@ class HomeState extends State<Home> {
                             curve: Curves.easeInOut,
                           );
                           //l.d("before updatecontent");
-                          lampDataKey.currentState
-                              ?.updateContent(widget.lamps[index]);
+                          lampDataKey.currentState?.updateContent(widget.lamps[index]);
                           //l.d("after updatecontent ${lampDataKey.currentState == null}");
                         },
                       ),

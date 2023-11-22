@@ -30,7 +30,7 @@ class Sidebar extends StatefulWidget {
 }
 
 class SidebarState extends State<Sidebar> {
-  bool isSidebarOpen = false;
+  bool _isSidebarOpen = false;
   late double height;
   late double width;
 
@@ -43,20 +43,32 @@ class SidebarState extends State<Sidebar> {
 
   void openSidebar() {
     setState(() {
-      isSidebarOpen = true;
+      _isSidebarOpen = true;
     });
+    l.d("_isSidebarOpen: $_isSidebarOpen");
   }
 
   void closeSidebar() {
     setState(() {
-      isSidebarOpen = false;
+      _isSidebarOpen = false;
     });
+    l.d("_isSidebarOpen: $_isSidebarOpen");
   }
 
   void toggleSidebar() {
     setState(() {
-      isSidebarOpen = !isSidebarOpen;
+      _isSidebarOpen = !_isSidebarOpen;
     });
+    l.d("_isSidebarOpen: $_isSidebarOpen");
+  }
+
+  bool getState() {
+    return _isSidebarOpen;
+  }
+
+  // do something on state change
+  void onStateChange() {
+    l.d("_isSidebarOpen: $_isSidebarOpen");
   }
 
   @override
@@ -64,10 +76,10 @@ class SidebarState extends State<Sidebar> {
     return AnimatedPositioned(
       duration: widget.duration,
       curve: standardEasing,
-      left: isSidebarOpen ? 0 : -(width + widget.extraMovement),
+      left: _isSidebarOpen ? 0 : -(width + widget.extraMovement),
       top: widget.top,
       child: AnimatedOpacity(
-        opacity: widget.animateOpacity ? (isSidebarOpen ? 1.0 : 0) : 1.0,
+        opacity: widget.animateOpacity ? (_isSidebarOpen ? 1.0 : 0) : 1.0,
         duration: widget.duration,
         child: Glass(
           padding: const EdgeInsets.all(30),

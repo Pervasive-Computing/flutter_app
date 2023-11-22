@@ -93,6 +93,7 @@ class NetworkUtils {
   }
 
   // creates InfrastructureComponents from XML element Maps
+  // wow so much shitty logic in this cause the XML structure is very inconsistent
   static List<InfrastructureComponent> infrastructureComponentsFromMaps(
       List<Map<String, String>> elementMaps) {
     List<InfrastructureComponent> infrastructureComponents = [];
