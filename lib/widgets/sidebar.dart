@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'glass.dart';
 import '../logger.dart';
 import 'circle_icon_button.dart';
+import 'lamp_list.dart';
 
 class Sidebar extends StatefulWidget {
   final double height;
@@ -70,24 +71,9 @@ class SidebarState extends State<Sidebar> {
           width: width,
           height: height,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Sidebar',
-                    style: Theme.of(context)
-                        .textTheme
-                        .headlineMedium
-                        ?.copyWith(color: Theme.of(context).colorScheme.onBackground),
-                  ),
-                  // CircleIconButton(
-                  //   color: Theme.of(context).colorScheme.onBackground,
-                  //   icon: Icons.chevron_left,
-                  // ),
-                ],
+              Expanded(
+                child: LampList(),
               ),
             ],
           ),
