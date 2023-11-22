@@ -102,6 +102,8 @@ class NetworkUtils {
       String? id = elementMap["id"];
       String? type = elementMap["type"];
       String? roadAllow = elementMap["allow"];
+      String? x = elementMap["x"];
+      String? y = elementMap["y"];
 
       List<String>? tags;
 
@@ -135,12 +137,20 @@ class NetworkUtils {
             type == "highway.path" ||
             type == "highway.pedestrian" ||
             type == "highway.steps") {
-          vertices = _pathStringToVertices(shape, width: 10);
+          vertices = _pathStringToVertices(shape, width: 10, expand: 0.15);
         } else {
-          vertices = _pathStringToVertices(shape, width: 16);
+          vertices = _pathStringToVertices(shape, width: 16, expand: 0.15);
         }
       } else {
-        vertices = _shapeStringToVertices(shape);
+        if (x == null || y == null) {
+          vertices = _shapeStringToVertices(shape);
+        } else {
+          vertices = _shapeStringToVertices(
+            shape,
+            center: Vector2(double.parse(x), double.parse(y)),
+            expand: 0.35,
+          );
+        }
       }
 
       if (vertices.length < 3) {
@@ -214,7 +224,10 @@ class NetworkUtils {
     return polygons;
   }
 
-  static List<Vector2> _pathStringToVertices(String pathString, {required double width}) {
+  static List<Vector2> _pathStringToVertices(String pathString,
+      {required double width, double expand = 0}) {
+    expand = 1 + expand;
+
     List<Vector2> path = _shapeStringToVertices(pathString);
     if (path.length < 2) {
       return [];
@@ -227,10 +240,10 @@ class NetworkUtils {
       Vector2 v1 = p2 - p1;
       Vector2 widthDirection = Vector2(v1.y, -v1.x).normalized();
       List<Vector2> vertices = [
-        p1 + widthDirection * width,
-        p2 + widthDirection * width,
-        p2 - widthDirection * width,
-        p1 - widthDirection * width,
+        p1 + widthDirection * width * expand,
+        p2 + widthDirection * width * expand,
+        p2 - widthDirection * width * expand,
+        p1 - widthDirection * width * expand,
       ];
       return vertices;
     }
@@ -252,8 +265,8 @@ class NetworkUtils {
       // if we're at the beginning we also want to add the perpendicular vector to the first point
       if (i == 0) {
         Vector2 perpv1 = Vector2(v1.y, -v1.x);
-        verticesLHS.add(p1 + perpv1 * width);
-        verticesRHS.add(p1 - perpv1 * width);
+        verticesLHS.add(p1 + perpv1 * width * expand);
+        verticesRHS.add(p1 - perpv1 * width * expand);
       }
 
       // add the perpendicular vectors to the path points to create vertices
@@ -261,25 +274,48 @@ class NetworkUtils {
       // to account for a "kinking" factor of a bending path
       double kinkingFactor = (1 - v1.dot(v2)) * width / 2;
       double kinkedWidth = width + kinkingFactor;
-      verticesLHS.add(p2 + widthDirection * kinkedWidth);
-      verticesRHS.add(p2 - widthDirection * kinkedWidth);
+      verticesLHS.add(p2 + widthDirection * kinkedWidth * expand);
+      verticesRHS.add(p2 - widthDirection * kinkedWidth * expand);
 
       // if we're at the end we also want to add the perpendicular vector to the last point
       if (i == path.length - 3) {
         Vector2 perpv2 = Vector2(v2.y, -v2.x);
-        verticesLHS.add(p3 + perpv2 * width);
-        verticesRHS.add(p3 - perpv2 * width);
+        verticesLHS.add(p3 + perpv2 * width * expand);
+        verticesRHS.add(p3 - perpv2 * width * expand);
       }
     }
 
     return [...verticesLHS, ...verticesRHS.reversed];
   }
 
-  static List<Vector2> _shapeStringToVertices(String shape) {
+  static List<Vector2> _shapeStringToVertices(
+    String shape, {
+    Vector2? center,
+    double expand = 0,
+  }) {
+    if (center == null && expand != 0) {
+      throw Exception("Can't expand shape without center");
+    }
+    // expand = 1 + expand;
     return shape.split(' ').map((pair) {
       var coords = pair.split(',').map((coord) => double.parse(coord)).toList();
+      Vector2 v = Vector2(coords[0], coords[1]);
+
+      if (center != null) {
+        // offset
+        v.x -= center.x;
+        v.y -= center.y;
+        // expand
+        v.x += v.normalized().x * expand;
+        v.y += v.normalized().y * expand;
+
+        // offset back
+        v.x += center.x;
+        v.y += center.y;
+      }
+
       // Normalize the absolute coordinates to be relative to the parent size
-      return Vector2(coords[0] / parentSize.x, coords[1] / parentSize.y);
+      return Vector2(v.x / parentSize.x, v.y / parentSize.y);
     }).toList();
   }
 }
