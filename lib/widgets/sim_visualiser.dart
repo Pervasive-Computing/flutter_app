@@ -4,7 +4,9 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame/game.dart';
+// import 'package:flame/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../logger.dart';
 import '../websocket/simulation_api.dart';
 import '../misc/network_utils.dart';
@@ -32,6 +34,9 @@ class SimVisualiser extends FlameGame
 
   late Color _roadColor;
   late Color _junctionColor;
+
+  // event handling
+  bool _isCtrlPressed = false;
 
   // there is buildContext in FlameGame, but it's private, and no setter
   // so we have to make our own
@@ -203,9 +208,22 @@ class SimVisualiser extends FlameGame
   // ╘════════════════════════════════════════════════════════════════════════════╛
 
   // Zoom camera on pinch
+  double _startZoom = 0;
+  @override
+  void onScaleStart(ScaleStartInfo info) {
+    // l.w("onScaleStart");
+    _startZoom = camera.viewfinder.zoom;
+  }
+
   @override
   void onScaleUpdate(ScaleUpdateInfo info) {
-    scaleZoom(info.scale.global.x);
+    // scaleZoom(info.scale.global.x);
+    final currentScale = info.scale.global;
+    if (!currentScale.isIdentity()) {
+      final scale = currentScale.x;
+      final zoom = _startZoom * scale;
+      setZoom(zoom);
+    }
   }
 
   void scaleZoom(double scale) {
@@ -235,16 +253,34 @@ class SimVisualiser extends FlameGame
   }
 
   // Pan camera on mouse drag
+  // with holding ctrl, zoom
   @override
   bool onPanUpdate(DragUpdateInfo info) {
-    // Calculate the difference in position since the start of the drag
-    Vector2 delta = info.delta.global.clone();
-    delta.scale(-1 / camera.viewfinder.zoom);
+    // check if ctrl is pressed
+    if (_isCtrlPressed) {
+      // if ctrl is pressed, zoom
+      scaleZoom(info.delta.global.y * _zoomSensitivity);
+    } else {
+      // Calculate the difference in position since the start of the drag
+      Vector2 delta = info.delta.global.clone();
+      delta.scale(-1 / camera.viewfinder.zoom);
 
-    // Move the camera by the difference in position
-    _cameraTarget.position += delta;
+      // Move the camera by the difference in position
+      _cameraTarget.position += delta;
+    }
 
     return true;
+  }
+
+  @override
+  KeyEventResult onKeyEvent(RawKeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
+    // l.w("onKeyEvent: ${event.logicalKey.keyLabel}");
+    if (event.isControlPressed) {
+      _isCtrlPressed = true;
+    } else {
+      _isCtrlPressed = false;
+    }
+    return KeyEventResult.ignored;
   }
 
   @override
