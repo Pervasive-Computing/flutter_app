@@ -1,5 +1,4 @@
 import 'package:flame/components.dart';
-import 'package:flame/palette.dart';
 
 // ╒══════════════════════════════════════════════════════════════════════════════╕
 // │                        ⏹️ Infrastructure Component                         │

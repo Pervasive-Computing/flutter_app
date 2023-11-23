@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'glass.dart';
-import '../logger.dart';
-// import 'circle_icon_button.dart';
-// import 'lamp_list_view.dart';
-// import 'lamp_data_view.dart';
+// import '../logger.dart';
 
 class Sidebar extends StatefulWidget {
   final double height;

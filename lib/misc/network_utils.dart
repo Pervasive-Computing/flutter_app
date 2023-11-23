@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'package:flame/components.dart';
-import 'package:flame/experimental.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:xml/xml.dart';
 import 'package:xml/xpath.dart';

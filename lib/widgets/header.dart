@@ -1,8 +1,6 @@
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'glass.dart';
 import 'circle_icon_button.dart';
-// import 'sidebar.dart';
 // import '../logger.dart';
 
 class Header extends StatefulWidget {
