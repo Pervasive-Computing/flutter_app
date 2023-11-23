@@ -74,9 +74,7 @@ class HeaderState extends State<Header> {
               child: Text(
                 "UrbanOS",
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onBackground,
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w300,
+                      fontWeight: FontWeight.w700,
                     ),
               ),
             ),

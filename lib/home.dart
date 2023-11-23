@@ -78,8 +78,6 @@ class HomeState extends State<Home> {
     final PageController controller =
         PageController(initialPage: 0, viewportFraction: 0.999); //very bad, very hacky
 
-    l.w("sidebarNotifier.value: ${sidebarNotifier.value}");
-
     return Container(
       constraints: BoxConstraints(
         maxHeight: windowHeight,
