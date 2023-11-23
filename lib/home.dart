@@ -11,7 +11,6 @@ import 'components/lamp.dart';
 import 'widgets/lamp_data_view.dart';
 import 'widgets/lamp_list_view.dart';
 import 'package:catppuccin_flutter/catppuccin_flutter.dart';
-import 'themes/catppuccin_theme.dart';
 
 class Home extends StatefulWidget {
   final ValueNotifier<Flavor> themeNotifier;
@@ -62,7 +61,7 @@ class HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.catppuccinTheme;
+    final theme = Theme.of(context);
     _simulation.context = context;
     _simulation.setColors();
 
@@ -82,7 +81,7 @@ class HomeState extends State<Home> {
         maxHeight: windowHeight,
         maxWidth: windowWidth,
       ),
-      color: theme.materialTheme.colorScheme.background,
+      color: theme.colorScheme.background,
       child: Stack(
         fit: StackFit.expand,
         children: [

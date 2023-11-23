@@ -12,6 +12,7 @@ import '../websocket/simulation_api.dart';
 import '../misc/network_utils.dart';
 import '../components/car_component.dart';
 import '../components/infrastructure_component.dart';
+import '../themes/catppuccin_theme.dart';
 
 /// This is a visualiser for the simulation.
 /// Receiving the simulation data from the a websocket,
@@ -71,27 +72,6 @@ class SimVisualiser extends FlameGame
     ThemeData? theme = context != null ? Theme.of(context!) : null;
     bool? isLight = theme != null ? theme.colorScheme.brightness == Brightness.light : null;
 
-    // if (theme != null) {
-    //   _roadColor = isLight!
-    //       ? theme.colorScheme.background.darken(0.9)
-    //       : theme.colorScheme.background.brighten(0.9);
-    //   _junctionColor = isLight
-    //       ? theme.colorScheme.background.darken(0.9)
-    //       : theme.colorScheme.background.brighten(0.9);
-    // } else {
-    //   l.w("context is null");
-    //   _roadColor = const Color.fromARGB(255, 127, 127, 127);
-    //   _junctionColor = const Color.fromARGB(255, 127, 127, 127);
-    // }
-
-    // // Set the color of the roads and junctions
-    // for (var road in _roads) {
-    //   road.paint = Paint()..color = _roadColor;
-    // }
-    // for (var junction in _junctions) {
-    //   junction.paint = Paint()..color = _junctionColor;
-    // }
-
     for (var infrastructure in _infrastructure) {
       switch (infrastructure.type) {
         case "priority":
@@ -134,84 +114,84 @@ class SimVisualiser extends FlameGame
           break;
         case "amenity":
           if (theme != null) {
-            infrastructure.paint = Paint()..color = theme.colorScheme.primary;
+            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.crust!;
           } else {
             infrastructure.paint = Paint()..color = Colors.blue;
           }
           break;
         case "building":
           if (theme != null) {
-            infrastructure.paint = Paint()..color = theme.colorScheme.onPrimary;
+            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.lavender!;
           } else {
             infrastructure.paint = Paint()..color = Colors.green;
           }
           break;
         case "commercial":
           if (theme != null) {
-            infrastructure.paint = Paint()..color = theme.colorScheme.error;
+            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.surface0!;
           } else {
             infrastructure.paint = Paint()..color = Colors.yellow;
           }
           break;
         case "landuse":
           if (theme != null) {
-            infrastructure.paint = Paint()..color = theme.colorScheme.onSecondary;
+            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.mauve!;
           } else {
             infrastructure.paint = Paint()..color = Colors.purple;
           }
           break;
         case "shop":
           if (theme != null) {
-            infrastructure.paint = Paint()..color = theme.colorScheme.surface;
+            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.yellow!;
           } else {
             infrastructure.paint = Paint()..color = Colors.orange;
           }
           break;
         case "parking":
           if (theme != null) {
-            infrastructure.paint = Paint()..color = theme.colorScheme.surface;
+            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.surface2!;
           } else {
             infrastructure.paint = Paint()..color = Colors.red;
           }
           break;
         case "residential":
           if (theme != null) {
-            infrastructure.paint = Paint()..color = theme.colorScheme.surface;
+            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.surface1!;
           } else {
             infrastructure.paint = Paint()..color = Colors.brown;
           }
           break;
         case "school":
           if (theme != null) {
-            infrastructure.paint = Paint()..color = theme.colorScheme.surface;
+            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.surface0!;
           } else {
             infrastructure.paint = Paint()..color = Colors.teal;
           }
           break;
         case "university":
           if (theme != null) {
-            infrastructure.paint = Paint()..color = theme.colorScheme.surface;
+            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.surface0!;
           } else {
             infrastructure.paint = Paint()..color = Colors.teal;
           }
           break;
         case "tourism":
           if (theme != null) {
-            infrastructure.paint = Paint()..color = theme.colorScheme.error;
+            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.surface0!;
           } else {
             infrastructure.paint = Paint()..color = Colors.lime;
           }
           break;
         case "leisure":
           if (theme != null) {
-            infrastructure.paint = Paint()..color = theme.colorScheme.primary;
+            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.crust!;
           } else {
             infrastructure.paint = Paint()..color = Colors.indigo;
           }
           break;
         case "sport":
           if (theme != null) {
-            infrastructure.paint = Paint()..color = theme.colorScheme.error;
+            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.teal!;
           } else {
             infrastructure.paint = Paint()..color = Colors.cyan;
           }
@@ -340,17 +320,7 @@ class SimVisualiser extends FlameGame
   // Instantiate cars if they don't already exist.
   // Update car positions if they do exist.
   // Remove cars that don't exist anymore.
-  // var lastCallTime = DateTime.now();
   void _manageCarsOnMessage(dynamic message) {
-    // var nowTime = DateTime.now();
-    // var deltaTime = nowTime.difference(lastCallTime);
-    // if (deltaTime.inMilliseconds < 100) {
-    //   return;
-    // }
-    // lastCallTime = nowTime;
-    // var decodedMessage = json.decode(message);
-    // var jsonMessage = message.toJson();
-
     // looking through existing cars in the world
     for (final car in _cars) {
       Map<Object?, Object?>? carData = message[car.id];

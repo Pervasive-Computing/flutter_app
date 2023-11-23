@@ -17,9 +17,9 @@ class CircleIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.catppuccinTheme;
+    final theme = Theme.of(context);
     return MaterialButton(
-      hoverColor: theme.materialTheme.colorScheme.onBackground.withOpacity(0.25),
+      hoverColor: theme.colorScheme.onBackground.withOpacity(0.25),
       padding: const EdgeInsets.all(0),
       minWidth: 0,
       onPressed: () {

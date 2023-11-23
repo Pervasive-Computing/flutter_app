@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/themes/catppuccin_theme.dart';
+// import '../themes/catppuccin_theme.dart';
 import 'glass.dart';
 import 'circle_icon_button.dart';
 import 'package:catppuccin_flutter/catppuccin_flutter.dart';
@@ -52,7 +52,7 @@ class HeaderState extends State<Header> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.catppuccinTheme;
+    final theme = Theme.of(context);
     return Glass(
       padding: const EdgeInsets.symmetric(horizontal: 17),
       height: widget.height,
@@ -67,14 +67,14 @@ class HeaderState extends State<Header> {
                 widget.onMenuPressed?.call();
               },
               icon: Icons.chevron_right,
-              color: theme.materialTheme.colorScheme.onBackground,
+              color: theme.colorScheme.onBackground,
             ),
           ),
           Expanded(
             child: Center(
               child: Text(
                 "UrbanOS",
-                style: theme.materialTheme.textTheme.headlineMedium?.copyWith(
+                style: theme.textTheme.headlineMedium?.copyWith(
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -84,10 +84,10 @@ class HeaderState extends State<Header> {
             onPressed: () {
               toggleTheme();
             },
-            icon: theme.materialTheme.colorScheme.brightness == Brightness.light
+            icon: theme.colorScheme.brightness == Brightness.light
                 ? Icons.dark_mode_outlined
                 : Icons.light_mode_outlined,
-            color: theme.materialTheme.colorScheme.onBackground,
+            color: theme.colorScheme.onBackground,
           ),
         ],
       ),

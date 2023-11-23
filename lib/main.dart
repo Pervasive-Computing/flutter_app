@@ -1,8 +1,8 @@
-import 'package:catppuccin_flutter/catppuccin_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:catppuccin_flutter/catppuccin_flutter.dart';
 import 'home.dart';
 import 'themes/catppuccin_theme.dart';
-import '../websocket/simulation_api.dart';
+import 'websocket/simulation_api.dart';
 
 void main() {
   SimulationAPI.connect();
@@ -24,15 +24,16 @@ class MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: _themeNotifier,
-      builder: (_, themeFlavor, __) {
-        return CatppuccinTheme(
-          flavor: themeFlavor,
-          child: MaterialApp(
-            title: 'UrbanOS',
-            home: Home(
-              key: _homeKey,
-              themeNotifier: _themeNotifier,
-            ),
+      builder: (_, catppuccinFlavor, __) {
+        return MaterialApp(
+          title: 'UrbanOS',
+          theme: catppuccinTheme(
+            catppuccinFlavor,
+            context: context,
+          ),
+          home: Home(
+            key: _homeKey,
+            themeNotifier: _themeNotifier,
           ),
         );
       },
@@ -43,6 +44,5 @@ class MyAppState extends State<MyApp> {
   void dispose() {
     super.dispose();
     _themeNotifier.dispose();
-    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
   }
 }

@@ -36,7 +36,7 @@ class LampDataViewState extends State<LampDataView> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.catppuccinTheme;
+    final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -50,7 +50,7 @@ class LampDataViewState extends State<LampDataView> {
             ),
             Text(
               'Lamp ID: ${lamp.id}',
-              style: theme.materialTheme.textTheme.headlineLarge,
+              style: theme.textTheme.headlineLarge,
             ),
           ],
         ),
@@ -61,7 +61,7 @@ class LampDataViewState extends State<LampDataView> {
             const SizedBox(width: 10),
             Text(
               'Light Level: ${lamp.lightLevel}',
-              style: theme.materialTheme.textTheme.bodyLarge,
+              style: theme.textTheme.bodyLarge,
             ),
           ],
         ),
