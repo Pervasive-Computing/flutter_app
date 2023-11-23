@@ -44,12 +44,12 @@ app.*.map.json
 /android/app/release
 
 # build files
-web/*
-linux/*
-windows/*
-macos/*
-android/*
-ios/*
+# web/*
+# linux/*
+# windows/*
+# macos/*
+# android/*
+# ios/*
 
 .vscode/
 
