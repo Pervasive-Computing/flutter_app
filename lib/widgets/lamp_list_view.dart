@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'lamp_item.dart';
 import '../components/lamp.dart';
-import '../logger.dart';
+// import '../logger.dart';
 
 class LampListView extends StatelessWidget {
   final List<Lamp> lamps;

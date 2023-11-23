@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/themes/catppuccin_theme.dart';
 import 'glass.dart';
 import 'circle_icon_button.dart';
+import 'package:catppuccin_flutter/catppuccin_flutter.dart';
 // import '../logger.dart';
 
 class Header extends StatefulWidget {
-  final ValueNotifier<String> themeNotifier;
+  final ValueNotifier<Flavor> themeNotifier;
   final ValueNotifier<bool> sidebarNotifier;
   final double height;
   final Function()? onMenuPressed;
@@ -41,15 +43,16 @@ class HeaderState extends State<Header> {
 
   // trigger rebuild when theme changes
   void toggleTheme() {
-    if (widget.themeNotifier.value == 'latte') {
-      widget.themeNotifier.value = 'mocha';
+    if (widget.themeNotifier.value == catppuccin.latte) {
+      widget.themeNotifier.value = catppuccin.mocha;
     } else {
-      widget.themeNotifier.value = 'latte';
+      widget.themeNotifier.value = catppuccin.latte;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.catppuccinTheme;
     return Glass(
       padding: const EdgeInsets.symmetric(horizontal: 17),
       height: widget.height,
@@ -64,16 +67,16 @@ class HeaderState extends State<Header> {
                 widget.onMenuPressed?.call();
               },
               icon: Icons.chevron_right,
-              color: Theme.of(context).colorScheme.onBackground,
+              color: theme.materialTheme.colorScheme.onBackground,
             ),
           ),
           Expanded(
             child: Center(
               child: Text(
                 "UrbanOS",
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
+                style: theme.materialTheme.textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
           ),
@@ -81,10 +84,10 @@ class HeaderState extends State<Header> {
             onPressed: () {
               toggleTheme();
             },
-            icon: widget.themeNotifier.value == 'latte'
+            icon: theme.materialTheme.colorScheme.brightness == Brightness.light
                 ? Icons.dark_mode_outlined
                 : Icons.light_mode_outlined,
-            color: Theme.of(context).colorScheme.onBackground,
+            color: theme.materialTheme.colorScheme.onBackground,
           ),
         ],
       ),

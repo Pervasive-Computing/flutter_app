@@ -1,6 +1,7 @@
+import 'package:catppuccin_flutter/catppuccin_flutter.dart';
 import 'package:flutter/material.dart';
 import 'home.dart';
-import 'themes/themes.dart';
+import 'themes/catppuccin_theme.dart';
 import '../websocket/simulation_api.dart';
 
 void main() {
@@ -16,23 +17,22 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  final _themeNotifier = ValueNotifier('mocha');
+  final _themeNotifier = ValueNotifier<Flavor>(catppuccin.mocha);
   final GlobalKey<HomeState> _homeKey = GlobalKey<HomeState>();
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: _themeNotifier,
-      builder: (_, themeName, __) {
-        return MaterialApp(
-          title: 'UrbanOS',
-          theme: catppuccinTheme(
-            flavorMap[themeName]!,
-            context: context,
-          ),
-          home: Home(
-            key: _homeKey,
-            themeNotifier: _themeNotifier,
+      builder: (_, themeFlavor, __) {
+        return CatppuccinTheme(
+          flavor: themeFlavor,
+          child: MaterialApp(
+            title: 'UrbanOS',
+            home: Home(
+              key: _homeKey,
+              themeNotifier: _themeNotifier,
+            ),
           ),
         );
       },

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:glass_kit/glass_kit.dart';
+import '../themes/catppuccin_theme.dart';
 
 class Glass extends StatelessWidget {
   final Widget child;
@@ -23,7 +24,8 @@ class Glass extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    color ??= Theme.of(context).colorScheme.onPrimary;
+    final theme = context.catppuccinTheme;
+    color ??= theme.materialTheme.colorScheme.onPrimary;
     return GlassContainer(
       padding: padding,
       height: height,

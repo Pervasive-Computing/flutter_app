@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../themes/catppuccin_theme.dart';
 import '../components/lamp.dart';
 import '../logger.dart';
 
@@ -35,6 +36,7 @@ class LampDataViewState extends State<LampDataView> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.catppuccinTheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -48,7 +50,7 @@ class LampDataViewState extends State<LampDataView> {
             ),
             Text(
               'Lamp ID: ${lamp.id}',
-              style: Theme.of(context).textTheme.headlineLarge,
+              style: theme.materialTheme.textTheme.headlineLarge,
             ),
           ],
         ),
@@ -59,7 +61,7 @@ class LampDataViewState extends State<LampDataView> {
             const SizedBox(width: 10),
             Text(
               'Light Level: ${lamp.lightLevel}',
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: theme.materialTheme.textTheme.bodyLarge,
             ),
           ],
         ),

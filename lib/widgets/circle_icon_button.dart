@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../themes/catppuccin_theme.dart';
 
 class CircleIconButton extends StatelessWidget {
   final Color color;
@@ -16,9 +17,9 @@ class CircleIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // return your widget here
+    final theme = context.catppuccinTheme;
     return MaterialButton(
-      hoverColor: Theme.of(context).colorScheme.onBackground.withOpacity(0.25),
+      hoverColor: theme.materialTheme.colorScheme.onBackground.withOpacity(0.25),
       padding: const EdgeInsets.all(0),
       minWidth: 0,
       onPressed: () {

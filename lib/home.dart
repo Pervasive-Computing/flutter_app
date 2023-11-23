@@ -10,9 +10,11 @@ import 'widgets/sidebar.dart';
 import 'components/lamp.dart';
 import 'widgets/lamp_data_view.dart';
 import 'widgets/lamp_list_view.dart';
+import 'package:catppuccin_flutter/catppuccin_flutter.dart';
+import 'themes/catppuccin_theme.dart';
 
 class Home extends StatefulWidget {
-  final ValueNotifier<String> themeNotifier;
+  final ValueNotifier<Flavor> themeNotifier;
 
   final List<Lamp> lamps = const [
     Lamp(id: 'lamp1', lightLevel: 0.5),
@@ -60,6 +62,7 @@ class HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.catppuccinTheme;
     _simulation.context = context;
     _simulation.setColors();
 
@@ -79,7 +82,7 @@ class HomeState extends State<Home> {
         maxHeight: windowHeight,
         maxWidth: windowWidth,
       ),
-      color: Theme.of(context).colorScheme.background,
+      color: theme.materialTheme.colorScheme.background,
       child: Stack(
         fit: StackFit.expand,
         children: [
