@@ -1,69 +1,73 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'glass.dart';
 import 'circle_icon_button.dart';
-import 'sidebar.dart';
-import '../logger.dart';
+// import 'sidebar.dart';
+// import '../logger.dart';
 
 class Header extends StatefulWidget {
-  final ValueNotifier<String> _themeNotifier;
+  final ValueNotifier<String> themeNotifier;
+  final ValueNotifier<bool> sidebarNotifier;
   final double height;
   final Function()? onMenuPressed;
-  final GlobalKey<SidebarState>? sidebarKey;
 
   const Header({
     super.key,
     this.height = 70,
-    required ValueNotifier<String> themeNotifier,
+    required this.themeNotifier,
+    required this.sidebarNotifier,
     this.onMenuPressed,
-    this.sidebarKey,
-  }) : _themeNotifier = themeNotifier;
+  });
 
   @override
   State<Header> createState() => HeaderState();
 }
 
 class HeaderState extends State<Header> {
-  late GlobalKey<SidebarState>? _sidebarKey;
-
+  double turns = 0;
+  // trigger rebuild when sidebar state changes
   @override
   void initState() {
     super.initState();
-    _sidebarKey = widget.sidebarKey;
+    widget.sidebarNotifier.addListener(() {
+      setState(() {
+        // turn 180 degrees when sidebar is open
+        if (widget.sidebarNotifier.value) {
+          turns = 0.5;
+        } else {
+          turns = 0;
+        }
+      });
+    });
   }
 
-  @override
-  void didUpdateWidget(covariant Header oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _sidebarKey = widget.sidebarKey;
-  }
-
+  // trigger rebuild when theme changes
   void toggleTheme() {
-    if (widget._themeNotifier.value == 'latte') {
-      widget._themeNotifier.value = 'mocha';
+    if (widget.themeNotifier.value == 'latte') {
+      widget.themeNotifier.value = 'mocha';
     } else {
-      widget._themeNotifier.value = 'latte';
+      widget.themeNotifier.value = 'latte';
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // print information about the sidebarkeey
-    l.w("sidebarKey.getState(): ${_sidebarKey?.currentState?.getState()}");
     return Glass(
       padding: const EdgeInsets.symmetric(horizontal: 17),
       height: widget.height,
       child: Row(
         children: [
-          CircleIconButton(
-            onPressed: () {
-              widget.onMenuPressed?.call();
-            },
-            icon: _sidebarKey == null || _sidebarKey!.currentState == null
-                ? Icons.menu
-                : _sidebarKey!.currentState!.getState()
-                    ? Icons.chevron_right
-                    : Icons.chevron_left,
-            color: Theme.of(context).colorScheme.onBackground,
+          AnimatedRotation(
+            turns: turns,
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeInOut,
+            child: CircleIconButton(
+              onPressed: () {
+                widget.onMenuPressed?.call();
+              },
+              icon: Icons.chevron_right,
+              color: Theme.of(context).colorScheme.onBackground,
+            ),
           ),
           Expanded(
             child: Center(
@@ -77,19 +81,11 @@ class HeaderState extends State<Header> {
               ),
             ),
           ),
-          // CircleIconButton(
-          //   onPressed: () {
-          //     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-          //         overlays: [SystemUiOverlay.bottom]);
-          //   },
-          //   icon: Icons.search,
-          //   color: Theme.of(context).colorScheme.onBackground,
-          // ),
           CircleIconButton(
             onPressed: () {
               toggleTheme();
             },
-            icon: widget._themeNotifier.value == 'latte'
+            icon: widget.themeNotifier.value == 'latte'
                 ? Icons.dark_mode_outlined
                 : Icons.light_mode_outlined,
             color: Theme.of(context).colorScheme.onBackground,

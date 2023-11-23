@@ -38,6 +38,7 @@ class HomeState extends State<Home> {
   late final SimVisualiser _simulation;
   final GlobalKey<SidebarState> sidebarKey = GlobalKey<SidebarState>();
   final GlobalKey<LampDataViewState> lampDataKey = GlobalKey<LampDataViewState>();
+  final ValueNotifier<bool> sidebarNotifier = ValueNotifier(false);
 
   final double headerHeight = 70;
   final double padding = 10;
@@ -77,6 +78,8 @@ class HomeState extends State<Home> {
     final PageController controller =
         PageController(initialPage: 0, viewportFraction: 0.999); //very bad, very hacky
 
+    l.w("sidebarNotifier.value: ${sidebarNotifier.value}");
+
     return Container(
       constraints: BoxConstraints(
         maxHeight: windowHeight,
@@ -99,10 +102,11 @@ class HomeState extends State<Home> {
                   onMenuPressed: () {
                     sidebarKey.currentState?.toggleSidebar();
                   },
-                  sidebarKey: sidebarKey,
+                  sidebarNotifier: sidebarNotifier,
                 ),
                 Sidebar(
                   key: sidebarKey,
+                  stateNotifier: sidebarNotifier,
                   height: sidebarHeight,
                   width: 500,
                   top: headerHeight + padding,
@@ -122,9 +126,7 @@ class HomeState extends State<Home> {
                             duration: const Duration(milliseconds: 300),
                             curve: Curves.easeInOut,
                           );
-                          //l.d("before updatecontent");
                           lampDataKey.currentState?.updateContent(widget.lamps[index]);
-                          //l.d("after updatecontent ${lampDataKey.currentState == null}");
                         },
                       ),
                       LampDataView(
