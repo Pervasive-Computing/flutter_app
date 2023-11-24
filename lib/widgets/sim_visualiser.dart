@@ -248,18 +248,16 @@ class SimVisualiser extends FlameGame
 
   // Initialise the network
   Future<void> initialiseNetwork() async {
-    // Add the network to the world
-    // var (roads, junctions) = await NetworkUtils.createPolygonsFromJson("assets/json/network.json");
-
-    // other
-    var otherComponents = await NetworkUtils.infrastructureComponentsFromXml(
-      "assets/xml/poly.xml",
-      type: XmlType.poly,
-    );
-
+    // roads and junctions
     var networkComponents = await NetworkUtils.infrastructureComponentsFromXml(
       "assets/xml/net.xml",
       type: XmlType.net,
+    );
+
+    // other buildings and stuff
+    var otherComponents = await NetworkUtils.infrastructureComponentsFromXml(
+      "assets/xml/poly.xml",
+      type: XmlType.poly,
     );
 
     // Load the roads and junctions from the JSON file
