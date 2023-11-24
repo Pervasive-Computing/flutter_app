@@ -317,4 +317,7 @@ class NetworkUtils {
       return Vector2(v.x / parentSize.x, v.y / parentSize.y);
     }).toList();
   }
+
+  // lamp stuffs
+  
 }

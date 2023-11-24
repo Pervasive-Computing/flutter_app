@@ -102,7 +102,11 @@ class SimVisualiser extends FlameGame
             infrastructure.paint = Paint()..color = isLight! ? Colors.white70 : Colors.black87;
           }
           break;
-        case "highway.residential" || "highway.tertiary" || "highway.unclassified":
+        case "highway.residential" ||
+              "highway.secondary" ||
+              "highway.tertiary" ||
+              "highway.unclassified" ||
+              "highway.track":
           if (theme != null) {
             infrastructure.paint = Paint()
               ..color = isLight!
@@ -135,7 +139,7 @@ class SimVisualiser extends FlameGame
           break;
         case "landuse":
           if (theme != null) {
-            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.mauve!;
+            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.teal!;
           } else {
             infrastructure.paint = Paint()..color = Colors.purple;
           }
@@ -184,14 +188,56 @@ class SimVisualiser extends FlameGame
           break;
         case "leisure":
           if (theme != null) {
-            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.crust!;
+            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.teal!;
           } else {
             infrastructure.paint = Paint()..color = Colors.indigo;
           }
           break;
         case "sport":
           if (theme != null) {
-            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.teal!;
+            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.maroon!;
+          } else {
+            infrastructure.paint = Paint()..color = Colors.cyan;
+          }
+          break;
+        case "water":
+          if (theme != null) {
+            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.blue!;
+          } else {
+            infrastructure.paint = Paint()..color = Colors.cyan;
+          }
+          break;
+        case "natural":
+          if (theme != null) {
+            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.green!;
+          } else {
+            infrastructure.paint = Paint()..color = Colors.cyan;
+          }
+          break;
+        case "man_made":
+          if (theme != null) {
+            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.mauve!;
+          } else {
+            infrastructure.paint = Paint()..color = Colors.cyan;
+          }
+          break;
+        case "forest":
+          if (theme != null) {
+            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.green!;
+          } else {
+            infrastructure.paint = Paint()..color = Colors.cyan;
+          }
+          break;
+        case "farm":
+          if (theme != null) {
+            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.green!;
+          } else {
+            infrastructure.paint = Paint()..color = Colors.cyan;
+          }
+          break;
+        case "aeroway":
+          if (theme != null) {
+            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.crust!;
           } else {
             infrastructure.paint = Paint()..color = Colors.cyan;
           }
@@ -217,17 +263,66 @@ class SimVisualiser extends FlameGame
     );
 
     // Load the roads and junctions from the JSON file
-    // _roads.addAll(roads);
-    // _junctions.addAll(junctions);
     _infrastructure.addAll([
       ...otherComponents,
       ...networkComponents,
     ]);
 
+    // Sort the infrastructure by type
+    _infrastructure.sort(sortInfrastructure);
+    _infrastructure.reverse();
+
     // Add the roads and junctions to the world
-    // world.addAll(_roads);
-    // world.addAll(_junctions);
     world.addAll(_infrastructure);
+  }
+
+  final infrastructureOrder = [
+    "priority",
+    "highway.cycleway",
+    "highway.footway",
+    "highway.path",
+    "highway.pedestrian",
+    "highway.service",
+    "highway.steps",
+    "right_before_left",
+    "dead_end",
+    "internal",
+    "highway.residential",
+    "highway.secondary",
+    "highway.tertiary",
+    "highway.unclassified",
+    "highway.track",
+    "building",
+    "shop",
+    "parking",
+    "sport",
+    "university",
+    "school",
+    "amenity",
+    "landuse",
+    "tourism",
+    "aeroway",
+    "natural",
+    "man_made",
+    "farm",
+    "commercial",
+    "residential",
+    "water",
+    "forest",
+    "leisure",
+  ];
+
+  // custom infrastructure sorting function
+  int sortInfrastructure(InfrastructureComponent a, InfrastructureComponent b) {
+    var aIndex = infrastructureOrder.indexOf(a.type);
+    var bIndex = infrastructureOrder.indexOf(b.type);
+    if (aIndex == -1) {
+      aIndex = infrastructureOrder.length;
+    }
+    if (bIndex == -1) {
+      bIndex = infrastructureOrder.length;
+    }
+    return aIndex.compareTo(bIndex);
   }
 
   // ╒════════════════════════════════════════════════════════════════════════════╕
