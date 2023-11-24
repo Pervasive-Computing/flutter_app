@@ -22,7 +22,7 @@ void main() {
   final filePoly = File(pathPoly);
   final documentPoly = XmlDocument.parse(filePoly.readAsStringSync());
 
-  final out = documentPoly.xpath("net/edge");
+  final out = documentPoly.xpath("net/junction");
 
   Set types = {};
 

@@ -74,7 +74,7 @@ class SimVisualiser extends FlameGame
 
     for (var infrastructure in _infrastructure) {
       switch (infrastructure.type) {
-        case "priority":
+        case "priority" || "traffic_light":
           if (theme != null) {
             infrastructure.paint = Paint()
               ..color = isLight!
@@ -278,6 +278,7 @@ class SimVisualiser extends FlameGame
 
   final infrastructureOrder = [
     "priority",
+    "traffic_light",
     "highway.cycleway",
     "highway.footway",
     "highway.path",
