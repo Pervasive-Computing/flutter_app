@@ -301,12 +301,12 @@ class SimVisualiser extends FlameGame
     "landuse",
     "tourism",
     "aeroway",
-    "natural",
     "man_made",
     "farm",
     "commercial",
     "residential",
     "water",
+    "natural",
     "forest",
     "leisure",
   ];
