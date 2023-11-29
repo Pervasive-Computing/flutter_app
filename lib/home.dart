@@ -118,11 +118,9 @@ class HomeState extends State<Home> {
                   key: sidebarKey,
                   stateNotifier: sidebarNotifier,
                   height: sidebarHeight,
-                  width: 100,
+                  width: 500,
                   top: headerHeight + padding,
                   extraMovement: padding,
-                  // Create "box" 2x width of sidebar, contains listview and dataview
-                  // When item in listview is clicked, it is shown in dataview
                   child: PageView(
                     /// [PageView.scrollDirection] defaults to [Axis.horizontal].
                     /// Use [Axis.vertical] to scroll vertically.
