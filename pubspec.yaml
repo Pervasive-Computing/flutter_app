@@ -75,8 +75,9 @@ flutter:
   assets:
     - assets/images/car.jpg
     - assets/svg/car.svg
-    - assets/json/network.json
-    - assets/xml/
+    - assets/xml/lamp.xml
+    - assets/xml/net.xml
+    - assets/xml/poly.xml
     - assets/fonts/
 
   fonts:

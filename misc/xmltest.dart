@@ -17,7 +17,7 @@ void main() {
   // final out = document.findAllElements("edge");
   // final out = documentNet.xpath("net/edge/lane/@shape");
 
-  final pathPoly = p.join(Directory.current.path, 'misc/sumo/horsens.osm');
+  final pathPoly = p.join(Directory.current.path, 'misc/sumo/horsens.lamp');
 
   final filePoly = File(pathPoly);
   final documentPoly = XmlDocument.parse(filePoly.readAsStringSync());

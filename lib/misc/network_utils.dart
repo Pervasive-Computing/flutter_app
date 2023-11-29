@@ -1,9 +1,11 @@
 import 'package:flame/components.dart';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/services.dart' show Color, rootBundle;
 import 'package:xml/xml.dart';
 import 'package:xml/xpath.dart';
 import '../components/infrastructure_component.dart';
 import '../logger.dart';
+import '../components/lamp.dart';
+import '../components/lamp_component.dart';
 
 // enum InfrastructureType {
 //   amenity,
@@ -319,5 +321,53 @@ class NetworkUtils {
   }
 
   // lamp stuffs
-  
+  // reads the lamp data from the XML file
+  static Future<List<LampComponent>> lampsFromXml(String path) async {
+    // Load the XML file
+    l.d("Loading XML file from path: $path");
+    XmlDocument document = await _loadXmlData(path);
+
+    // Extract the lamp element maps from the XML document
+    l.d("Extracting element maps from XML document");
+    List<Map<String, String>> elementMaps = mapsFromXml(document, "lamps/lamp");
+    l.d("Extracted ${elementMaps.length} element maps from XML document");
+
+    // Create and return the list of Lamps
+    l.d("Creating Lamps from element maps");
+    return lampsFromMaps(elementMaps);
+  }
+
+  // creates Lamps from XML element Maps
+  static List<LampComponent> lampsFromMaps(List<Map<String, String>> elementMaps) {
+    List<LampComponent> lamps = [];
+
+    for (var elementMap in elementMaps) {
+      // get the id and type of the element
+      String? id = elementMap["id"];
+      String? x = elementMap["x"];
+      String? y = elementMap["y"];
+
+      if (x == null || y == null) {
+        l.w("Element with id $id has no position");
+        l.w("Element: $elementMap");
+        continue;
+      }
+
+      LampComponent lampComponent = LampComponent(
+        lamp: Lamp(
+          id: id ?? "unknown",
+          lightLevel: 1.0,
+        ),
+        position: Vector2(
+          double.parse(x) / parentSize.x,
+          double.parse(y) / parentSize.y,
+        ),
+        radius: 50.0,
+      );
+
+      lamps.add(lampComponent);
+    }
+
+    return lamps;
+  }
 }

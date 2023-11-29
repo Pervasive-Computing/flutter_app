@@ -12,6 +12,8 @@ import '../websocket/simulation_api.dart';
 import '../misc/network_utils.dart';
 import '../components/car_component.dart';
 import '../components/infrastructure_component.dart';
+import '../components/lamp_component.dart';
+import '../components/lamp.dart';
 import '../themes/catppuccin_theme.dart';
 
 /// This is a visualiser for the simulation.
@@ -32,6 +34,7 @@ class SimVisualiser extends FlameGame
   // final _roads = <PolygonComponent>[];
   // final _junctions = <PolygonComponent>[];
   final _infrastructure = <InfrastructureComponent>[];
+  final _lamps = <LampComponent>[];
 
   // late Color _roadColor;
   // late Color _junctionColor;
@@ -67,6 +70,96 @@ class SimVisualiser extends FlameGame
     camera.follow(_cameraTarget);
     add(camera);
   }
+
+  // Initialise the network
+  Future<void> initialiseNetwork() async {
+    // roads and junctions
+    var networkComponents = await NetworkUtils.infrastructureComponentsFromXml(
+      "assets/xml/net.xml",
+      type: XmlType.net,
+    );
+
+    _infrastructure.addAll(networkComponents);
+    // world.addAll(_infrastructure);
+
+    // other buildings and stuff
+    var otherComponents = await NetworkUtils.infrastructureComponentsFromXml(
+      "assets/xml/poly.xml",
+      type: XmlType.poly,
+    );
+
+    // Load the roads and junctions from the JSON file
+    // _infrastructure.addAll([
+    //   ...otherComponents,
+    //   ...networkComponents,
+    // ]);
+
+    // Sort the infrastructure by type
+    _infrastructure.sort(sortInfrastructure);
+    _infrastructure.reverse();
+
+    // Add the roads and junctions to the world
+    world.addAll(_infrastructure);
+
+    // Add the lamps to the world
+    var lamps = await NetworkUtils.lampsFromXml("assets/xml/lamp.xml");
+    _lamps.addAll(lamps);
+    world.addAll(_lamps);
+  }
+
+  final infrastructureOrder = [
+    "priority",
+    "traffic_light",
+    "highway.cycleway",
+    "highway.footway",
+    "highway.path",
+    "highway.pedestrian",
+    "highway.service",
+    "highway.steps",
+    "right_before_left",
+    "dead_end",
+    "internal",
+    "highway.residential",
+    "highway.secondary",
+    "highway.tertiary",
+    "highway.unclassified",
+    "highway.track",
+    "building",
+    "shop",
+    "parking",
+    "sport",
+    "university",
+    "school",
+    "amenity",
+    "landuse",
+    "tourism",
+    "aeroway",
+    "man_made",
+    "farm",
+    "commercial",
+    "residential",
+    "water",
+    "natural",
+    "forest",
+    "leisure",
+  ];
+
+  // custom infrastructure sorting function
+  int sortInfrastructure(InfrastructureComponent a, InfrastructureComponent b) {
+    var aIndex = infrastructureOrder.indexOf(a.type);
+    var bIndex = infrastructureOrder.indexOf(b.type);
+    if (aIndex == -1) {
+      aIndex = infrastructureOrder.length;
+    }
+    if (bIndex == -1) {
+      bIndex = infrastructureOrder.length;
+    }
+    return aIndex.compareTo(bIndex);
+  }
+
+  // ╒════════════════════════════════════════════════════════════════════════════╕
+  // │                              🎨 Colouring                               │
+  // ╘════════════════════════════════════════════════════════════════════════════╛
 
   void setColors() {
     ThemeData? theme = context != null ? Theme.of(context!) : null;
@@ -244,84 +337,21 @@ class SimVisualiser extends FlameGame
           break;
       }
     }
-  }
 
-  // Initialise the network
-  Future<void> initialiseNetwork() async {
-    // roads and junctions
-    var networkComponents = await NetworkUtils.infrastructureComponentsFromXml(
-      "assets/xml/net.xml",
-      type: XmlType.net,
-    );
-
-    // other buildings and stuff
-    var otherComponents = await NetworkUtils.infrastructureComponentsFromXml(
-      "assets/xml/poly.xml",
-      type: XmlType.poly,
-    );
-
-    // Load the roads and junctions from the JSON file
-    _infrastructure.addAll([
-      ...otherComponents,
-      ...networkComponents,
-    ]);
-
-    // Sort the infrastructure by type
-    _infrastructure.sort(sortInfrastructure);
-    _infrastructure.reverse();
-
-    // Add the roads and junctions to the world
-    world.addAll(_infrastructure);
-  }
-
-  final infrastructureOrder = [
-    "priority",
-    "traffic_light",
-    "highway.cycleway",
-    "highway.footway",
-    "highway.path",
-    "highway.pedestrian",
-    "highway.service",
-    "highway.steps",
-    "right_before_left",
-    "dead_end",
-    "internal",
-    "highway.residential",
-    "highway.secondary",
-    "highway.tertiary",
-    "highway.unclassified",
-    "highway.track",
-    "building",
-    "shop",
-    "parking",
-    "sport",
-    "university",
-    "school",
-    "amenity",
-    "landuse",
-    "tourism",
-    "aeroway",
-    "man_made",
-    "farm",
-    "commercial",
-    "residential",
-    "water",
-    "natural",
-    "forest",
-    "leisure",
-  ];
-
-  // custom infrastructure sorting function
-  int sortInfrastructure(InfrastructureComponent a, InfrastructureComponent b) {
-    var aIndex = infrastructureOrder.indexOf(a.type);
-    var bIndex = infrastructureOrder.indexOf(b.type);
-    if (aIndex == -1) {
-      aIndex = infrastructureOrder.length;
+    // the lamps
+    for (var lamp in _lamps) {
+      if (theme != null) {
+        lamp.paint = Paint()
+          ..color = theme.extension<CatppuccinTheme>()!.yellow!.withOpacity(
+                lamp.lamp.lightLevel,
+              );
+      } else {
+        lamp.paint = Paint()
+          ..color = Colors.yellow.withOpacity(
+            lamp.lamp.lightLevel,
+          );
+      }
     }
-    if (bIndex == -1) {
-      bIndex = infrastructureOrder.length;
-    }
-    return aIndex.compareTo(bIndex);
   }
 
   // ╒════════════════════════════════════════════════════════════════════════════╕
@@ -368,7 +398,7 @@ class SimVisualiser extends FlameGame
     setZoom(zoom);
   }
 
-  void setZoom(double zoom, {double min = 0.05, double max = 3}) {
+  void setZoom(double zoom, {double min = 0.01, double max = 3}) {
     var clampedZoom = zoom.clamp(min, max);
     camera.viewfinder.zoom = clampedZoom;
   }

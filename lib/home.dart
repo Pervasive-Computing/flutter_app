@@ -107,6 +107,7 @@ class HomeState extends State<Home> {
                   width: 500,
                   top: headerHeight + padding,
                   extraMovement: padding,
+                  // duration: const Duration(milliseconds: 3000),
                   // Create "box" 2x width of sidebar, contains listview and dataview
                   // When item in listview is clicked, it is shown in dataview
                   child: PageView(
