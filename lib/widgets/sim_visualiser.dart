@@ -33,9 +33,10 @@ class SimVisualiser extends FlameGame
   // all roads and junctions
   // final _roads = <PolygonComponent>[];
   // final _junctions = <PolygonComponent>[];
-  final _infrastructure = <InfrastructureComponent>[];
+  var _infrastructure = <InfrastructureComponent>[];
   final _rawLamps = <Lamp>[];
   final _lamps = <LampComponent>[];
+  // List<Component> _stuff = [];
 
   // late Color _roadColor;
   // late Color _junctionColor;
@@ -52,9 +53,11 @@ class SimVisualiser extends FlameGame
     if (!_initialised) {
       SimulationAPI.addMessageListener(_manageCarsOnMessage);
       initialiseCamera();
-      await initialiseNetwork();
+      _infrastructure.addAll(await initialiseNetwork());
       _initialised = true;
       // debugMode = true;
+      world.addAll(_infrastructure);
+      world.addAll(_lamps);
     }
     setColors();
   }
@@ -73,15 +76,17 @@ class SimVisualiser extends FlameGame
   }
 
   // Initialise the network
-  Future<void> initialiseNetwork() async {
+  Future<List<InfrastructureComponent>> initialiseNetwork() async {
     // roads and junctions
     var networkComponents = await NetworkUtils.infrastructureComponentsFromXml(
       "assets/xml/net.xml",
       type: XmlType.net,
     );
 
-    _infrastructure.addAll(networkComponents);
-    // world.addAll(_infrastructure);
+    var infra = <InfrastructureComponent>[];
+
+    infra.addAll(networkComponents);
+    // world.addAll(infra);
 
     // other buildings and stuff
     var otherComponents = await NetworkUtils.infrastructureComponentsFromXml(
@@ -90,17 +95,19 @@ class SimVisualiser extends FlameGame
     );
 
     // Load the roads and junctions from the JSON file
-    // _infrastructure.addAll([
+    // infra.addAll([
     //   ...otherComponents,
     //   ...networkComponents,
     // ]);
 
     // Sort the infrastructure by type
-    _infrastructure.sort(sortInfrastructure);
-    _infrastructure.reverse();
+    infra.sort(sortInfrastructure);
+    infra.reverse();
+
+    return infra;
 
     // Add the roads and junctions to the world
-    world.addAll(_infrastructure);
+    // world.addAll(infra);
   }
 
   final infrastructureOrder = [
@@ -158,7 +165,7 @@ class SimVisualiser extends FlameGame
   // ╘════════════════════════════════════════════════════════════════════════════╛
 
   // get the lamps
-  List<Lamp> get lamps => _lamps.map((e) => e.lamp).toList();
+  // List<Lamp> get lamps => _lamps.map((e) => e.lamp).toList();
 
   // set the raw lamps
   set rawLamps(List<Lamp> lamps) {
@@ -174,7 +181,6 @@ class SimVisualiser extends FlameGame
             ))
         .toList();
     _lamps.addAll(lampComponents);
-    world.addAll(_lamps);
   }
 
   // ╒════════════════════════════════════════════════════════════════════════════╕

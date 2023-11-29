@@ -67,6 +67,7 @@ class HomeState extends State<Home> {
   // Async function to load data
   Future<void> _loadLamps() async {
     var l = await NetworkUtils.lampsFromXml("assets/xml/lamp.xml");
+    _simulation.rawLamps = l;
     // Update the state if needed after loading the data
     setState(() {
       // Update your state based on the loaded data
