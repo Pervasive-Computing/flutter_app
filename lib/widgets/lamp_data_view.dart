@@ -37,35 +37,38 @@ class LampDataViewState extends State<LampDataView> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Row(
-          children: [
-            IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () {
-                widget.onPressed();
-              },
-            ),
-            Text(
-              'Lamp ID: ${lamp.id}',
-              style: theme.textTheme.headlineLarge,
-            ),
-          ],
-        ),
-        const SizedBox(height: 10),
-        Row(
-          children: <Widget>[
-            const Icon(Icons.lightbulb_outline),
-            const SizedBox(width: 10),
-            Text(
-              'Light Level: ${lamp.lightLevel}',
-              style: theme.textTheme.bodyLarge,
-            ),
-          ],
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 30),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {
+                  widget.onPressed();
+                },
+              ),
+              Text(
+                'Lamp ID: ${lamp.id}',
+                style: theme.textTheme.headlineLarge,
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Row(
+            children: <Widget>[
+              const Icon(Icons.lightbulb_outline),
+              const SizedBox(width: 10),
+              Text(
+                'Light Level: ${lamp.lightLevel}',
+                style: theme.textTheme.bodyLarge,
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

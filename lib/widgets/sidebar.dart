@@ -65,10 +65,12 @@ class SidebarState extends State<Sidebar> {
       left: widget.stateNotifier.value ? 0 : -(width + widget.extraMovement),
       top: widget.top,
       child: AnimatedOpacity(
-        opacity: widget.animateOpacity ? (widget.stateNotifier.value ? 1.0 : 0) : 1.0,
+        opacity: widget.animateOpacity
+            ? (widget.stateNotifier.value ? 1.0 : 0)
+            : 1.0,
         duration: widget.duration,
         child: Glass(
-          padding: const EdgeInsets.all(30),
+          padding: const EdgeInsets.symmetric(vertical: 30),
           width: width,
           height: height,
           child: widget.child,

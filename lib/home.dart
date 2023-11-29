@@ -19,6 +19,19 @@ class Home extends StatefulWidget {
     Lamp(id: 'lamp1', lightLevel: 0.5),
     Lamp(id: 'lamp2', lightLevel: 1),
     Lamp(id: 'lamp3', lightLevel: 0),
+    Lamp(id: 'lamp3', lightLevel: 0),
+    Lamp(id: 'lamp3', lightLevel: 0),
+    Lamp(id: 'lamp3', lightLevel: 0),
+    Lamp(id: 'lamp3', lightLevel: 0),
+    Lamp(id: 'lamp3', lightLevel: 0),
+    Lamp(id: 'lamp3', lightLevel: 0),
+    Lamp(id: 'lamp3', lightLevel: 0),
+    Lamp(id: 'lamp3', lightLevel: 0),
+    Lamp(id: 'lamp3', lightLevel: 0),
+    Lamp(id: 'lamp3', lightLevel: 0),
+    Lamp(id: 'lamp3', lightLevel: 0),
+    Lamp(id: 'lamp3', lightLevel: 0),
+    Lamp(id: 'lamp3', lightLevel: 0),
   ];
 
   const Home({
@@ -34,7 +47,8 @@ class HomeState extends State<Home> {
   // final ValueNotifier<String> _themeNotifier;
   late final SimVisualiser _simulation;
   final GlobalKey<SidebarState> sidebarKey = GlobalKey<SidebarState>();
-  final GlobalKey<LampDataViewState> lampDataKey = GlobalKey<LampDataViewState>();
+  final GlobalKey<LampDataViewState> lampDataKey =
+      GlobalKey<LampDataViewState>();
   final ValueNotifier<bool> sidebarNotifier = ValueNotifier(false);
 
   final double headerHeight = 70;
@@ -73,8 +87,8 @@ class HomeState extends State<Home> {
     sidebarKey.currentState?.height = sidebarHeight;
     sidebarKey.currentState?.width = sidebarWidth;
 
-    final PageController controller =
-        PageController(initialPage: 0, viewportFraction: 0.999); //very bad, very hacky
+    final PageController controller = PageController(
+        initialPage: 0, viewportFraction: 0.999); //very bad, very hacky
 
     return Container(
       constraints: BoxConstraints(
@@ -104,7 +118,7 @@ class HomeState extends State<Home> {
                   key: sidebarKey,
                   stateNotifier: sidebarNotifier,
                   height: sidebarHeight,
-                  width: 500,
+                  width: 100,
                   top: headerHeight + padding,
                   extraMovement: padding,
                   // Create "box" 2x width of sidebar, contains listview and dataview
@@ -122,7 +136,8 @@ class HomeState extends State<Home> {
                             duration: const Duration(milliseconds: 300),
                             curve: Curves.easeInOut,
                           );
-                          lampDataKey.currentState?.updateContent(widget.lamps[index]);
+                          lampDataKey.currentState
+                              ?.updateContent(widget.lamps[index]);
                         },
                       ),
                       LampDataView(

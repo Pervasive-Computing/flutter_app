@@ -15,18 +15,39 @@ class LampListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: lamps.length,
-      itemBuilder: (context, index) {
-        return LampItem(
-          lamp: lamps[index],
-          onClick: () {
-            //l.d("I clicked item");
-            onPressed(index);
-            //print('Clicked on ${lamps[index]}');
-          },
-        );
-      },
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 30),
+      child: Column(
+        //mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: Text(
+              'All Street Lamps',
+              style: theme.textTheme.headlineLarge,
+            ),
+          ),
+          Expanded(
+            // Wrapping ListView.builder in an Expanded widget
+            child: ListView.separated(
+              itemCount: lamps.length,
+              itemBuilder: (context, index) {
+                return LampItem(
+                  lamp: lamps[index],
+                  onClick: () {
+                    onPressed(index);
+                  },
+                );
+              },
+              separatorBuilder: (context, index) {
+                return const SizedBox(
+                    height: 8.0); //Add a divider between each item
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
