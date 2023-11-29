@@ -35,7 +35,8 @@ class HomeState extends State<Home> {
   // final ValueNotifier<String> _themeNotifier;
   late final SimVisualiser _simulation;
   final GlobalKey<SidebarState> sidebarKey = GlobalKey<SidebarState>();
-  final GlobalKey<LampDataViewState> lampDataKey = GlobalKey<LampDataViewState>();
+  final GlobalKey<LampDataViewState> lampDataKey =
+      GlobalKey<LampDataViewState>();
   final ValueNotifier<bool> sidebarNotifier = ValueNotifier(false);
 
   final double headerHeight = 70;
@@ -89,8 +90,8 @@ class HomeState extends State<Home> {
     sidebarKey.currentState?.height = sidebarHeight;
     sidebarKey.currentState?.width = sidebarWidth;
 
-    final PageController controller =
-        PageController(initialPage: 0, viewportFraction: 0.999); //very bad, very hacky
+    final PageController controller = PageController(
+        initialPage: 0, viewportFraction: 0.999); //very bad, very hacky
 
     return Container(
       constraints: BoxConstraints(
@@ -123,9 +124,6 @@ class HomeState extends State<Home> {
                   width: 500,
                   top: headerHeight + padding,
                   extraMovement: padding,
-                  // duration: const Duration(milliseconds: 3000),
-                  // Create "box" 2x width of sidebar, contains listview and dataview
-                  // When item in listview is clicked, it is shown in dataview
                   child: PageView(
                     /// [PageView.scrollDirection] defaults to [Axis.horizontal].
                     /// Use [Axis.vertical] to scroll vertically.
