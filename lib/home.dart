@@ -1,25 +1,26 @@
 import 'dart:math';
 
+import 'package:catppuccin_flutter/catppuccin_flutter.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'widgets/sim_visualiser.dart';
 import 'widgets/header.dart';
-// import 'logger.dart';
+import 'logger.dart';
 import 'widgets/sidebar.dart';
 
 import 'components/lamp.dart';
 import 'widgets/lamp_data_view.dart';
 import 'widgets/lamp_list_view.dart';
-import 'package:catppuccin_flutter/catppuccin_flutter.dart';
+import 'misc/network_utils.dart';
 
 class Home extends StatefulWidget {
   final ValueNotifier<Flavor> themeNotifier;
 
-  final List<Lamp> lamps = const [
-    Lamp(id: 'lamp1', lightLevel: 0.5),
-    Lamp(id: 'lamp2', lightLevel: 1),
-    Lamp(id: 'lamp3', lightLevel: 0),
-  ];
+  // final List<Lamp> lamps = const [
+  //   Lamp(id: 'lamp1', lightLevel: 0.5),
+  //   Lamp(id: 'lamp2', lightLevel: 1),
+  //   Lamp(id: 'lamp3', lightLevel: 0),
+  // ];
 
   const Home({
     super.key,
@@ -45,10 +46,14 @@ class HomeState extends State<Home> {
   double sidebarHeight = 0;
   double sidebarWidth = 0;
 
+  List<Lamp> lamps = [];
+
   @override
   void initState() {
     super.initState();
     _simulation = SimVisualiser();
+    _loadLamps();
+    // l.d("lamps: ${lamps.length}");
 
     // setstate with window width and height
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -56,6 +61,16 @@ class HomeState extends State<Home> {
         windowHeight = MediaQuery.of(context).size.height;
         windowWidth = MediaQuery.of(context).size.width;
       });
+    });
+  }
+
+  // Async function to load data
+  Future<void> _loadLamps() async {
+    var l = await NetworkUtils.lampsFromXml("assets/xml/lamp.xml");
+    // Update the state if needed after loading the data
+    setState(() {
+      // Update your state based on the loaded data
+      lamps = l;
     });
   }
 
@@ -116,19 +131,18 @@ class HomeState extends State<Home> {
                     controller: controller,
                     children: [
                       LampListView(
-                        lamps: widget.lamps,
+                        lamps: lamps,
                         onPressed: (int index) {
                           controller.animateToPage(
                             1,
                             duration: const Duration(milliseconds: 300),
                             curve: Curves.easeInOut,
                           );
-                          lampDataKey.currentState?.updateContent(widget.lamps[index]);
+                          lampDataKey.currentState?.updateContent(lamps[index]);
                         },
                       ),
                       LampDataView(
                         key: lampDataKey,
-                        lamp: widget.lamps[0],
                         onPressed: () {
                           controller.animateToPage(
                             0,

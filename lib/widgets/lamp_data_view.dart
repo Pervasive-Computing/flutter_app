@@ -9,7 +9,12 @@ class LampDataView extends StatefulWidget {
 
   const LampDataView({
     super.key,
-    this.lamp = const Lamp(id: 'NaN', lightLevel: 0),
+    this.lamp = const Lamp(
+      id: 'NaN',
+      lightLevel: 0,
+      x: 0,
+      y: 0,
+    ),
     required this.onPressed,
   });
 

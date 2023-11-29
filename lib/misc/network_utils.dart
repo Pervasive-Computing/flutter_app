@@ -322,7 +322,7 @@ class NetworkUtils {
 
   // lamp stuffs
   // reads the lamp data from the XML file
-  static Future<List<LampComponent>> lampsFromXml(String path) async {
+  static Future<List<Lamp>> lampsFromXml(String path) async {
     // Load the XML file
     l.d("Loading XML file from path: $path");
     XmlDocument document = await _loadXmlData(path);
@@ -338,8 +338,8 @@ class NetworkUtils {
   }
 
   // creates Lamps from XML element Maps
-  static List<LampComponent> lampsFromMaps(List<Map<String, String>> elementMaps) {
-    List<LampComponent> lamps = [];
+  static List<Lamp> lampsFromMaps(List<Map<String, String>> elementMaps) {
+    List<Lamp> lamps = [];
 
     for (var elementMap in elementMaps) {
       // get the id and type of the element
@@ -353,19 +353,14 @@ class NetworkUtils {
         continue;
       }
 
-      LampComponent lampComponent = LampComponent(
-        lamp: Lamp(
-          id: id ?? "unknown",
-          lightLevel: 1.0,
-        ),
-        position: Vector2(
-          double.parse(x) / parentSize.x,
-          double.parse(y) / parentSize.y,
-        ),
-        radius: 50.0,
+      Lamp lamp = Lamp(
+        id: id ?? "unknown",
+        lightLevel: 1.0,
+        x: double.parse(x) / parentSize.x,
+        y: double.parse(y) / parentSize.y,
       );
 
-      lamps.add(lampComponent);
+      lamps.add(lamp);
     }
 
     return lamps;

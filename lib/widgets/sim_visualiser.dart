@@ -34,6 +34,7 @@ class SimVisualiser extends FlameGame
   // final _roads = <PolygonComponent>[];
   // final _junctions = <PolygonComponent>[];
   final _infrastructure = <InfrastructureComponent>[];
+  final _rawLamps = <Lamp>[];
   final _lamps = <LampComponent>[];
 
   // late Color _roadColor;
@@ -100,11 +101,6 @@ class SimVisualiser extends FlameGame
 
     // Add the roads and junctions to the world
     world.addAll(_infrastructure);
-
-    // Add the lamps to the world
-    var lamps = await NetworkUtils.lampsFromXml("assets/xml/lamp.xml");
-    _lamps.addAll(lamps);
-    world.addAll(_lamps);
   }
 
   final infrastructureOrder = [
@@ -155,6 +151,30 @@ class SimVisualiser extends FlameGame
       bIndex = infrastructureOrder.length;
     }
     return aIndex.compareTo(bIndex);
+  }
+
+  // ╒════════════════════════════════════════════════════════════════════════════╕
+  // │                               🔙 Getters                                │
+  // ╘════════════════════════════════════════════════════════════════════════════╛
+
+  // get the lamps
+  List<Lamp> get lamps => _lamps.map((e) => e.lamp).toList();
+
+  // set the raw lamps
+  set rawLamps(List<Lamp> lamps) {
+    _rawLamps.addAll(lamps);
+
+    // Add the lamps to the world
+    // var lamps = await NetworkUtils.lampsFromXml("assets/xml/lamp.xml");
+    var lampComponents = _rawLamps
+        .map((e) => LampComponent(
+              lamp: e,
+              position: Vector2(e.x, e.y),
+              radius: 50,
+            ))
+        .toList();
+    _lamps.addAll(lampComponents);
+    world.addAll(_lamps);
   }
 
   // ╒════════════════════════════════════════════════════════════════════════════╕
