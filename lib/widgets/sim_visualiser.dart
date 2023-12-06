@@ -33,7 +33,7 @@ class SimVisualiser extends FlameGame
   // all roads and junctions
   // final _roads = <PolygonComponent>[];
   // final _junctions = <PolygonComponent>[];
-  var _infrastructure = <InfrastructureComponent>[];
+  final _infrastructure = <InfrastructureComponent>[];
   final _rawLamps = <Lamp>[];
   final _lamps = <LampComponent>[];
   // List<Component> _stuff = [];
@@ -70,7 +70,7 @@ class SimVisualiser extends FlameGame
     // Initialise the camera to follow the the vector _cameraTarget,
     // such that when _cameraTarget moves, the camera follows
     camera = CameraComponent(world: world)..viewfinder.zoom = 0.1;
-    _cameraTarget.position = Vector2(5000, 5000);
+    _cameraTarget.position = Vector2(6000, -6000);
     camera.follow(_cameraTarget);
     add(camera);
   }

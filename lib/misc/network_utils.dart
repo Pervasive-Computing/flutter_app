@@ -25,7 +25,7 @@ import '../components/lamp_component.dart';
 enum XmlType { poly, net }
 
 class NetworkUtils {
-  static Vector2 parentSize = Vector2(0.1, 0.1);
+  static Vector2 parentSize = Vector2(0.1, -0.1);
 
   static Future<List<InfrastructureComponent>> infrastructureComponentsFromXml(
     String path, {
