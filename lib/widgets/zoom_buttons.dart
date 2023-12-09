@@ -29,16 +29,12 @@ class ZoomButtons extends StatelessWidget {
             CircleIconButton(
               icon: Icons.remove,
               color: theme.colorScheme.onBackground,
-              // onPressed: () {
-              // _simulation.toggleLamp();
-              // },
+              onPressed: onZoomOutPressed,
             ),
             CircleIconButton(
               icon: Icons.add,
               color: theme.colorScheme.onBackground,
-              // onPressed: () {
-              //   _simulation.toggleSettings();
-              // },
+              onPressed: onZoomInPressed,
             ),
           ],
         ),

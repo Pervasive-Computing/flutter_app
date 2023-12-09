@@ -384,6 +384,14 @@ class SimVisualiser extends FlameGame
   // │                            🎥 Camera Controls                            │
   // ╘════════════════════════════════════════════════════════════════════════════╛
 
+  void zoomIn() {
+    scaleZoom(0.2 * camera.viewfinder.zoom);
+  }
+
+  void zoomOut() {
+    scaleZoom(-0.2 * camera.viewfinder.zoom);
+  }
+
   // Zoom camera on pinch
   double _startZoom = 0;
   @override

@@ -5,7 +5,7 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'widgets/sim_visualiser.dart';
 import 'widgets/header.dart';
-// import 'logger.dart';
+import 'logger.dart';
 import 'widgets/sidebar.dart';
 
 import 'components/lamp.dart';
@@ -149,10 +149,10 @@ class HomeState extends State<Home> {
                 ),
                 ZoomButtons(
                   onZoomInPressed: () {
-                    // _simulation.zoomIn();
+                    _simulation.zoomIn();
                   },
                   onZoomOutPressed: () {
-                    // _simulation.zoomOut();
+                    _simulation.zoomOut();
                   },
                 )
               ],
