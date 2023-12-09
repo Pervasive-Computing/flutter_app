@@ -5,22 +5,17 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'widgets/sim_visualiser.dart';
 import 'widgets/header.dart';
-import 'logger.dart';
+// import 'logger.dart';
 import 'widgets/sidebar.dart';
 
 import 'components/lamp.dart';
 import 'widgets/lamp_data_view.dart';
 import 'widgets/lamp_list_view.dart';
 import 'misc/network_utils.dart';
+import 'widgets/zoom_buttons.dart';
 
 class Home extends StatefulWidget {
   final ValueNotifier<Flavor> themeNotifier;
-
-  // final List<Lamp> lamps = const [
-  //   Lamp(id: 'lamp1', lightLevel: 0.5),
-  //   Lamp(id: 'lamp2', lightLevel: 1),
-  //   Lamp(id: 'lamp3', lightLevel: 0),
-  // ];
 
   const Home({
     super.key,
@@ -35,8 +30,7 @@ class HomeState extends State<Home> {
   // final ValueNotifier<String> _themeNotifier;
   late final SimVisualiser _simulation;
   final GlobalKey<SidebarState> sidebarKey = GlobalKey<SidebarState>();
-  final GlobalKey<LampDataViewState> lampDataKey =
-      GlobalKey<LampDataViewState>();
+  final GlobalKey<LampDataViewState> lampDataKey = GlobalKey<LampDataViewState>();
   final ValueNotifier<bool> sidebarNotifier = ValueNotifier(false);
 
   final double headerHeight = 70;
@@ -90,8 +84,8 @@ class HomeState extends State<Home> {
     sidebarKey.currentState?.height = sidebarHeight;
     sidebarKey.currentState?.width = sidebarWidth;
 
-    final PageController controller = PageController(
-        initialPage: 0, viewportFraction: 0.999); //very bad, very hacky
+    final PageController controller =
+        PageController(initialPage: 0, viewportFraction: 0.999); //very bad, very hacky
 
     return Container(
       constraints: BoxConstraints(
@@ -153,6 +147,14 @@ class HomeState extends State<Home> {
                     ],
                   ),
                 ),
+                ZoomButtons(
+                  onZoomInPressed: () {
+                    // _simulation.zoomIn();
+                  },
+                  onZoomOutPressed: () {
+                    // _simulation.zoomOut();
+                  },
+                )
               ],
             ),
           ),
