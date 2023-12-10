@@ -25,8 +25,10 @@ import '../themes/catppuccin_theme.dart';
 class SimVisualiser extends FlameGame
     with TapCallbacks, KeyboardEvents, ScrollDetector, ScaleDetector, PanDetector {
   bool _initialised = false;
+  bool _showBuildings = false;
   final double _zoomSensitivity = 0.001;
-  late final startingPosition = Vector2.zero();
+  final double _colourWash = 0.8;
+  // late final _startingPosition = Vector2.zero();
   late final PositionComponent _cameraTarget = PositionComponent(position: Vector2.zero());
   final _cars = <CarComponent>[];
 
@@ -50,15 +52,18 @@ class SimVisualiser extends FlameGame
 
   @override
   Future<void> onLoad() async {
+    _infrastructureOrder = [..._roadOrder, ..._buildingOrder];
     if (!_initialised) {
       SimulationAPI.addMessageListener(_manageCarsOnMessage);
       initialiseCamera();
       _infrastructure.addAll(await initialiseNetwork());
       _initialised = true;
+      toggleBuildings(force: false);
       // debugMode = true;
       world.addAll(_infrastructure);
       world.addAll(_lamps);
     }
+    // toggleBuildings();
     setColors();
   }
 
@@ -85,7 +90,7 @@ class SimVisualiser extends FlameGame
 
     var infra = <InfrastructureComponent>[];
 
-    infra.addAll(networkComponents);
+    // infra.addAll(networkComponents);
     // world.addAll(infra);
 
     // other buildings and stuff
@@ -95,22 +100,19 @@ class SimVisualiser extends FlameGame
     );
 
     // Load the roads and junctions from the JSON file
-    // infra.addAll([
-    //   ...otherComponents,
-    //   ...networkComponents,
-    // ]);
+    infra.addAll([
+      ...otherComponents,
+      ...networkComponents,
+    ]);
 
     // Sort the infrastructure by type
     infra.sort(sortInfrastructure);
     infra.reverse();
 
     return infra;
-
-    // Add the roads and junctions to the world
-    // world.addAll(infra);
   }
 
-  final infrastructureOrder = [
+  final _roadOrder = [
     "priority",
     "traffic_light",
     "highway.cycleway",
@@ -127,6 +129,9 @@ class SimVisualiser extends FlameGame
     "highway.tertiary",
     "highway.unclassified",
     "highway.track",
+  ];
+
+  final _buildingOrder = [
     "building",
     "shop",
     "parking",
@@ -147,21 +152,24 @@ class SimVisualiser extends FlameGame
     "leisure",
   ];
 
+  late final _infrastructureOrder;
+
   // custom infrastructure sorting function
   int sortInfrastructure(InfrastructureComponent a, InfrastructureComponent b) {
-    var aIndex = infrastructureOrder.indexOf(a.type);
-    var bIndex = infrastructureOrder.indexOf(b.type);
+    // _infrastructureOrder ??= [..._roadOrder, ..._buildingOrder];
+    var aIndex = _infrastructureOrder.indexOf(a.type);
+    var bIndex = _infrastructureOrder.indexOf(b.type);
     if (aIndex == -1) {
-      aIndex = infrastructureOrder.length;
+      aIndex = _infrastructureOrder.length;
     }
     if (bIndex == -1) {
-      bIndex = infrastructureOrder.length;
+      bIndex = _infrastructureOrder.length;
     }
     return aIndex.compareTo(bIndex);
   }
 
   // ╒════════════════════════════════════════════════════════════════════════════╕
-  // │                               🔙 Getters                                │
+  // │                           🔙 Getters/Setters                            │
   // ╘════════════════════════════════════════════════════════════════════════════╛
 
   // get the lamps
@@ -244,7 +252,10 @@ class SimVisualiser extends FlameGame
           break;
         case "building":
           if (theme != null) {
-            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.lavender!;
+            infrastructure.paint = Paint()
+              ..color = theme.extension<CatppuccinTheme>()!.lavender!.withOpacity(1 - _colourWash);
+            // .darken(_colourWash)
+            // .brighten(_colourWash);
           } else {
             infrastructure.paint = Paint()..color = Colors.green;
           }
@@ -258,14 +269,20 @@ class SimVisualiser extends FlameGame
           break;
         case "landuse":
           if (theme != null) {
-            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.teal!;
+            infrastructure.paint = Paint()
+              ..color = theme.extension<CatppuccinTheme>()!.teal!.withOpacity(1 - _colourWash);
+            // .darken(_colourWash)
+            // .brighten(_colourWash);
           } else {
             infrastructure.paint = Paint()..color = Colors.purple;
           }
           break;
         case "shop":
           if (theme != null) {
-            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.yellow!;
+            infrastructure.paint = Paint()
+              ..color = theme.extension<CatppuccinTheme>()!.yellow!.withOpacity(1 - _colourWash);
+            // .darken(_colourWash)
+            // .brighten(_colourWash);
           } else {
             infrastructure.paint = Paint()..color = Colors.orange;
           }
@@ -307,49 +324,70 @@ class SimVisualiser extends FlameGame
           break;
         case "leisure":
           if (theme != null) {
-            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.teal!;
+            infrastructure.paint = Paint()
+              ..color = theme.extension<CatppuccinTheme>()!.teal!.withOpacity(1 - _colourWash);
+            // .darken(_colourWash)
+            // .brighten(_colourWash);
           } else {
             infrastructure.paint = Paint()..color = Colors.indigo;
           }
           break;
         case "sport":
           if (theme != null) {
-            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.maroon!;
+            infrastructure.paint = Paint()
+              ..color = theme.extension<CatppuccinTheme>()!.maroon!.withOpacity(1 - _colourWash);
+            // .darken(_colourWash)
+            // .brighten(_colourWash);
           } else {
             infrastructure.paint = Paint()..color = Colors.cyan;
           }
           break;
         case "water":
           if (theme != null) {
-            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.blue!;
+            infrastructure.paint = Paint()
+              ..color = theme.extension<CatppuccinTheme>()!.blue!.withOpacity(1 - _colourWash);
+            // .darken(_colourWash)
+            // .brighten(_colourWash);
           } else {
             infrastructure.paint = Paint()..color = Colors.cyan;
           }
           break;
         case "natural":
           if (theme != null) {
-            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.green!;
+            infrastructure.paint = Paint()
+              ..color = theme.extension<CatppuccinTheme>()!.green!.withOpacity(1 - _colourWash);
+            // .darken(_colourWash)
+            // .brighten(_colourWash);
           } else {
             infrastructure.paint = Paint()..color = Colors.cyan;
           }
           break;
         case "man_made":
           if (theme != null) {
-            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.mauve!;
+            infrastructure.paint = Paint()
+              ..color = theme.extension<CatppuccinTheme>()!.mauve!.withOpacity(1 - _colourWash);
+            // .darken(_colourWash)
+            // .brighten(_colourWash);
           } else {
             infrastructure.paint = Paint()..color = Colors.cyan;
           }
           break;
         case "forest":
           if (theme != null) {
-            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.green!;
+            infrastructure.paint = Paint()
+              ..color = theme.extension<CatppuccinTheme>()!.green!.withOpacity(1 - _colourWash);
+            // .darken(_colourWash)
+            // .brighten(_colourWash);
           } else {
             infrastructure.paint = Paint()..color = Colors.cyan;
           }
           break;
         case "farm":
           if (theme != null) {
-            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.green!;
+            infrastructure.paint = Paint()
+              ..color = theme.extension<CatppuccinTheme>()!.green!.withOpacity(1 - _colourWash);
+            // .darken(_colourWash)
+            // .brighten(_colourWash);
           } else {
             infrastructure.paint = Paint()..color = Colors.cyan;
           }
@@ -472,8 +510,45 @@ class SimVisualiser extends FlameGame
   Color backgroundColor() => Theme.of(context!).colorScheme.background;
 
   // ╒════════════════════════════════════════════════════════════════════════════╕
-  // │                           ⬅️ Message Callbacks                           │
+  // │                               ⬅️ Callbacks                                │
   // ╘════════════════════════════════════════════════════════════════════════════╛
+
+  void animateTurnOffBuildings() {
+    bool start = _showBuildings;
+    double targetOpacity = 0.0;
+    if (!start) {
+      toggleBuildings();
+      targetOpacity = 1.0 - _colourWash;
+    }
+    for (var infrastructure in _infrastructure) {
+      if (_buildingOrder.contains(infrastructure.type)) {
+        infrastructure.fadeColorTo(targetOpacity, duration: 0.25);
+        // if (start) {
+        //   infrastructure.fadeOut(duration: 0.25);
+        // } else {
+        //   infrastructure.fadeIn(duration: 0.25);
+        // }
+      }
+    }
+    Future.delayed(const Duration(milliseconds: 250), () {
+      if (start) {
+        toggleBuildings();
+      }
+    });
+  }
+
+  void toggleBuildings({bool? force}) {
+    if (force != null) {
+      _showBuildings = force;
+    } else {
+      _showBuildings = !_showBuildings;
+    }
+    for (var infrastructure in _infrastructure) {
+      if (_buildingOrder.contains(infrastructure.type)) {
+        infrastructure.renderShape = _showBuildings;
+      }
+    }
+  }
 
   // Instantiate cars if they don't already exist.
   // Update car positions if they do exist.

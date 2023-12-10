@@ -16,7 +16,7 @@ class Glass extends StatefulWidget {
     this.height = double.infinity,
     this.width = double.infinity,
     this.padding = const EdgeInsets.all(0),
-    this.opacity = 0.2,
+    this.opacity = 0.4,
     this.blur = 25,
     this.color,
   });

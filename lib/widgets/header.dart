@@ -10,6 +10,7 @@ class Header extends StatefulWidget {
   final ValueNotifier<bool> sidebarNotifier;
   final double height;
   final Function()? onMenuPressed;
+  final Function()? onTogglePressed;
 
   const Header({
     super.key,
@@ -17,6 +18,7 @@ class Header extends StatefulWidget {
     required this.themeNotifier,
     required this.sidebarNotifier,
     this.onMenuPressed,
+    this.onTogglePressed,
   });
 
   @override
@@ -25,6 +27,7 @@ class Header extends StatefulWidget {
 
 class HeaderState extends State<Header> {
   double turns = 0;
+  bool toggled = false;
   // trigger rebuild when sidebar state changes
   @override
   void initState() {
@@ -80,6 +83,17 @@ class HeaderState extends State<Header> {
               ),
             ),
           ),
+          CircleIconButton(
+            onPressed: () {
+              widget.onTogglePressed?.call();
+              setState(() {
+                toggled = !toggled;
+              });
+            },
+            icon: toggled ? Icons.home_work_outlined : Icons.home_work,
+            color: theme.colorScheme.onBackground,
+          ),
+          const SizedBox(width: 10),
           CircleIconButton(
             onPressed: () {
               toggleTheme();

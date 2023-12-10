@@ -110,6 +110,10 @@ class HomeState extends State<Home> {
                     sidebarKey.currentState?.toggleSidebar();
                   },
                   sidebarNotifier: sidebarNotifier,
+                  onTogglePressed: () {
+                    // _simulation.toggleBuildings();
+                    _simulation.animateTurnOffBuildings();
+                  },
                 ),
                 Sidebar(
                   key: sidebarKey,
