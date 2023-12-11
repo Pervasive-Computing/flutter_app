@@ -1,3 +1,4 @@
+import 'package:flame/experimental.dart';
 import 'package:flutter/material.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
@@ -9,6 +10,7 @@ import 'lamp.dart';
 // flame game lamp component extending circle component
 class LampComponent extends CircleComponent {
   Lamp lamp;
+  late CircleComponent? glow;
 
   LampComponent({
     required this.lamp,
@@ -20,7 +22,22 @@ class LampComponent extends CircleComponent {
           position: position,
           radius: radius,
           paint: Paint()..color = color,
-        );
+        ) {
+    final bigRadius = radius * 3 * lamp.lightLevel;
+    glow = CircleComponent(
+      position: Vector2(-(bigRadius + radius) / 2, -(bigRadius + radius) / 2),
+      radius: bigRadius,
+      paint: Paint()..color = color.withOpacity(lamp.lightLevel / 2),
+    );
+  }
+
+  @override
+  Future<void> onLoad() async {
+    super.onLoad();
+    if (glow != null) {
+      add(glow!);
+    }
+  }
 
   void fadeOpacityTo(double opacity, {double? duration}) async {
     add(
@@ -29,6 +46,16 @@ class LampComponent extends CircleComponent {
         EffectController(
           duration: duration ?? 0.5,
         ),
+      ),
+    );
+    final double glowOpacity = opacity > 0 ? lamp.lightLevel / 2 : 0;
+    add(
+      OpacityEffect.to(
+        glowOpacity,
+        EffectController(
+          duration: duration ?? 0.5,
+        ),
+        target: glow!,
       ),
     );
   }
