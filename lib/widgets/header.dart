@@ -10,7 +10,9 @@ class Header extends StatefulWidget {
   final ValueNotifier<bool> sidebarNotifier;
   final double height;
   final Function()? onMenuPressed;
-  final Function()? onTogglePressed;
+  final Function()? onToggleBuildingsPressed;
+  final Function()? onToggleCarsPressed;
+  final Function()? onToggleLampsPressed;
 
   const Header({
     super.key,
@@ -18,7 +20,9 @@ class Header extends StatefulWidget {
     required this.themeNotifier,
     required this.sidebarNotifier,
     this.onMenuPressed,
-    this.onTogglePressed,
+    this.onToggleBuildingsPressed,
+    this.onToggleCarsPressed,
+    this.onToggleLampsPressed,
   });
 
   @override
@@ -27,7 +31,9 @@ class Header extends StatefulWidget {
 
 class HeaderState extends State<Header> {
   double turns = 0;
-  bool toggled = false;
+  bool _buildingsToggled = false;
+  bool _carsToggled = true;
+  bool _lampsToggled = true;
   // trigger rebuild when sidebar state changes
   @override
   void initState() {
@@ -85,12 +91,34 @@ class HeaderState extends State<Header> {
           ),
           CircleIconButton(
             onPressed: () {
-              widget.onTogglePressed?.call();
+              widget.onToggleCarsPressed?.call();
               setState(() {
-                toggled = !toggled;
+                _carsToggled = !_carsToggled;
               });
             },
-            icon: toggled ? Icons.home_work_outlined : Icons.home_work,
+            icon: _carsToggled ? Icons.car_crash : Icons.car_crash_outlined,
+            color: theme.colorScheme.onBackground,
+          ),
+          const SizedBox(width: 10),
+          CircleIconButton(
+            onPressed: () {
+              widget.onToggleLampsPressed?.call();
+              setState(() {
+                _lampsToggled = !_lampsToggled;
+              });
+            },
+            icon: _lampsToggled ? Icons.lightbulb : Icons.lightbulb_outline,
+            color: theme.colorScheme.onBackground,
+          ),
+          const SizedBox(width: 10),
+          CircleIconButton(
+            onPressed: () {
+              widget.onToggleBuildingsPressed?.call();
+              setState(() {
+                _buildingsToggled = !_buildingsToggled;
+              });
+            },
+            icon: _buildingsToggled ? Icons.home_work : Icons.home_work_outlined,
             color: theme.colorScheme.onBackground,
           ),
           const SizedBox(width: 10),

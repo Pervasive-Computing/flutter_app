@@ -1,7 +1,5 @@
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
-import 'package:flame/experimental.dart';
-import 'package:flutter/material.dart';
 
 // ╒══════════════════════════════════════════════════════════════════════════════╕
 // │                        ⏹️ Infrastructure Component                         │
@@ -21,14 +19,7 @@ class InfrastructureComponent extends PolygonComponent {
     required List<Vector2> points,
   }) : super(points);
 
-  // @override
-  // Future<void> onLoad() async {
-  //   await super.onLoad();
-
-  //   // add effects
-  // }
-
-  void fadeColorTo(double opacity, {double? duration}) async {
+  void fadeOpacityTo(double opacity, {double? duration}) async {
     add(
       OpacityEffect.to(
         opacity,
@@ -38,26 +29,4 @@ class InfrastructureComponent extends PolygonComponent {
       ),
     );
   }
-
-  // void fadeOut({double? duration}) async {
-  //   opacity = 1;
-  //   add(
-  //     OpacityEffect.fadeOut(
-  //       EffectController(
-  //         duration: duration ?? 0.5,
-  //       ),
-  //     ),
-  //   );
-  // }
-
-  // void fadeIn({double? duration}) async {
-  //   opacity = 0;
-  //   add(
-  //     OpacityEffect.fadeIn(
-  //       EffectController(
-  //         duration: duration ?? 0.5,
-  //       ),
-  //     ),
-  //   );
-  // }
 }

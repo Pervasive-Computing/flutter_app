@@ -2,6 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flame/palette.dart';
 import 'package:flame_svg/flame_svg.dart';
 import 'package:flutter/material.dart';
+import 'package:flame/effects.dart';
 
 // ╒══════════════════════════════════════════════════════════════════════════════╕
 // │                              🚗 Car Component                              │
@@ -43,5 +44,16 @@ class CarComponent extends SvgComponent {
 
   void addToPosition(Vector2 position) {
     this.position += position;
+  }
+
+  void fadeOpacityTo(double opacity, {double? duration}) async {
+    add(
+      OpacityEffect.to(
+        opacity,
+        EffectController(
+          duration: duration ?? 0.5,
+        ),
+      ),
+    );
   }
 }

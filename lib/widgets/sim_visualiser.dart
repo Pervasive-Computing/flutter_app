@@ -26,6 +26,8 @@ class SimVisualiser extends FlameGame
     with TapCallbacks, KeyboardEvents, ScrollDetector, ScaleDetector, PanDetector {
   bool _initialised = false;
   bool _showBuildings = false;
+  bool _showCars = true;
+  bool _showLamps = true;
   final double _zoomSensitivity = 0.001;
   final double _colourWash = 0.8;
   // late final _startingPosition = Vector2.zero();
@@ -59,6 +61,8 @@ class SimVisualiser extends FlameGame
       _infrastructure.addAll(await initialiseNetwork());
       _initialised = true;
       toggleBuildings(force: false);
+      toggleCars(force: true);
+      toggleLamps(force: true);
       // debugMode = true;
       world.addAll(_infrastructure);
       world.addAll(_lamps);
@@ -245,158 +249,218 @@ class SimVisualiser extends FlameGame
           break;
         case "amenity":
           if (theme != null) {
-            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.crust!;
+            infrastructure.paint = Paint()
+              ..color = theme
+                  .extension<CatppuccinTheme>()!
+                  .crust!
+                  .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           } else {
-            infrastructure.paint = Paint()..color = Colors.blue;
+            infrastructure.paint = Paint()
+              ..color = Colors.blue.withOpacity(_showBuildings ? 1 - _colourWash : 0);
           }
           break;
         case "building":
           if (theme != null) {
             infrastructure.paint = Paint()
-              ..color = theme.extension<CatppuccinTheme>()!.lavender!.withOpacity(1 - _colourWash);
-            // .darken(_colourWash)
-            // .brighten(_colourWash);
+              ..color = theme
+                  .extension<CatppuccinTheme>()!
+                  .lavender!
+                  .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           } else {
-            infrastructure.paint = Paint()..color = Colors.green;
+            infrastructure.paint = Paint()
+              ..color = Colors.green.withOpacity(_showBuildings ? 1 - _colourWash : 0);
           }
           break;
         case "commercial":
           if (theme != null) {
-            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.surface0!;
+            infrastructure.paint = Paint()
+              ..color = theme
+                  .extension<CatppuccinTheme>()!
+                  .surface0!
+                  .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           } else {
-            infrastructure.paint = Paint()..color = Colors.yellow;
+            infrastructure.paint = Paint()
+              ..color = Colors.yellow.withOpacity(_showBuildings ? 1 - _colourWash : 0);
           }
           break;
         case "landuse":
           if (theme != null) {
             infrastructure.paint = Paint()
-              ..color = theme.extension<CatppuccinTheme>()!.teal!.withOpacity(1 - _colourWash);
-            // .darken(_colourWash)
-            // .brighten(_colourWash);
+              ..color = theme
+                  .extension<CatppuccinTheme>()!
+                  .teal!
+                  .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           } else {
-            infrastructure.paint = Paint()..color = Colors.purple;
+            infrastructure.paint = Paint()
+              ..color = Colors.purple.withOpacity(_showBuildings ? 1 - _colourWash : 0);
           }
           break;
         case "shop":
           if (theme != null) {
             infrastructure.paint = Paint()
-              ..color = theme.extension<CatppuccinTheme>()!.yellow!.withOpacity(1 - _colourWash);
-            // .darken(_colourWash)
-            // .brighten(_colourWash);
+              ..color = theme
+                  .extension<CatppuccinTheme>()!
+                  .yellow!
+                  .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           } else {
-            infrastructure.paint = Paint()..color = Colors.orange;
+            infrastructure.paint = Paint()
+              ..color = Colors.orange.withOpacity(_showBuildings ? 1 - _colourWash : 0);
           }
           break;
         case "parking":
           if (theme != null) {
-            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.surface2!;
+            infrastructure.paint = Paint()
+              ..color = theme
+                  .extension<CatppuccinTheme>()!
+                  .surface2!
+                  .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           } else {
-            infrastructure.paint = Paint()..color = Colors.red;
+            infrastructure.paint = Paint()
+              ..color = Colors.red.withOpacity(_showBuildings ? 1 - _colourWash : 0);
           }
           break;
         case "residential":
           if (theme != null) {
-            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.surface1!;
+            infrastructure.paint = Paint()
+              ..color = theme
+                  .extension<CatppuccinTheme>()!
+                  .surface1!
+                  .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           } else {
-            infrastructure.paint = Paint()..color = Colors.brown;
+            infrastructure.paint = Paint()
+              ..color = Colors.brown.withOpacity(_showBuildings ? 1 - _colourWash : 0);
           }
           break;
         case "school":
           if (theme != null) {
-            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.surface0!;
+            infrastructure.paint = Paint()
+              ..color = theme
+                  .extension<CatppuccinTheme>()!
+                  .surface0!
+                  .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           } else {
-            infrastructure.paint = Paint()..color = Colors.teal;
+            infrastructure.paint = Paint()
+              ..color = Colors.teal.withOpacity(_showBuildings ? 1 - _colourWash : 0);
           }
           break;
         case "university":
           if (theme != null) {
-            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.surface0!;
+            infrastructure.paint = Paint()
+              ..color = theme
+                  .extension<CatppuccinTheme>()!
+                  .surface0!
+                  .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           } else {
-            infrastructure.paint = Paint()..color = Colors.teal;
+            infrastructure.paint = Paint()
+              ..color = Colors.teal.withOpacity(_showBuildings ? 1 - _colourWash : 0);
           }
           break;
         case "tourism":
           if (theme != null) {
-            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.surface0!;
+            infrastructure.paint = Paint()
+              ..color = theme
+                  .extension<CatppuccinTheme>()!
+                  .surface0!
+                  .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           } else {
-            infrastructure.paint = Paint()..color = Colors.lime;
+            infrastructure.paint = Paint()
+              ..color = Colors.lime.withOpacity(_showBuildings ? 1 - _colourWash : 0);
           }
           break;
         case "leisure":
           if (theme != null) {
             infrastructure.paint = Paint()
-              ..color = theme.extension<CatppuccinTheme>()!.teal!.withOpacity(1 - _colourWash);
-            // .darken(_colourWash)
-            // .brighten(_colourWash);
+              ..color = theme
+                  .extension<CatppuccinTheme>()!
+                  .teal!
+                  .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           } else {
-            infrastructure.paint = Paint()..color = Colors.indigo;
+            infrastructure.paint = Paint()
+              ..color = Colors.indigo.withOpacity(_showBuildings ? 1 - _colourWash : 0);
           }
           break;
         case "sport":
           if (theme != null) {
             infrastructure.paint = Paint()
-              ..color = theme.extension<CatppuccinTheme>()!.maroon!.withOpacity(1 - _colourWash);
-            // .darken(_colourWash)
-            // .brighten(_colourWash);
+              ..color = theme
+                  .extension<CatppuccinTheme>()!
+                  .maroon!
+                  .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           } else {
-            infrastructure.paint = Paint()..color = Colors.cyan;
+            infrastructure.paint = Paint()
+              ..color = Colors.cyan.withOpacity(_showBuildings ? 1 - _colourWash : 0);
           }
           break;
         case "water":
           if (theme != null) {
             infrastructure.paint = Paint()
-              ..color = theme.extension<CatppuccinTheme>()!.blue!.withOpacity(1 - _colourWash);
-            // .darken(_colourWash)
-            // .brighten(_colourWash);
+              ..color = theme
+                  .extension<CatppuccinTheme>()!
+                  .blue!
+                  .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           } else {
-            infrastructure.paint = Paint()..color = Colors.cyan;
+            infrastructure.paint = Paint()
+              ..color = Colors.cyan.withOpacity(_showBuildings ? 1 - _colourWash : 0);
           }
           break;
         case "natural":
           if (theme != null) {
             infrastructure.paint = Paint()
-              ..color = theme.extension<CatppuccinTheme>()!.green!.withOpacity(1 - _colourWash);
-            // .darken(_colourWash)
-            // .brighten(_colourWash);
+              ..color = theme
+                  .extension<CatppuccinTheme>()!
+                  .green!
+                  .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           } else {
-            infrastructure.paint = Paint()..color = Colors.cyan;
+            infrastructure.paint = Paint()
+              ..color = Colors.cyan.withOpacity(_showBuildings ? 1 - _colourWash : 0);
           }
           break;
         case "man_made":
           if (theme != null) {
             infrastructure.paint = Paint()
-              ..color = theme.extension<CatppuccinTheme>()!.mauve!.withOpacity(1 - _colourWash);
-            // .darken(_colourWash)
-            // .brighten(_colourWash);
+              ..color = theme
+                  .extension<CatppuccinTheme>()!
+                  .mauve!
+                  .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           } else {
-            infrastructure.paint = Paint()..color = Colors.cyan;
+            infrastructure.paint = Paint()
+              ..color = Colors.cyan.withOpacity(_showBuildings ? 1 - _colourWash : 0);
           }
           break;
         case "forest":
           if (theme != null) {
             infrastructure.paint = Paint()
-              ..color = theme.extension<CatppuccinTheme>()!.green!.withOpacity(1 - _colourWash);
-            // .darken(_colourWash)
-            // .brighten(_colourWash);
+              ..color = theme
+                  .extension<CatppuccinTheme>()!
+                  .green!
+                  .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           } else {
-            infrastructure.paint = Paint()..color = Colors.cyan;
+            infrastructure.paint = Paint()
+              ..color = Colors.cyan.withOpacity(_showBuildings ? 1 - _colourWash : 0);
           }
           break;
         case "farm":
           if (theme != null) {
             infrastructure.paint = Paint()
-              ..color = theme.extension<CatppuccinTheme>()!.green!.withOpacity(1 - _colourWash);
-            // .darken(_colourWash)
-            // .brighten(_colourWash);
+              ..color = theme
+                  .extension<CatppuccinTheme>()!
+                  .green!
+                  .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           } else {
-            infrastructure.paint = Paint()..color = Colors.cyan;
+            infrastructure.paint = Paint()
+              ..color = Colors.cyan.withOpacity(_showBuildings ? 1 - _colourWash : 0);
           }
           break;
         case "aeroway":
           if (theme != null) {
-            infrastructure.paint = Paint()..color = theme.extension<CatppuccinTheme>()!.crust!;
+            infrastructure.paint = Paint()
+              ..color = theme
+                  .extension<CatppuccinTheme>()!
+                  .crust!
+                  .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           } else {
-            infrastructure.paint = Paint()..color = Colors.cyan;
+            infrastructure.paint = Paint()
+              ..color = Colors.cyan.withOpacity(_showBuildings ? 1 - _colourWash : 0);
           }
           break;
       }
@@ -407,12 +471,12 @@ class SimVisualiser extends FlameGame
       if (theme != null) {
         lamp.paint = Paint()
           ..color = theme.extension<CatppuccinTheme>()!.yellow!.withOpacity(
-                lamp.lamp.lightLevel,
+                _showLamps ? lamp.lamp.lightLevel : 0,
               );
       } else {
         lamp.paint = Paint()
           ..color = Colors.yellow.withOpacity(
-            lamp.lamp.lightLevel,
+            _showLamps ? lamp.lamp.lightLevel : 0,
           );
       }
     }
@@ -513,7 +577,7 @@ class SimVisualiser extends FlameGame
   // │                               ⬅️ Callbacks                                │
   // ╘════════════════════════════════════════════════════════════════════════════╛
 
-  void animateTurnOffBuildings() {
+  void animateToggleBuildings() {
     bool start = _showBuildings;
     double targetOpacity = 0.0;
     if (!start) {
@@ -522,12 +586,7 @@ class SimVisualiser extends FlameGame
     }
     for (var infrastructure in _infrastructure) {
       if (_buildingOrder.contains(infrastructure.type)) {
-        infrastructure.fadeColorTo(targetOpacity, duration: 0.25);
-        // if (start) {
-        //   infrastructure.fadeOut(duration: 0.25);
-        // } else {
-        //   infrastructure.fadeIn(duration: 0.25);
-        // }
+        infrastructure.fadeOpacityTo(targetOpacity, duration: 0.25);
       }
     }
     Future.delayed(const Duration(milliseconds: 250), () {
@@ -546,6 +605,68 @@ class SimVisualiser extends FlameGame
     for (var infrastructure in _infrastructure) {
       if (_buildingOrder.contains(infrastructure.type)) {
         infrastructure.renderShape = _showBuildings;
+      }
+    }
+  }
+
+  void animateToggleLamps() {
+    bool start = _showLamps;
+    double targetOpacity = 0.0;
+    if (!start) {
+      toggleLamps();
+      targetOpacity = 1.0;
+    }
+    for (var lamp in _lamps) {
+      lamp.fadeOpacityTo(targetOpacity, duration: 0.25);
+    }
+    Future.delayed(const Duration(milliseconds: 250), () {
+      if (start) {
+        toggleLamps();
+      }
+    });
+  }
+
+  void toggleLamps({bool? force}) {
+    if (force != null) {
+      _showLamps = force;
+    } else {
+      _showLamps = !_showLamps;
+    }
+    for (var lamp in _lamps) {
+      lamp.renderShape = _showLamps;
+    }
+  }
+
+  void animateToggleCars() {
+    bool start = _showCars;
+    double targetOpacity = 0.0;
+    if (!start) {
+      toggleCars();
+      targetOpacity = 1.0;
+    }
+    for (var car in _cars) {
+      car.fadeOpacityTo(targetOpacity, duration: 0.25);
+    }
+    Future.delayed(const Duration(milliseconds: 250), () {
+      if (start) {
+        toggleCars();
+      }
+    });
+  }
+
+  void toggleCars({bool? force}) {
+    if (force != null) {
+      _showCars = force;
+    } else {
+      _showCars = !_showCars;
+    }
+    if (_showCars) {
+      for (var car in _cars) {
+        car.makeOpaque();
+      }
+    } else {
+      for (var car in _cars) {
+        car.makeTransparent();
       }
     }
   }
