@@ -1,3 +1,4 @@
+import 'package:flame/palette.dart';
 import 'package:flutter/material.dart';
 import 'package:catppuccin_flutter/catppuccin_flutter.dart';
 
@@ -197,9 +198,44 @@ class CatppuccinTheme extends ThemeExtension<CatppuccinTheme> {
   }
 }
 
+class LampColorTheme extends ThemeExtension<LampColorTheme> {
+  late final Brightness? brightness;
+  late final Color? lampColor;
+
+  LampColorTheme({
+    this.brightness,
+    Color? lampColor,
+  }) {
+    this.lampColor = lampColor ?? Colors.yellow;
+  }
+
+  @override
+  LampColorTheme copyWith({
+    Brightness? brightness,
+  }) {
+    return LampColorTheme(
+      brightness: brightness ?? this.brightness,
+      lampColor: lampColor,
+    );
+  }
+
+  @override
+  ThemeExtension<LampColorTheme> lerp(ThemeExtension<LampColorTheme>? other, double t) {
+    if (other == null) return this;
+    if (other is LampColorTheme) {
+      return LampColorTheme(
+        brightness: brightness,
+        lampColor: Color.lerp(lampColor, other.lampColor, t),
+      );
+    }
+    return this;
+  }
+}
+
 ThemeData catppuccinTheme(Flavor flavor, {required BuildContext context}) {
   Color primaryColor = flavor.lavender;
   Color secondaryColor = flavor.mauve;
+  Brightness brightness = flavor.base.computeLuminance() > 0.5 ? Brightness.light : Brightness.dark;
 
   return ThemeData(
     useMaterial3: true,
@@ -211,7 +247,7 @@ ThemeData catppuccinTheme(Flavor flavor, {required BuildContext context}) {
     ),
     colorScheme: ColorScheme(
       background: flavor.base,
-      brightness: flavor.base.computeLuminance() > 0.5 ? Brightness.light : Brightness.dark,
+      brightness: brightness,
       error: flavor.surface2,
       onBackground: flavor.text,
       onError: flavor.red,
@@ -232,6 +268,11 @@ ThemeData catppuccinTheme(Flavor flavor, {required BuildContext context}) {
     ),
     extensions: <ThemeExtension<dynamic>>[
       CatppuccinTheme(flavor: flavor),
+      LampColorTheme(
+          brightness: brightness,
+          lampColor: brightness == Brightness.light
+              ? flavor.yellow
+              : catppuccin.latte.yellow.brighten(0.25)),
     ],
   );
 }

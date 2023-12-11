@@ -470,7 +470,7 @@ class SimVisualiser extends FlameGame
     for (var lamp in _lamps) {
       if (theme != null) {
         lamp.paint = Paint()
-          ..color = theme.extension<CatppuccinTheme>()!.yellow!.withOpacity(
+          ..color = theme.extension<LampColorTheme>()!.lampColor!.withOpacity(
                 _showLamps ? lamp.lamp.lightLevel : 0,
               );
       } else {
