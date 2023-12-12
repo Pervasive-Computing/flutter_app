@@ -4,7 +4,7 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame/game.dart';
-// import 'package:flame/gestures.dart';
+import 'package:flame/effects.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../logger.dart';
@@ -28,6 +28,16 @@ class SimVisualiser extends FlameGame
   bool _showBuildings = false;
   bool _showCars = true;
   bool _showLamps = true;
+  String? _selectedLampId;
+  final CircleComponent _higlighter = CircleComponent(
+    position: Vector2.zero(),
+    radius: 100,
+    anchor: Anchor.center,
+    paint: Paint()
+      ..color = Colors.red
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 25,
+  );
   final double _zoomSensitivity = 0.001;
   final double _colourWash = 0.8;
   // late final _startingPosition = Vector2.zero();
@@ -190,9 +200,31 @@ class SimVisualiser extends FlameGame
               lamp: e,
               position: Vector2(e.x, e.y),
               radius: 50,
+              onTapCallbacks: [_lampTapCallback],
             ))
         .toList();
     _lamps.addAll(lampComponents);
+  }
+
+  void _lampTapCallback(LampComponent lamp) {
+    // l.w("lamp tapped: ${lamp.lamp.id}");
+    if (_selectedLampId == lamp.lamp.id) {
+      world.remove(_higlighter);
+      _selectedLampId = null;
+      return;
+    }
+
+    final ThemeData? theme = context != null ? Theme.of(context!) : null;
+    final Color highlightColor =
+        theme != null ? theme.colorScheme.onBackground : lamp.paint.color.brighten(0.8);
+
+    _selectedLampId = lamp.lamp.id;
+    final position = lamp.position;
+    _higlighter.position = position;
+    _higlighter.paint.color = highlightColor;
+    // _higlighter.paint.strokeWidth = 20;
+    _higlighter.radius = lamp.radius + _higlighter.paint.strokeWidth / 2;
+    world.add(_higlighter);
   }
 
   // ╒════════════════════════════════════════════════════════════════════════════╕
@@ -468,7 +500,7 @@ class SimVisualiser extends FlameGame
 
     // the lamps
     for (var lamp in _lamps) {
-      l.w("lamp: ${lamp.lamp.x}, ${lamp.lamp.y}");
+      // l.w("lamp: ${lamp.lamp.x}, ${lamp.lamp.y}");
       if (theme != null) {
         lamp.paint = Paint()
           ..color = theme.extension<LampColorTheme>()!.lampColor!.withOpacity(
@@ -481,6 +513,9 @@ class SimVisualiser extends FlameGame
           );
       }
     }
+
+    _higlighter.paint.color =
+        theme != null ? theme.colorScheme.onBackground : _higlighter.paint.color;
   }
 
   // ╒════════════════════════════════════════════════════════════════════════════╕
@@ -620,6 +655,14 @@ class SimVisualiser extends FlameGame
     for (var lamp in _lamps) {
       lamp.fadeOpacityTo(targetOpacity, duration: 0.25);
     }
+    _higlighter.add(
+      OpacityEffect.to(
+        targetOpacity,
+        EffectController(
+          duration: 0.25,
+        ),
+      ),
+    );
     Future.delayed(const Duration(milliseconds: 250), () {
       if (start) {
         toggleLamps();
@@ -634,7 +677,8 @@ class SimVisualiser extends FlameGame
       _showLamps = !_showLamps;
     }
     for (var lamp in _lamps) {
-      lamp.renderShape = _showLamps;
+      // lamp.renderShape = _showLamps;
+      lamp.shouldRender(_showLamps);
     }
   }
 
