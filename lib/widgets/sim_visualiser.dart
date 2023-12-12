@@ -56,7 +56,6 @@ class SimVisualiser extends FlameGame
   Future<void> onLoad() async {
     _infrastructureOrder = [..._roadOrder, ..._buildingOrder];
     if (!_initialised) {
-      SimulationAPI.addMessageListener(_manageCarsOnMessage);
       initialiseCamera();
       _infrastructure.addAll(await initialiseNetwork());
       _initialised = true;
@@ -66,6 +65,7 @@ class SimVisualiser extends FlameGame
       // debugMode = true;
       world.addAll(_infrastructure);
       world.addAll(_lamps);
+      SimulationAPI.addMessageListener(_manageCarsOnMessage);
     }
     // toggleBuildings();
     setColors();
@@ -468,6 +468,7 @@ class SimVisualiser extends FlameGame
 
     // the lamps
     for (var lamp in _lamps) {
+      l.w("lamp: ${lamp.lamp.x}, ${lamp.lamp.y}");
       if (theme != null) {
         lamp.paint = Paint()
           ..color = theme.extension<LampColorTheme>()!.lampColor!.withOpacity(
@@ -683,17 +684,14 @@ class SimVisualiser extends FlameGame
         l.w("message.length < _cars.length");
       }
 
-      l.w("car with id ${car.id} has data: $carData");
-      l.w("_cars.length: ${_cars.length}");
+      // l.w("car with id ${car.id} has data: $carData");
+      // l.w("_cars.length: ${_cars.length}");
 
       // for all cars that do already exist,
       // update their position and heading
       if (carData != null) {
         car.updatePosition(
-          Vector2(
-            _preprocessCoordinate(carData['x']),
-            _preprocessCoordinate(carData['y']),
-          ),
+          _preprocessPosition(carData['x'], carData['y']),
         );
         car.updateHeading(_preprocessHeading(carData['heading']));
       } else {
@@ -710,17 +708,14 @@ class SimVisualiser extends FlameGame
       message.remove(car.id);
     }
 
-    l.d("cars to add: ${message.length}");
+    // l.d("cars to add: ${message.length}");
 
     // instantiate cars that don't exist yet.
     message.forEach((key, value) {
       l.w("adding car: $key");
       addCar(
         id: key,
-        position: Vector2(
-          _preprocessCoordinate(value['x']),
-          _preprocessCoordinate(value['y']),
-        ),
+        position: _preprocessPosition(value['x'], value['y']),
         heading: value['heading'],
       );
     });
@@ -728,12 +723,15 @@ class SimVisualiser extends FlameGame
 
   double _preprocessHeading(dynamic heading) {
     heading = (heading as num).toDouble();
-    return math.pi - heading * math.pi / 180;
+    // return math.pi - heading * math.pi / 180;
+    return heading * math.pi / 180;
   }
 
-  double _preprocessCoordinate(dynamic coordinate) {
-    coordinate = (coordinate as num).toDouble();
-    return coordinate / NetworkUtils.parentSize.x;
+  Vector2 _preprocessPosition(dynamic x, dynamic y) {
+    return Vector2(
+      (x as num).toDouble() / NetworkUtils.parentSize.x,
+      (y as num).toDouble() / NetworkUtils.parentSize.y,
+    );
   }
 
   // Instantiate a car,

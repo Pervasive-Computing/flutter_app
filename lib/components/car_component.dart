@@ -19,13 +19,13 @@ class CarComponent extends SvgComponent {
   CarComponent({required this.id, required Vector2 position, required this.heading})
       : super(
           position: position,
-          size: Vector2.all(100),
+          size: Vector2.all(600),
           anchor: Anchor.center,
-          scale: Vector2.all(.5),
+          scale: Vector2.all(0.25),
           angle: heading,
           paint: yellow,
         ) {
-    loadSvg("svg/car.svg").then((value) {
+    loadSvg("svg/car-blue.svg").then((value) {
       svg = value;
     });
   }

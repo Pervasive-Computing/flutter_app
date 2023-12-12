@@ -29,9 +29,10 @@ class CircleIconButton extends StatelessWidget {
       shape: hasBorder
           ? CircleBorder(
               side: BorderSide(
-              color: color,
-              width: 2,
-            ))
+                color: color,
+                width: 2,
+              ),
+            )
           : const CircleBorder(),
       child: Padding(
         padding: const EdgeInsets.all(8),

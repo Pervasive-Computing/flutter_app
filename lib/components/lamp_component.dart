@@ -1,14 +1,15 @@
-import 'package:flame/experimental.dart';
+import 'package:flame/events.dart';
 import 'package:flutter/material.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'lamp.dart';
+import '../logger.dart';
 
 // ╒══════════════════════════════════════════════════════════════════════════════╕
 // │                          💡 Street Lamp Component                           │
 // ╘══════════════════════════════════════════════════════════════════════════════╛
 // flame game lamp component extending circle component
-class LampComponent extends CircleComponent {
+class LampComponent extends CircleComponent with TapCallbacks {
   Lamp lamp;
   late CircleComponent? glow;
 
@@ -37,6 +38,12 @@ class LampComponent extends CircleComponent {
     if (glow != null) {
       add(glow!);
     }
+  }
+
+  @override
+  bool onTapDown(TapDownEvent event) {
+    l.d("Tapped on lamp ${lamp.id}\nWith event: $event");
+    return true;
   }
 
   void fadeOpacityTo(double opacity, {double? duration}) async {

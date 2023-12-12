@@ -2,7 +2,7 @@
 // import 'package:flutter/foundation.dart';
 // import 'dart:async';
 // import 'dart:developer';
-// import '../logger.dart';
+import '../logger.dart';
 import 'package:cbor/simple.dart';
 import 'package:dartzmq/dartzmq.dart';
 
@@ -22,32 +22,22 @@ class SimulationAPI {
   // static late final MonitoredZSocket _socket;
   static late final ZSocket _socket;
   static var callbacks = <Function(dynamic)>[];
-  // late StreamSubscription _subscription;
 
   static var lastCallTime = DateTime.now();
 
   static void connect() {
     // _socket = _zcontext.createMonitoredSocket(SocketType.sub);
     _socket = _zcontext.createSocket(SocketType.sub);
-    _socket.setOption(ZMQ_SUBSCRIBE, "");
+    const topic = 'cars';
+    _socket.setOption(ZMQ_SUBSCRIBE, topic);
     _socket.connect(uri.toString());
 
     // _socket.events.listen((event) {
     //   l.i('Received event ${event.event} with value ${event.value}');
     // });
-
-    // addMessageListener((message) {
-    //   l.i(message);
-    // });
     _socket.payloads.listen((message) {
-      // var nowTime = DateTime.now();
-      // var deltaTime = nowTime.difference(lastCallTime);
-      // if (deltaTime.inMilliseconds < 100) {
-      //   return;
-      // }
-      // lastCallTime = nowTime;
-
-      var decoded = cbor.decode(message) as Map;
+      // l.d('Received message: ${message}');
+      var decoded = cbor.decode(message.sublist(topic.length, message.length)) as Map;
       // call all callbacks
       for (var callback in callbacks) {
         callback(decoded);
@@ -59,10 +49,6 @@ class SimulationAPI {
   static void addMessageListener(Function(dynamic) callback) {
     // listen for messages
     callbacks.add(callback);
-  }
-
-  static Map decodeToMap(dynamic message) {
-    return cbor.decode(message) as Map;
   }
 
   static void close() {
