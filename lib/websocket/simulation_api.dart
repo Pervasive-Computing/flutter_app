@@ -11,7 +11,8 @@ import 'package:http/http.dart' as http;
 class SimulationAPI {
   static const String _host = 'localhost';
   static const int _portCars = 12000;
-  static const int _portLamps = 12001;
+  static const int _portLampsData = 12001;
+  static const int _portLampsLive = 12333;
   static int _id = 1;
 
   static final uriCars = Uri(
@@ -21,11 +22,20 @@ class SimulationAPI {
     path: '',
   );
 
-  static final _carsContext = ZContext();
+  static final uriLamps = Uri(
+    scheme: 'tcp',
+    host: _host,
+    port: _portLampsLive,
+    path: '',
+  );
+
+  static final _zContext = ZContext();
   // static final _lampsContext = ZContext();
   // static late final MonitoredZSocket _socket;
   static late final ZSocket _carsClient;
+  static late final ZSocket _lampsClient;
   static final _carCallbacks = <Function(dynamic)>[];
+  static final _lampCallbacks = <Function(dynamic)>[];
   // static late final ZSocket _lampsClient;
   // static Map<String, dynamic> _lampData = {};
   // static final Map<int, Completer<Map<String, dynamic>>> _responseCompleters = {};
@@ -33,10 +43,14 @@ class SimulationAPI {
   static void connect() {
     // CAR STUFF
     // _socket = _zcontext.createMonitoredSocket(SocketType.sub);
-    _carsClient = _carsContext.createSocket(SocketType.sub);
-    const topic = 'cars';
-    _carsClient.setOption(ZMQ_SUBSCRIBE, topic);
+    _carsClient = _zContext.createSocket(SocketType.sub);
+    _lampsClient = _zContext.createSocket(SocketType.sub);
+    const carTopic = 'cars';
+    const lampsTopic = 'light_level';
+    _carsClient.setOption(ZMQ_SUBSCRIBE, carTopic);
+    _lampsClient.setOption(ZMQ_SUBSCRIBE, lampsTopic);
     _carsClient.connect(uriCars.toString());
+    _lampsClient.connect(uriLamps.toString());
 
     // USE THIS ON WHEN MONITORED SOCKET IS USED
     // _socket.events.listen((event) {
@@ -44,10 +58,16 @@ class SimulationAPI {
     // });
 
     _carsClient.payloads.listen((message) {
-      // l.d('Received message: ${message}');
-      var decoded = cbor.decode(message.sublist(topic.length, message.length)) as Map;
-      // call all callbacks
+      var decoded = cbor.decode(message.sublist(carTopic.length, message.length)) as Map;
       for (var callback in _carCallbacks) {
+        callback(decoded);
+      }
+    });
+
+    _lampsClient.payloads.listen((message) {
+      var decoded = cbor.decode(message.sublist(lampsTopic.length, message.length)) as Map;
+      l.d("decoded: $decoded");
+      for (var callback in _lampCallbacks) {
         callback(decoded);
       }
     });
@@ -72,8 +92,13 @@ class SimulationAPI {
   }
 
   // add callbackk to listen to messages
-  static void addMessageListener(Function(dynamic) callback) {
+  static void addCarMessageListener(Function(dynamic) callback) {
     _carCallbacks.add(callback);
+  }
+
+  // add callbackk to listen to messages
+  static void addLampsMessageListener(Function(dynamic) callback) {
+    _lampCallbacks.add(callback);
   }
 
   static Future<Map<String, dynamic>> reqLampData(String lampId) async {
@@ -94,7 +119,7 @@ class SimulationAPI {
       'id': _id,
     };
 
-    var url = Uri.parse('http://localhost:$_portLamps/lampdata/$lampId');
+    var url = Uri.parse('http://localhost:$_portLampsData/lampdata/$lampId');
     var response = await http
         .post(url, body: json.encode(request), headers: {'Content-Type': 'application/json'});
 
