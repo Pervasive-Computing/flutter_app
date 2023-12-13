@@ -94,8 +94,8 @@ class GraphState extends State<Graph> {
         IntervalMark(
           color: ColorEncode(
             value: theme
-                .extension<CatppuccinTheme>()!
-                .yellow!, // Replace with your desired color
+                .extension<LampTheme>()!
+                .lampColor!, // Replace with your desired color
           ),
           shape: ShapeEncode<IntervalShape>(
             value: RectShape(

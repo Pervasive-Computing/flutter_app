@@ -46,7 +46,7 @@ class LoadingBarState extends State<LoadingBar> {
       ),
       child: FractionallySizedBox(
         alignment: Alignment.centerLeft,
-        widthFactor: 0.7, //_progress,
+        widthFactor: _progress,
         child: Container(
           height: double.infinity,
           width: double.infinity,
