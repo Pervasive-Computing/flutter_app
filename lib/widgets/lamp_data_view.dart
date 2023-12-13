@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/websocket/simulation_api.dart';
 import '../themes/catppuccin_theme.dart';
 import '../components/lamp.dart';
 import '../logger.dart';
@@ -36,6 +37,10 @@ class LampDataViewState extends State<LampDataView> {
     setState(() {
       this.lamp = lamp;
       l.d("updateContent, lamp id: ${this.lamp.id}");
+    });
+
+    SimulationAPI.getLampData(lamp.id).then((value) {
+      l.d("getLampData, lamp id: ${this.lamp.id}");
     });
   }
 

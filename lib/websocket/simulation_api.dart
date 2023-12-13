@@ -2,19 +2,29 @@
 // import 'package:flutter/foundation.dart';
 // import 'dart:async';
 // import 'dart:developer';
+import 'dart:convert';
 import '../logger.dart';
 import 'package:cbor/simple.dart';
 import 'package:dartzmq/dartzmq.dart';
 
 class SimulationAPI {
   static const String _host = 'localhost';
-  static const int _port = 12000;
+  static const int _portCars = 12000;
+  static const int _portLamps = 12001;
   static const String _path = '';
+  static int _id = 1;
 
-  static final uri = Uri(
+  static final uriCars = Uri(
     scheme: 'tcp',
     host: _host,
-    port: _port,
+    port: _portCars,
+    path: _path,
+  );
+
+  static final uriLamps = Uri(
+    scheme: 'tcp',
+    host: _host,
+    port: _portLamps,
     path: _path,
   );
 
@@ -30,7 +40,7 @@ class SimulationAPI {
     _socket = _zcontext.createSocket(SocketType.sub);
     const topic = 'cars';
     _socket.setOption(ZMQ_SUBSCRIBE, topic);
-    _socket.connect(uri.toString());
+    _socket.connect(uriCars.toString());
 
     // _socket.events.listen((event) {
     //   l.i('Received event ${event.event} with value ${event.value}');
@@ -53,5 +63,61 @@ class SimulationAPI {
 
   static void close() {
     _socket.close();
+  }
+
+  // request = {
+  //     "jsonrpc": "2.0",
+  //     "method": "lightlevel",
+  //     "params": {
+  //         "streetlamp": args.streetlamp_id,
+  //         "reducer": args.reducer,
+  //         "per": args.per,
+  //         "from": from_unix_ts,
+  //         "to": to_unix_ts,
+  //     },
+  //     "id": id,
+  // }
+
+  static Future<List<dynamic>> getLampData(String lampId) async {
+    var client = _zcontext.createSocket(SocketType.req);
+    client.connect(uriLamps.toString());
+
+    var now = DateTime.now();
+    var oneDayAgo = now.subtract(const Duration(days: 1));
+
+    _id += 1;
+    var request = {
+      'jsonrpc': '2.0',
+      'method': 'lightlevel',
+      'params': {
+        'streetlamp': lampId,
+        'reducer': 'mean',
+        'per': 'hour',
+        'from': oneDayAgo.millisecondsSinceEpoch ~/ 1000,
+        'to': now.millisecondsSinceEpoch ~/ 1000,
+      },
+      'id': _id,
+    };
+
+    var jsonEncoded = jsonEncode(request);
+
+    client.send(jsonEncoded.codeUnits);
+
+    List<dynamic> result = [];
+
+    client.payloads.listen((message) {
+      var decoded = jsonDecode(String.fromCharCodes(message));
+      l.d('Received message: $decoded');
+
+      result = decoded['result'] as List<dynamic>;
+
+      client.close();
+    });
+
+    while (result.isEmpty) {
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+
+    return result;
   }
 }
