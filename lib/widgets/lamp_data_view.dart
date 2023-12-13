@@ -43,8 +43,9 @@ class LampDataViewState extends State<LampDataView> {
       l.d("updateContent, lamp id: ${this.lamp.id}");
     });
 
-    SimulationAPI.getLampData(lamp.id).then((value) {
+    SimulationAPI.reqLampData(lamp.id).then((value) {
       l.d("getLampData, lamp id: ${this.lamp.id}");
+      l.w("lamp data: $value");
     });
     loadingBarKey.currentState?.setProgress(this.lamp.lightLevel);
   }
