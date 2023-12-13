@@ -31,7 +31,8 @@ class HomeState extends State<Home> {
   // final ValueNotifier<String> _themeNotifier;
   late final SimVisualiser _simulation;
   final GlobalKey<SidebarState> sidebarKey = GlobalKey<SidebarState>();
-  final GlobalKey<LampDataViewState> lampDataKey = GlobalKey<LampDataViewState>();
+  final GlobalKey<LampDataViewState> lampDataKey =
+      GlobalKey<LampDataViewState>();
   final ValueNotifier<bool> sidebarNotifier = ValueNotifier(false);
 
   final double headerHeight = 70;
@@ -43,8 +44,8 @@ class HomeState extends State<Home> {
   double sidebarWidth = 0;
 
   List<Lamp> lamps = [];
-  final PageController controller =
-      PageController(initialPage: 0, viewportFraction: 0.999); //very bad, very hacky
+  final PageController controller = PageController(
+      initialPage: 0, viewportFraction: 0.999); //very bad, very hacky
 
   @override
   void initState() {
@@ -113,7 +114,14 @@ class HomeState extends State<Home> {
     windowWidth = MediaQuery.of(context).size.width;
 
     sidebarHeight = windowHeight - padding * 3 - headerHeight;
-    sidebarWidth = min(windowWidth - padding * 2, 500);
+    if (windowWidth > 1500) {
+      sidebarWidth = (windowWidth - padding * 2) * 0.3;
+    } else if (windowWidth > 750) {
+      sidebarWidth = (windowWidth - padding * 2) * 0.5;
+    } else {
+      sidebarWidth = windowWidth - padding * 2;
+    }
+
     sidebarKey.currentState?.height = sidebarHeight;
     sidebarKey.currentState?.width = sidebarWidth;
 
@@ -154,7 +162,7 @@ class HomeState extends State<Home> {
                   key: sidebarKey,
                   stateNotifier: sidebarNotifier,
                   height: sidebarHeight,
-                  width: 500,
+                  width: sidebarWidth,
                   top: headerHeight + padding,
                   extraMovement: padding,
                   child: PageView(

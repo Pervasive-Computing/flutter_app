@@ -70,7 +70,7 @@ class SidebarState extends State<Sidebar> {
             : 1.0,
         duration: widget.duration,
         child: Glass(
-          padding: const EdgeInsets.symmetric(vertical: 30),
+          padding: const EdgeInsets.symmetric(vertical: 17),
           width: width,
           height: height,
           child: widget.child,
