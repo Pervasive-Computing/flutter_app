@@ -200,7 +200,8 @@ class SimVisualiser extends FlameGame
               lamp: e,
               position: Vector2(e.x, e.y),
               radius: 50,
-              onTapCallbacks: [_lampTapCallback],
+              onSelectCallbacks: [_lampTapCallback],
+              onDeselectCallbacks: [_lampTapCallback],
             ))
         .toList();
     _lamps.addAll(lampComponents);
@@ -212,6 +213,12 @@ class SimVisualiser extends FlameGame
       world.remove(_higlighter);
       _selectedLampId = null;
       return;
+    }
+
+    for (var lamp in _lamps) {
+      if (lamp.lamp.id == _selectedLampId) {
+        lamp.deselect();
+      }
     }
 
     final ThemeData? theme = context != null ? Theme.of(context!) : null;
@@ -612,6 +619,18 @@ class SimVisualiser extends FlameGame
   // ╒════════════════════════════════════════════════════════════════════════════╕
   // │                               ⬅️ Callbacks                                │
   // ╘════════════════════════════════════════════════════════════════════════════╛
+
+  void addLampSelectCallback(Function(LampComponent lampComponent) callback) {
+    for (var lamp in _lamps) {
+      lamp.addSelectCallback(callback);
+    }
+  }
+
+  void addLampDeselectCallback(Function(LampComponent lampComponent) callback) {
+    for (var lamp in _lamps) {
+      lamp.addDeselectCallback(callback);
+    }
+  }
 
   void animateToggleBuildings() {
     bool start = _showBuildings;

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:catppuccin_flutter/catppuccin_flutter.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/components/lamp_component.dart';
 import 'widgets/sim_visualiser.dart';
 import 'widgets/header.dart';
 import 'logger.dart';
@@ -42,12 +43,27 @@ class HomeState extends State<Home> {
   double sidebarWidth = 0;
 
   List<Lamp> lamps = [];
+  final PageController controller =
+      PageController(initialPage: 0, viewportFraction: 0.999); //very bad, very hacky
 
   @override
   void initState() {
     super.initState();
     _simulation = SimVisualiser();
-    _loadLamps();
+    _loadLamps().then((value) {
+      _simulation.rawLamps = lamps;
+      _simulation.addLampSelectCallback(
+        (LampComponent lampComponent) {
+          openLampDataView(lampComponent.lamp.id);
+        },
+      );
+      _simulation.addLampDeselectCallback(
+        (LampComponent lampComponent) {
+          closeLampDataView();
+        },
+      );
+    });
+    // _simulation.rawLamps = lamps;
     // l.d("lamps: ${lamps.length}");
 
     // setstate with window width and height
@@ -62,12 +78,29 @@ class HomeState extends State<Home> {
   // Async function to load data
   Future<void> _loadLamps() async {
     var l = await NetworkUtils.lampsFromXml("assets/xml/lamp.xml");
-    _simulation.rawLamps = l;
+    // _simulation.rawLamps = l;
     // Update the state if needed after loading the data
     setState(() {
       // Update your state based on the loaded data
       lamps = l;
     });
+  }
+
+  void openLampDataView(String lampId) {
+    l.d("openLampDataView");
+    for (var lamp in lamps) {
+      if (lamp.id == lampId) {
+        lampDataKey.currentState?.updateContent(lamp);
+        controller.jumpToPage(2);
+        sidebarKey.currentState?.openSidebar();
+        break;
+      }
+    }
+  }
+
+  void closeLampDataView() {
+    controller.jumpToPage(1);
+    sidebarKey.currentState?.closeSidebar();
   }
 
   @override
@@ -83,9 +116,6 @@ class HomeState extends State<Home> {
     sidebarWidth = min(windowWidth - padding * 2, 500);
     sidebarKey.currentState?.height = sidebarHeight;
     sidebarKey.currentState?.width = sidebarWidth;
-
-    final PageController controller =
-        PageController(initialPage: 0, viewportFraction: 0.999); //very bad, very hacky
 
     return Container(
       constraints: BoxConstraints(

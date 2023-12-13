@@ -13,20 +13,25 @@ import '../logger.dart';
 class LampComponent extends CircleComponent with TapCallbacks {
   Lamp lamp;
   double borderWidth;
+  bool _isSelected = false;
   // Paint paint = BasicPalette.yellow.paint();
   late CircleComponent main;
   late CircleComponent glow;
   late CircleComponent border;
-  List<Function(LampComponent)> onTapCallbacks;
+  late List<Function(LampComponent)> _onSelectCallbacks;
+  late List<Function(LampComponent)> _onDeselectCallbacks;
 
   LampComponent({
     required this.lamp,
     required Vector2 position,
     double radius = 100.0,
     this.borderWidth = 10,
-    this.onTapCallbacks = const [],
+    List<Function(LampComponent)> onSelectCallbacks = const [],
+    List<Function(LampComponent)> onDeselectCallbacks = const [],
     Color color = const Color.fromARGB(255, 244, 188, 49),
-  }) : super(
+  })  : _onSelectCallbacks = onSelectCallbacks,
+        _onDeselectCallbacks = onDeselectCallbacks,
+        super(
           position: position,
           radius: radius,
           anchor: Anchor.center,
@@ -46,6 +51,14 @@ class LampComponent extends CircleComponent with TapCallbacks {
     );
   }
 
+  void addSelectCallback(Function(LampComponent) callback) {
+    _onSelectCallbacks.add(callback);
+  }
+
+  void addDeselectCallback(Function(LampComponent) callback) {
+    _onDeselectCallbacks.add(callback);
+  }
+
   @override
   Future<void> onLoad() async {
     super.onLoad();
@@ -58,10 +71,29 @@ class LampComponent extends CircleComponent with TapCallbacks {
   @override
   bool onTapDown(TapDownEvent event) {
     // l.d("Tapped on lamp ${lamp.id}\nWith event: $event");
-    for (var callback in onTapCallbacks) {
-      callback(this);
+    _isSelected = !_isSelected;
+
+    if (_isSelected) {
+      l.w("Lamp ${lamp.id} selected");
+      for (var callback in _onSelectCallbacks) {
+        callback(this);
+      }
+    } else {
+      l.w("Lamp ${lamp.id} deselected");
+      for (var callback in _onDeselectCallbacks) {
+        callback(this);
+      }
     }
+
     return true;
+  }
+
+  void select() {
+    _isSelected = true;
+  }
+
+  void deselect() {
+    _isSelected = false;
   }
 
   void shouldRender(bool shouldRender) {

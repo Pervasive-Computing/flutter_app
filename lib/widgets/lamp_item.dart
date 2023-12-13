@@ -29,13 +29,12 @@ class LampItem extends StatelessWidget {
         child: Ink(
           // Use Ink instead of Container for the ripple effect
           decoration: BoxDecoration(
-            border:
-                Border.all(color: theme.colorScheme.onPrimary), // Outline color
+            border: Border.all(color: theme.colorScheme.onPrimary), // Outline color
             borderRadius: BorderRadius.circular(15.0), // Rounded corners
           ),
           child: Container(
             padding: const EdgeInsets.all(8),
-            child: Text(lamp.id),
+            child: Text("Lamp ${lamp.id}"),
           ),
         ),
       ),
