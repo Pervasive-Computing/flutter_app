@@ -21,10 +21,11 @@ class LampListView extends StatelessWidget {
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.only(bottom: 16),
+            padding: const EdgeInsets.only(bottom: 8, top: 3),
             child: Text(
               'All Street Lamps',
-              style: theme.textTheme.headlineLarge,
+              style: theme.textTheme.headlineMedium
+                  ?.copyWith(fontWeight: FontWeight.bold),
             ),
           ),
           Expanded(

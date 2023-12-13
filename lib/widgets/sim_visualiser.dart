@@ -23,7 +23,12 @@ import '../themes/catppuccin_theme.dart';
 /// - Roads will be drawn
 /// - Street lamps will be drawn and show their status
 class SimVisualiser extends FlameGame
-    with TapCallbacks, KeyboardEvents, ScrollDetector, ScaleDetector, PanDetector {
+    with
+        TapCallbacks,
+        KeyboardEvents,
+        ScrollDetector,
+        ScaleDetector,
+        PanDetector {
   bool _initialised = false;
   bool _showBuildings = false;
   bool _showCars = true;
@@ -41,7 +46,8 @@ class SimVisualiser extends FlameGame
   final double _zoomSensitivity = 0.001;
   final double _colourWash = 0.8;
   // late final _startingPosition = Vector2.zero();
-  late final PositionComponent _cameraTarget = PositionComponent(position: Vector2.zero());
+  late final PositionComponent _cameraTarget =
+      PositionComponent(position: Vector2.zero());
   final _cars = <CarComponent>[];
 
   // all roads and junctions
@@ -222,8 +228,9 @@ class SimVisualiser extends FlameGame
     }
 
     final ThemeData? theme = context != null ? Theme.of(context!) : null;
-    final Color highlightColor =
-        theme != null ? theme.colorScheme.onBackground : lamp.paint.color.brighten(0.8);
+    final Color highlightColor = theme != null
+        ? theme.colorScheme.onBackground
+        : lamp.paint.color.brighten(0.8);
 
     _selectedLampId = lamp.lamp.id;
     final position = lamp.position;
@@ -240,7 +247,8 @@ class SimVisualiser extends FlameGame
 
   void setColors() {
     ThemeData? theme = context != null ? Theme.of(context!) : null;
-    bool? isLight = theme != null ? theme.colorScheme.brightness == Brightness.light : null;
+    bool? isLight =
+        theme != null ? theme.colorScheme.brightness == Brightness.light : null;
 
     for (var infrastructure in _infrastructure) {
       switch (infrastructure.type) {
@@ -251,7 +259,8 @@ class SimVisualiser extends FlameGame
                   ? theme.colorScheme.background.darken(0.8)
                   : theme.colorScheme.background.brighten(0.9);
           } else {
-            infrastructure.paint = Paint()..color = isLight! ? Colors.white70 : Colors.black87;
+            infrastructure.paint = Paint()
+              ..color = isLight! ? Colors.white70 : Colors.black87;
           }
           break;
         case "highway.cycleway" ||
@@ -269,7 +278,8 @@ class SimVisualiser extends FlameGame
                   ? theme.colorScheme.background.darken(0.65)
                   : theme.colorScheme.background.brighten(0.7);
           } else {
-            infrastructure.paint = Paint()..color = isLight! ? Colors.white70 : Colors.black87;
+            infrastructure.paint = Paint()
+              ..color = isLight! ? Colors.white70 : Colors.black87;
           }
           break;
         case "highway.residential" ||
@@ -283,7 +293,8 @@ class SimVisualiser extends FlameGame
                   ? theme.colorScheme.background.darken(0.8)
                   : theme.colorScheme.background.brighten(0.9);
           } else {
-            infrastructure.paint = Paint()..color = isLight! ? Colors.white70 : Colors.black87;
+            infrastructure.paint = Paint()
+              ..color = isLight! ? Colors.white70 : Colors.black87;
           }
           break;
         case "amenity":
@@ -295,7 +306,8 @@ class SimVisualiser extends FlameGame
                   .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           } else {
             infrastructure.paint = Paint()
-              ..color = Colors.blue.withOpacity(_showBuildings ? 1 - _colourWash : 0);
+              ..color =
+                  Colors.blue.withOpacity(_showBuildings ? 1 - _colourWash : 0);
           }
           break;
         case "building":
@@ -307,7 +319,8 @@ class SimVisualiser extends FlameGame
                   .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           } else {
             infrastructure.paint = Paint()
-              ..color = Colors.green.withOpacity(_showBuildings ? 1 - _colourWash : 0);
+              ..color = Colors.green
+                  .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           }
           break;
         case "commercial":
@@ -319,7 +332,8 @@ class SimVisualiser extends FlameGame
                   .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           } else {
             infrastructure.paint = Paint()
-              ..color = Colors.yellow.withOpacity(_showBuildings ? 1 - _colourWash : 0);
+              ..color = Colors.yellow
+                  .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           }
           break;
         case "landuse":
@@ -331,7 +345,8 @@ class SimVisualiser extends FlameGame
                   .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           } else {
             infrastructure.paint = Paint()
-              ..color = Colors.purple.withOpacity(_showBuildings ? 1 - _colourWash : 0);
+              ..color = Colors.purple
+                  .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           }
           break;
         case "shop":
@@ -343,7 +358,8 @@ class SimVisualiser extends FlameGame
                   .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           } else {
             infrastructure.paint = Paint()
-              ..color = Colors.orange.withOpacity(_showBuildings ? 1 - _colourWash : 0);
+              ..color = Colors.orange
+                  .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           }
           break;
         case "parking":
@@ -355,7 +371,8 @@ class SimVisualiser extends FlameGame
                   .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           } else {
             infrastructure.paint = Paint()
-              ..color = Colors.red.withOpacity(_showBuildings ? 1 - _colourWash : 0);
+              ..color =
+                  Colors.red.withOpacity(_showBuildings ? 1 - _colourWash : 0);
           }
           break;
         case "residential":
@@ -367,7 +384,8 @@ class SimVisualiser extends FlameGame
                   .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           } else {
             infrastructure.paint = Paint()
-              ..color = Colors.brown.withOpacity(_showBuildings ? 1 - _colourWash : 0);
+              ..color = Colors.brown
+                  .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           }
           break;
         case "school":
@@ -379,7 +397,8 @@ class SimVisualiser extends FlameGame
                   .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           } else {
             infrastructure.paint = Paint()
-              ..color = Colors.teal.withOpacity(_showBuildings ? 1 - _colourWash : 0);
+              ..color =
+                  Colors.teal.withOpacity(_showBuildings ? 1 - _colourWash : 0);
           }
           break;
         case "university":
@@ -391,7 +410,8 @@ class SimVisualiser extends FlameGame
                   .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           } else {
             infrastructure.paint = Paint()
-              ..color = Colors.teal.withOpacity(_showBuildings ? 1 - _colourWash : 0);
+              ..color =
+                  Colors.teal.withOpacity(_showBuildings ? 1 - _colourWash : 0);
           }
           break;
         case "tourism":
@@ -403,7 +423,8 @@ class SimVisualiser extends FlameGame
                   .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           } else {
             infrastructure.paint = Paint()
-              ..color = Colors.lime.withOpacity(_showBuildings ? 1 - _colourWash : 0);
+              ..color =
+                  Colors.lime.withOpacity(_showBuildings ? 1 - _colourWash : 0);
           }
           break;
         case "leisure":
@@ -415,7 +436,8 @@ class SimVisualiser extends FlameGame
                   .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           } else {
             infrastructure.paint = Paint()
-              ..color = Colors.indigo.withOpacity(_showBuildings ? 1 - _colourWash : 0);
+              ..color = Colors.indigo
+                  .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           }
           break;
         case "sport":
@@ -427,7 +449,8 @@ class SimVisualiser extends FlameGame
                   .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           } else {
             infrastructure.paint = Paint()
-              ..color = Colors.cyan.withOpacity(_showBuildings ? 1 - _colourWash : 0);
+              ..color =
+                  Colors.cyan.withOpacity(_showBuildings ? 1 - _colourWash : 0);
           }
           break;
         case "water":
@@ -439,7 +462,8 @@ class SimVisualiser extends FlameGame
                   .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           } else {
             infrastructure.paint = Paint()
-              ..color = Colors.cyan.withOpacity(_showBuildings ? 1 - _colourWash : 0);
+              ..color =
+                  Colors.cyan.withOpacity(_showBuildings ? 1 - _colourWash : 0);
           }
           break;
         case "natural":
@@ -451,7 +475,8 @@ class SimVisualiser extends FlameGame
                   .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           } else {
             infrastructure.paint = Paint()
-              ..color = Colors.cyan.withOpacity(_showBuildings ? 1 - _colourWash : 0);
+              ..color =
+                  Colors.cyan.withOpacity(_showBuildings ? 1 - _colourWash : 0);
           }
           break;
         case "man_made":
@@ -463,7 +488,8 @@ class SimVisualiser extends FlameGame
                   .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           } else {
             infrastructure.paint = Paint()
-              ..color = Colors.cyan.withOpacity(_showBuildings ? 1 - _colourWash : 0);
+              ..color =
+                  Colors.cyan.withOpacity(_showBuildings ? 1 - _colourWash : 0);
           }
           break;
         case "forest":
@@ -475,7 +501,8 @@ class SimVisualiser extends FlameGame
                   .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           } else {
             infrastructure.paint = Paint()
-              ..color = Colors.cyan.withOpacity(_showBuildings ? 1 - _colourWash : 0);
+              ..color =
+                  Colors.cyan.withOpacity(_showBuildings ? 1 - _colourWash : 0);
           }
           break;
         case "farm":
@@ -487,7 +514,8 @@ class SimVisualiser extends FlameGame
                   .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           } else {
             infrastructure.paint = Paint()
-              ..color = Colors.cyan.withOpacity(_showBuildings ? 1 - _colourWash : 0);
+              ..color =
+                  Colors.cyan.withOpacity(_showBuildings ? 1 - _colourWash : 0);
           }
           break;
         case "aeroway":
@@ -499,7 +527,8 @@ class SimVisualiser extends FlameGame
                   .withOpacity(_showBuildings ? 1 - _colourWash : 0);
           } else {
             infrastructure.paint = Paint()
-              ..color = Colors.cyan.withOpacity(_showBuildings ? 1 - _colourWash : 0);
+              ..color =
+                  Colors.cyan.withOpacity(_showBuildings ? 1 - _colourWash : 0);
           }
           break;
       }
@@ -510,7 +539,7 @@ class SimVisualiser extends FlameGame
       // l.w("lamp: ${lamp.lamp.x}, ${lamp.lamp.y}");
       if (theme != null) {
         lamp.paint = Paint()
-          ..color = theme.extension<LampColorTheme>()!.lampColor!.withOpacity(
+          ..color = theme.extension<LampTheme>()!.lampColor!.withOpacity(
                 _showLamps ? lamp.lamp.lightLevel : 0,
               );
       } else {
@@ -521,8 +550,9 @@ class SimVisualiser extends FlameGame
       }
     }
 
-    _higlighter.paint.color =
-        theme != null ? theme.colorScheme.onBackground : _higlighter.paint.color;
+    _higlighter.paint.color = theme != null
+        ? theme.colorScheme.onBackground
+        : _higlighter.paint.color;
   }
 
   // ╒════════════════════════════════════════════════════════════════════════════╕
@@ -573,7 +603,8 @@ class SimVisualiser extends FlameGame
 
   void scrollZoom(double difference) {
     // l.w("scrollZoom: $difference");
-    var zoom = camera.viewfinder.zoom - difference * _zoomSensitivity * camera.viewfinder.zoom;
+    var zoom = camera.viewfinder.zoom -
+        difference * _zoomSensitivity * camera.viewfinder.zoom;
     setZoom(zoom);
   }
 
@@ -603,7 +634,8 @@ class SimVisualiser extends FlameGame
   }
 
   @override
-  KeyEventResult onKeyEvent(RawKeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
+  KeyEventResult onKeyEvent(
+      RawKeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
     // l.w("onKeyEvent: ${event.logicalKey.keyLabel}");
     if (event.isControlPressed) {
       _isCtrlPressed = true;

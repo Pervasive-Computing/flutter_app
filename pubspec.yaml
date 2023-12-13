@@ -47,6 +47,7 @@ dependencies:
   xml: ^6.4.2
   path: ^1.8.3
   provider: ^6.1.1
+  graphic: ^2.2.1
 
 dev_dependencies:
   flutter_test:
