@@ -166,7 +166,7 @@ class SimVisualiser extends FlameGame
     "leisure",
   ];
 
-  late final _infrastructureOrder;
+  late final List<String> _infrastructureOrder;
 
   // custom infrastructure sorting function
   int sortInfrastructure(InfrastructureComponent a, InfrastructureComponent b) {
