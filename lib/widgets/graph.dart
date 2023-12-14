@@ -35,7 +35,7 @@ class GraphState extends State<Graph> {
   @override
   void initState() {
     super.initState();
-    setData(List<double>.filled(24, 0));
+    setData(List<dynamic>.filled(24, 0.0));
   }
 
   @override
