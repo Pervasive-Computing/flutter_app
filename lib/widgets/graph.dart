@@ -17,12 +17,17 @@ class GraphState extends State<Graph> {
 
   void setData(List<dynamic> values) {
     int remainingLenght = 24 - values.length;
+    l.d("Remaining length: $remainingLenght");
     List<dynamic> paddedValues = List.filled(remainingLenght, 0.0, growable: true);
     paddedValues.addAll(values);
+    l.d("Padded values: $paddedValues");
 
     final dataObj = paddedValues.asMap().entries.map((e) {
+      // l.d("e: $e, ${e.runtimeType}");
       int minute = e.key + 1;
-      double lightlevel = e.value * 100;
+      double lightlevel = (e.value + 0.0) * 100;
+
+      // l.d("Minute: $minute, Lightlevel: $lightlevel");
 
       return {'minute': minute, 'lightlevel': lightlevel};
     }).toList();

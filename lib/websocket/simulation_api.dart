@@ -106,7 +106,7 @@ class SimulationAPI {
 
   static Future<List<dynamic>> reqLampData(String lampId) async {
     var now = DateTime.now();
-    var oneDayAgo = now.subtract(const Duration(hours: 1));
+    var oneDayAgo = now.subtract(const Duration(hours: 24));
 
     var uriLamps = Uri(
       scheme: 'http',
