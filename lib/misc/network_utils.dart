@@ -353,18 +353,18 @@ class NetworkUtils {
         continue;
       }
       double lightLevel = 0.0;
-      if (id == "-25971") {
-        lightLevel = 1;
-      }
-      if (id == "-25972") {
-        lightLevel = 0.75;
-      }
-      if (id == "-25973") {
-        lightLevel = 0.5;
-      }
-      if (id == "-25974") {
-        lightLevel = 0.25;
-      }
+      // if (id == "-25971") {
+      //   lightLevel = 1;
+      // }
+      // if (id == "-25972") {
+      //   lightLevel = 0.75;
+      // }
+      // if (id == "-25973") {
+      //   lightLevel = 0.5;
+      // }
+      // if (id == "-25974") {
+      //   lightLevel = 0.25;
+      // }
 
       Lamp lamp = Lamp(
         id: id ?? "unknown",

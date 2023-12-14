@@ -16,7 +16,11 @@ class GraphState extends State<Graph> {
   List<Map<Object, Object>> _data = [];
 
   void setData(List<dynamic> values) {
-    final dataObj = values.asMap().entries.map((e) {
+    int remainingLenght = 24 - values.length;
+    List<dynamic> paddedValues = List.filled(remainingLenght, 0, growable: true);
+    paddedValues.addAll(values);
+
+    final dataObj = paddedValues.asMap().entries.map((e) {
       int hour = e.key + 1;
       double lightlevel = e.value * 100;
 
@@ -50,7 +54,8 @@ class GraphState extends State<Graph> {
                 if (number % 2 == 1) {
                   return '';
                 }
-                return number.floor().toString();
+                var hourNow = DateTime.now().hour;
+                return ((number + hourNow) % 24).floor().toString();
               }),
         ),
         'lightlevel': Variable(
