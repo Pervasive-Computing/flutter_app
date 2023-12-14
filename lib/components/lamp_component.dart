@@ -39,15 +39,15 @@ class LampComponent extends CircleComponent with TapCallbacks {
           position: position,
           radius: radius,
           anchor: Anchor.center,
-          paint: Paint()..color = offColor ?? Colors.grey,
         ) {
     onColor ??= const Color.fromARGB(255, 244, 188, 49);
     offColor ??= Colors.grey;
 
     main = CircleComponent(
-      position: Vector2.zero(),
-      radius: radius,
-      paint: Paint()..color = Color.lerp(Colors.grey, onColor, lamp.lightLevel)!,
+      position: Vector2(radius, radius),
+      anchor: anchor,
+      radius: radius + 1,
+      paint: Paint()..color = Color.lerp(offColor, onColor, lamp.lightLevel)!,
     );
 
     bigRadius = radius * 2;

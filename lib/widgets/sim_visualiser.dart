@@ -206,8 +206,8 @@ class SimVisualiser extends FlameGame
               radius: 50,
               onSelectCallbacks: [_lampTapCallback],
               onDeselectCallbacks: [_lampTapCallback],
-              onColor: theme?.extension<CatppuccinTheme>()?.yellow!,
-              offColor: theme?.extension<CatppuccinTheme>()?.yellow!.darken(0.7),
+              onColor: theme?.extension<LampTheme>()?.lampColor!,
+              offColor: theme?.extension<LampTheme>()?.lampColor!.darken(0.7),
             ))
         .toList();
     _lamps.addAll(lampComponents);
@@ -511,27 +511,15 @@ class SimVisualiser extends FlameGame
       }
     }
 
-    // the lamps
     for (var lamp in _lamps) {
-      // l.w("lamp: ${lamp.lamp.x}, ${lamp.lamp.y}");
-
-      double opacity = _showLamps ? lamp.lamp.lightLevel : 0;
-      if (theme != null) {
-        lamp.main.paint = Paint()
-          ..color = Color.lerp(
-              theme.extension<CatppuccinTheme>()!.text!.darken(0.7).withOpacity(opacity),
-              theme.extension<LampTheme>()!.lampColor!.withOpacity(opacity),
-              lamp.lamp.lightLevel)!;
-      } else {
-        lamp.main.paint = Paint()
-          ..color = Colors.yellow.withOpacity(
-            _showLamps ? lamp.lamp.lightLevel : 0,
-          );
-      }
+      lamp.onColor = theme != null ? theme.extension<LampTheme>()!.lampColor! : Colors.yellow;
+      lamp.offColor =
+          theme != null ? theme.extension<LampTheme>()!.lampColor!.darken(0.7) : Colors.yellow;
     }
 
-    _higlighter.paint.color =
-        theme != null ? theme.colorScheme.onBackground : _higlighter.paint.color;
+    _higlighter.paint.color = theme != null
+        ? theme.colorScheme.onBackground.withOpacity(_showLamps ? 1 : 0)
+        : _higlighter.paint.color.withOpacity(_showLamps ? 1 : 0);
   }
 
   // ╒════════════════════════════════════════════════════════════════════════════╕
