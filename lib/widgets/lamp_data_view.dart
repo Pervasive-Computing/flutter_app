@@ -49,6 +49,7 @@ class LampDataViewState extends State<LampDataView> {
   }
 
   void _updateBar(Map<String, double> lamps) {
+    setState(() {});
     _loadingBarKey.currentState?.setProgress(lamp.lightLevel);
   }
 

@@ -21,10 +21,10 @@ class GraphState extends State<Graph> {
     paddedValues.addAll(values);
 
     final dataObj = paddedValues.asMap().entries.map((e) {
-      int hour = e.key + 1;
+      int minute = e.key + 1;
       double lightlevel = e.value * 100;
 
-      return {'hour': hour, 'lightlevel': lightlevel};
+      return {'minute': minute, 'lightlevel': lightlevel};
     }).toList();
 
     setState(() {
@@ -44,8 +44,8 @@ class GraphState extends State<Graph> {
     return Chart(
       data: _data,
       variables: {
-        'hour': Variable(
-          accessor: (Map map) => map['hour'] as num,
+        'minute': Variable(
+          accessor: (Map map) => map['minute'] as num,
           scale: LinearScale(
               min: 0,
               max: 24.99,
@@ -54,8 +54,8 @@ class GraphState extends State<Graph> {
                 if (number % 2 == 1) {
                   return '';
                 }
-                var hourNow = DateTime.now().hour;
-                return ((number + hourNow) % 24).floor().toString();
+                var minuteNow = DateTime.now().minute;
+                return ((number + minuteNow) % 24).floor().toString();
               }),
         ),
         'lightlevel': Variable(
