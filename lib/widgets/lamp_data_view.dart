@@ -28,7 +28,8 @@ class LampDataView extends StatefulWidget {
 
 class LampDataViewState extends State<LampDataView> {
   late Lamp lamp;
-  final GlobalKey<LoadingBarState> loadingBarKey = GlobalKey<LoadingBarState>();
+  final GlobalKey<LoadingBarState> _loadingBarKey = GlobalKey<LoadingBarState>();
+  final GlobalKey<GraphState> _graphKey = GlobalKey<GraphState>();
 
   @override
   void initState() {
@@ -47,7 +48,7 @@ class LampDataViewState extends State<LampDataView> {
       l.d("getLampData, lamp id: ${this.lamp.id}");
       l.w("lamp data: $value");
     });
-    loadingBarKey.currentState?.setProgress(this.lamp.lightLevel);
+    _loadingBarKey.currentState?.setProgress(this.lamp.lightLevel);
   }
 
   @override
@@ -106,7 +107,7 @@ class LampDataViewState extends State<LampDataView> {
               const SizedBox(width: 10),
               Expanded(
                 child: LoadingBar(
-                  key: loadingBarKey,
+                  key: _loadingBarKey,
                 ),
               ),
               const SizedBox(width: 20),
@@ -132,7 +133,9 @@ class LampDataViewState extends State<LampDataView> {
               left: 16,
               right: 12,
             ),
-            child: const Graph(),
+            child: Graph(
+              key: _graphKey,
+            ),
           ),
         ],
       ),
