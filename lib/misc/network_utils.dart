@@ -355,7 +355,7 @@ class NetworkUtils {
 
       Lamp lamp = Lamp(
         id: id ?? "unknown",
-        lightLevel: 1.0,
+        lightLevel: 0.0,
         x: double.parse(x) / parentSize.x,
         y: double.parse(y) / parentSize.y,
       );

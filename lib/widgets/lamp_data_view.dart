@@ -8,17 +8,16 @@ import 'circle_icon_button.dart';
 import 'loading_bar.dart';
 
 class LampDataView extends StatefulWidget {
-  final Lamp lamp;
+  Lamp lamp = Lamp(
+    id: 'NaN',
+    lightLevel: 0,
+    x: 0,
+    y: 0,
+  );
   final Function onPressed;
 
-  const LampDataView({
+  LampDataView({
     super.key,
-    this.lamp = const Lamp(
-      id: 'NaN',
-      lightLevel: 0,
-      x: 0,
-      y: 0,
-    ),
     required this.onPressed,
   });
 

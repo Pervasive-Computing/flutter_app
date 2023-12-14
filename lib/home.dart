@@ -4,6 +4,7 @@ import 'package:catppuccin_flutter/catppuccin_flutter.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/components/lamp_component.dart';
+import 'package:flutter_app/websocket/simulation_api.dart';
 import 'widgets/sim_visualiser.dart';
 import 'widgets/header.dart';
 import 'logger.dart';
@@ -31,8 +32,7 @@ class HomeState extends State<Home> {
   // final ValueNotifier<String> _themeNotifier;
   late final SimVisualiser _simulation;
   final GlobalKey<SidebarState> sidebarKey = GlobalKey<SidebarState>();
-  final GlobalKey<LampDataViewState> lampDataKey =
-      GlobalKey<LampDataViewState>();
+  final GlobalKey<LampDataViewState> lampDataKey = GlobalKey<LampDataViewState>();
   final ValueNotifier<bool> sidebarNotifier = ValueNotifier(false);
 
   final double headerHeight = 70;
@@ -44,8 +44,8 @@ class HomeState extends State<Home> {
   double sidebarWidth = 0;
 
   List<Lamp> lamps = [];
-  final PageController controller = PageController(
-      initialPage: 0, viewportFraction: 0.999); //very bad, very hacky
+  final PageController controller =
+      PageController(initialPage: 0, viewportFraction: 0.999); //very bad, very hacky
 
   @override
   void initState() {
@@ -63,9 +63,9 @@ class HomeState extends State<Home> {
           closeLampDataView();
         },
       );
+
+      SimulationAPI.addLampsMessageCallback(_updateLamps);
     });
-    // _simulation.rawLamps = lamps;
-    // l.d("lamps: ${lamps.length}");
 
     // setstate with window width and height
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -85,6 +85,14 @@ class HomeState extends State<Home> {
       // Update your state based on the loaded data
       lamps = l;
     });
+  }
+
+  void _updateLamps(Map<String, double> lampLightLevels) {
+    // l.d(lampLightLevels);
+    for (var lamp in lamps) {
+      lamp.lightLevel = lampLightLevels[lamp.id] as double;
+    }
+    // _simulation.updateLamps(lampLightLevels);
   }
 
   void openLampDataView(String lampId) {

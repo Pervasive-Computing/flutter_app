@@ -36,7 +36,7 @@ class SimVisualiser extends FlameGame
     paint: Paint()
       ..color = Colors.red
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 25,
+      ..strokeWidth = 26,
   );
   final double _zoomSensitivity = 0.001;
   final double _colourWash = 0.8;
@@ -75,7 +75,8 @@ class SimVisualiser extends FlameGame
       // debugMode = true;
       world.addAll(_infrastructure);
       world.addAll(_lamps);
-      SimulationAPI.addCarMessageListener(_manageCarsOnMessage);
+      SimulationAPI.addCarMessageCallback(_manageCarsOnMessage);
+      SimulationAPI.addLampsMessageCallback(_manageLampsOnMessage);
     }
     // toggleBuildings();
     setColors();
@@ -191,6 +192,9 @@ class SimVisualiser extends FlameGame
 
   // set the raw lamps
   set rawLamps(List<Lamp> lamps) {
+    ThemeData? theme = context != null ? Theme.of(context!) : null;
+    // bool? isLight = theme != null ? theme.colorScheme.brightness == Brightness.light : null;
+
     _rawLamps.addAll(lamps);
 
     // Add the lamps to the world
@@ -202,6 +206,8 @@ class SimVisualiser extends FlameGame
               radius: 50,
               onSelectCallbacks: [_lampTapCallback],
               onDeselectCallbacks: [_lampTapCallback],
+              onColor: theme?.extension<CatppuccinTheme>()?.yellow!,
+              offColor: theme?.extension<CatppuccinTheme>()?.yellow!.darken(0.7),
             ))
         .toList();
     _lamps.addAll(lampComponents);
@@ -508,13 +514,16 @@ class SimVisualiser extends FlameGame
     // the lamps
     for (var lamp in _lamps) {
       // l.w("lamp: ${lamp.lamp.x}, ${lamp.lamp.y}");
+
+      double opacity = _showLamps ? lamp.lamp.lightLevel : 0;
       if (theme != null) {
-        lamp.paint = Paint()
-          ..color = theme.extension<LampTheme>()!.lampColor!.withOpacity(
-                _showLamps ? lamp.lamp.lightLevel : 0,
-              );
+        lamp.main.paint = Paint()
+          ..color = Color.lerp(
+              theme.extension<CatppuccinTheme>()!.text!.darken(0.7).withOpacity(opacity),
+              theme.extension<LampTheme>()!.lampColor!.withOpacity(opacity),
+              lamp.lamp.lightLevel)!;
       } else {
-        lamp.paint = Paint()
+        lamp.main.paint = Paint()
           ..color = Colors.yellow.withOpacity(
             _showLamps ? lamp.lamp.lightLevel : 0,
           );
@@ -740,6 +749,7 @@ class SimVisualiser extends FlameGame
   // Remove cars that don't exist anymore.
   void _manageCarsOnMessage(dynamic message) {
     // looking through existing cars in the world
+    List<CarComponent> carsToRemove = [];
     for (final car in _cars) {
       Map<Object?, Object?>? carData = message[car.id];
 
@@ -761,9 +771,10 @@ class SimVisualiser extends FlameGame
         // when carData is null,
         // the car is not part of the received message,
         // and should therefore be removed
-        l.w("removing car: ${car.id}");
+        // l.w("removing car: ${car.id}");
         world.remove(car);
-        _cars.remove(car);
+        carsToRemove.add(car);
+        // _cars.remove(car);
       }
 
       // then remove them from the message,
@@ -771,11 +782,14 @@ class SimVisualiser extends FlameGame
       message.remove(car.id);
     }
 
+    // remove cars that don't exist anymore
+    _cars.removeWhere((car) => carsToRemove.contains(car));
+
     // l.d("cars to add: ${message.length}");
 
     // instantiate cars that don't exist yet.
     message.forEach((key, value) {
-      l.w("adding car: $key");
+      // l.w("adding car: $key");
       addCar(
         id: key,
         position: _preprocessPosition(value['x'], value['y']),
@@ -811,5 +825,12 @@ class SimVisualiser extends FlameGame
     );
     world.add(car);
     _cars.add(car);
+  }
+
+  void _manageLampsOnMessage(Map<String, double> lampLightLevels) {
+    // l.d(lampLightLevels);
+    for (var lamp in _lamps) {
+      lamp.updateLevel(lampLightLevels[lamp.lamp.id]!);
+    }
   }
 }

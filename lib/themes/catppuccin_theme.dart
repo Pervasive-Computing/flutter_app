@@ -161,8 +161,7 @@ class CatppuccinTheme extends ThemeExtension<CatppuccinTheme> {
 
   // lerp
   @override
-  ThemeExtension<CatppuccinTheme> lerp(
-      ThemeExtension<CatppuccinTheme>? other, double t) {
+  ThemeExtension<CatppuccinTheme> lerp(ThemeExtension<CatppuccinTheme>? other, double t) {
     if (other == null) return this;
     if (other is CatppuccinTheme) {
       return CatppuccinTheme(
@@ -236,15 +235,13 @@ class LampTheme extends ThemeExtension<LampTheme> {
 ThemeData catppuccinTheme(Flavor flavor, {required BuildContext context}) {
   Color primaryColor = flavor.lavender;
   Color secondaryColor = flavor.mauve;
-  Brightness brightness =
-      flavor.base.computeLuminance() > 0.5 ? Brightness.light : Brightness.dark;
+  Brightness brightness = flavor.base.computeLuminance() > 0.5 ? Brightness.light : Brightness.dark;
 
   return ThemeData(
     useMaterial3: true,
     appBarTheme: AppBarTheme(
       elevation: 0,
-      titleTextStyle: TextStyle(
-          color: flavor.text, fontSize: 20, fontWeight: FontWeight.bold),
+      titleTextStyle: TextStyle(color: flavor.text, fontSize: 20, fontWeight: FontWeight.bold),
       backgroundColor: flavor.crust,
       foregroundColor: flavor.mantle,
     ),

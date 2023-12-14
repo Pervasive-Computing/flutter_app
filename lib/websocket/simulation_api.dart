@@ -30,7 +30,7 @@ class SimulationAPI {
   static late final ZSocket _carsClient;
   static late final ZSocket _lampsClient;
   static final _carCallbacks = <Function(dynamic)>[];
-  static final _lampCallbacks = <Function(dynamic)>[];
+  static final _lampCallbacks = <Function(Map<String, double>)>[];
   // static late final ZSocket _lampsClient;
   // static Map<String, dynamic> _lampData = {};
   // static final Map<int, Completer<Map<String, dynamic>>> _responseCompleters = {};
@@ -61,9 +61,15 @@ class SimulationAPI {
 
     _lampsClient.payloads.listen((message) {
       var decoded = cbor.decode(message.sublist(lampsTopic.length, message.length)) as Map;
-      l.d("decoded: $decoded");
+
+      final levels = Map<String, double>.fromEntries((decoded).entries.map(
+        (e) {
+          return MapEntry(e.key.toString(), e.value as double);
+        },
+      ));
+
       for (var callback in _lampCallbacks) {
-        callback(decoded);
+        callback(levels);
       }
     });
 
@@ -87,12 +93,12 @@ class SimulationAPI {
   }
 
   // add callbackk to listen to messages
-  static void addCarMessageListener(Function(dynamic) callback) {
+  static void addCarMessageCallback(Function(dynamic) callback) {
     _carCallbacks.add(callback);
   }
 
   // add callbackk to listen to messages
-  static void addLampsMessageListener(Function(dynamic) callback) {
+  static void addLampsMessageCallback(Function(Map<String, double>) callback) {
     _lampCallbacks.add(callback);
   }
 

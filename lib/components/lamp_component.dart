@@ -14,12 +14,15 @@ class LampComponent extends CircleComponent with TapCallbacks {
   Lamp lamp;
   double borderWidth;
   bool _isSelected = false;
+  Color? onColor;
+  Color? offColor;
+  late double bigRadius;
   // Paint paint = BasicPalette.yellow.paint();
   late CircleComponent main;
   late CircleComponent glow;
   late CircleComponent border;
-  late List<Function(LampComponent)> _onSelectCallbacks;
-  late List<Function(LampComponent)> _onDeselectCallbacks;
+  late final List<Function(LampComponent)> _onSelectCallbacks;
+  late final List<Function(LampComponent)> _onDeselectCallbacks;
 
   LampComponent({
     required this.lamp,
@@ -28,26 +31,31 @@ class LampComponent extends CircleComponent with TapCallbacks {
     this.borderWidth = 10,
     List<Function(LampComponent)> onSelectCallbacks = const [],
     List<Function(LampComponent)> onDeselectCallbacks = const [],
-    Color color = const Color.fromARGB(255, 244, 188, 49),
+    this.onColor,
+    this.offColor,
   })  : _onSelectCallbacks = onSelectCallbacks,
         _onDeselectCallbacks = onDeselectCallbacks,
         super(
           position: position,
           radius: radius,
           anchor: Anchor.center,
+          paint: Paint()..color = offColor ?? Colors.grey,
         ) {
+    onColor ??= const Color.fromARGB(255, 244, 188, 49);
+    offColor ??= Colors.grey;
+
     main = CircleComponent(
       position: Vector2.zero(),
       radius: radius,
-      paint: Paint()..color = color,
+      paint: Paint()..color = Color.lerp(Colors.grey, onColor, lamp.lightLevel)!,
     );
 
-    final bigRadius = radius * 3 * lamp.lightLevel;
+    bigRadius = radius * 2;
     glow = CircleComponent(
       position: Vector2(radius, radius),
       anchor: anchor,
-      radius: bigRadius,
-      paint: Paint()..color = color.withOpacity(lamp.lightLevel / 2),
+      radius: radius + bigRadius * lamp.lightLevel,
+      paint: Paint()..color = onColor!.withOpacity(lamp.lightLevel / 2),
     );
   }
 
@@ -99,6 +107,15 @@ class LampComponent extends CircleComponent with TapCallbacks {
   void shouldRender(bool shouldRender) {
     main.renderShape = shouldRender;
     glow.renderShape = shouldRender;
+  }
+
+  void updateLevel(double level) {
+    lamp.lightLevel = level;
+    glow.radius = radius + bigRadius * lamp.lightLevel;
+    glow.paint = Paint()..color = glow.paint.color.withOpacity(lamp.lightLevel / 2);
+    main.paint = Paint()
+      ..color =
+          Color.lerp(Colors.grey, main.paint.color.withOpacity(lamp.lightLevel), lamp.lightLevel)!;
   }
 
   void fadeOpacityTo(double opacity, {double? duration}) async {
