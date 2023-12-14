@@ -114,9 +114,7 @@ class LampComponent extends CircleComponent with TapCallbacks {
     lamp.lightLevel = level;
     glow.radius = radius + bigRadius * lamp.lightLevel;
     glow.paint = Paint()..color = glow.paint.color.withOpacity(lamp.lightLevel / 2);
-    main.paint = Paint()
-      ..color =
-          Color.lerp(Colors.grey, main.paint.color.withOpacity(lamp.lightLevel), lamp.lightLevel)!;
+    main.paint = Paint()..color = Color.lerp(offColor, onColor, lamp.lightLevel)!;
   }
 
   void setOnColor(Color color) {
