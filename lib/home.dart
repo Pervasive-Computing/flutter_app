@@ -92,6 +92,7 @@ class HomeState extends State<Home> {
     for (var lamp in lamps) {
       lamp.lightLevel = lampLightLevels[lamp.id] as double;
     }
+    // lampDataKey.currentState?.updateBar();
     // _simulation.updateLamps(lampLightLevels);
   }
 

@@ -34,6 +34,7 @@ class LampDataViewState extends State<LampDataView> {
   void initState() {
     super.initState();
     lamp = widget.lamp;
+    SimulationAPI.addLampsMessageCallback(_updateBar);
   }
 
   void updateContent(Lamp lamp) {
@@ -45,6 +46,10 @@ class LampDataViewState extends State<LampDataView> {
       _graphKey.currentState?.setData(value);
     });
     _loadingBarKey.currentState?.setProgress(this.lamp.lightLevel);
+  }
+
+  void _updateBar(Map<String, double> lamps) {
+    _loadingBarKey.currentState?.setProgress(lamp.lightLevel);
   }
 
   @override
