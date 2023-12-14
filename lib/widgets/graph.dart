@@ -17,7 +17,7 @@ class GraphState extends State<Graph> {
 
   void setData(List<dynamic> values) {
     int remainingLenght = 24 - values.length;
-    List<dynamic> paddedValues = List.filled(remainingLenght, 0, growable: true);
+    List<dynamic> paddedValues = List.filled(remainingLenght, 0.0, growable: true);
     paddedValues.addAll(values);
 
     final dataObj = paddedValues.asMap().entries.map((e) {
