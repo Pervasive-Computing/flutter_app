@@ -106,7 +106,7 @@ class SimulationAPI {
 
   static Future<List<dynamic>> reqLampData(String lampId) async {
     var now = DateTime.now();
-    var oneDayAgo = now.subtract(const Duration(minutes: 24));
+    var oneDayAgo = now.subtract(const Duration(hours: 1));
 
     var uriLamps = Uri(
       scheme: 'http',
@@ -115,7 +115,7 @@ class SimulationAPI {
       path: 'streetlamp/$lampId/lightlevels',
       queryParameters: {
         'reducer': 'mean',
-        'per': 'minute',
+        'per': 'hour',
         'start': (oneDayAgo.millisecondsSinceEpoch ~/ 1000).toString(),
         'end': (now.millisecondsSinceEpoch ~/ 1000).toString(),
       },
