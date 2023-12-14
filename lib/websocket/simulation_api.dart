@@ -22,12 +22,7 @@ class SimulationAPI {
     path: '',
   );
 
-  static final uriLamps = Uri(
-    scheme: 'tcp',
-    host: _host,
-    port: _portLampsLive,
-    path: '',
-  );
+  static final uriLamps = Uri(scheme: 'tcp', host: _host, port: _portLampsLive, path: '');
 
   static final _zContext = ZContext();
   // static final _lampsContext = ZContext();
@@ -101,29 +96,26 @@ class SimulationAPI {
     _lampCallbacks.add(callback);
   }
 
-  static Future<Map<String, dynamic>> reqLampData(String lampId) async {
+  static Future<List<dynamic>> reqLampData(String lampId) async {
     var now = DateTime.now();
     var oneDayAgo = now.subtract(const Duration(days: 1));
 
-    _id += 1;
-    var request = {
-      'jsonrpc': '2.0',
-      'method': 'lightlevel',
-      'params': {
-        'streetlamp': lampId,
+    var uriLamps = Uri(
+      scheme: 'http',
+      host: _host,
+      port: _portLampsData,
+      path: 'streetlamp/$lampId/lightlevels',
+      queryParameters: {
         'reducer': 'mean',
         'per': 'hour',
-        'from': oneDayAgo.millisecondsSinceEpoch ~/ 1000,
-        'to': now.millisecondsSinceEpoch ~/ 1000,
+        'start': (oneDayAgo.millisecondsSinceEpoch ~/ 1000).toString(),
+        'end': (now.millisecondsSinceEpoch ~/ 1000).toString(),
       },
-      'id': _id,
-    };
+    );
 
-    var url = Uri.parse('http://localhost:$_portLampsData/lampdata/$lampId');
-    var response = await http
-        .post(url, body: json.encode(request), headers: {'Content-Type': 'application/json'});
+    var response = await http.get(uriLamps, headers: {'Content-Type': 'application/json'});
 
-    Map<String, dynamic> responseData = {};
+    List<dynamic> responseData = [];
     if (response.statusCode == 200) {
       responseData = json.decode(response.body);
     } else {
@@ -131,39 +123,6 @@ class SimulationAPI {
     }
 
     return responseData;
-
-    // var jsonEncoded = jsonEncode(request);
-    // _lampsClient.send(jsonEncoded.codeUnits);
-
-    // while (_lampData["id"] != _id) {
-    //   // l.d("waiting for lamp data. Previous id: $lampId, previous id: ${_lampData["id"]}");
-    //   l.d("waiting for lamp data. request id: $_id, response id: ${_lampData["id"]}");
-    //   await Future.delayed(const Duration(milliseconds: 100));
-    // }
-
-    // l.w("result: $_lampData");
-    // return _lampData;
-
-    // var completer = Completer<Map<String, dynamic>>();
-
-    // StreamSubscription? subscription;
-    // subscription = _lampsClient.payloads.listen((message) {
-    //   var decoded = jsonDecode(String.fromCharCodes(message));
-    //   if (decoded['id'] == _id) {
-    //     completer.complete(decoded);
-    //     subscription?.cancel(); // Stop listening to further messages
-    //   }
-    // });
-
-    // return completer.future; // This will complete when the response arrives
-
-    // var completer = Completer<Map<String, dynamic>>();
-    // _responseCompleters[_id] = completer;
-
-    // var jsonEncoded = jsonEncode(request);
-    // _lampsClient.send(jsonEncoded.codeUnits);
-
-    // return completer.future;
   }
 
   static void close() {
