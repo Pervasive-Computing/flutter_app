@@ -39,6 +39,7 @@ class LampComponent extends CircleComponent with TapCallbacks {
           position: position,
           radius: radius,
           anchor: Anchor.center,
+          paint: Paint()..color = Colors.grey.withOpacity(0),
         ) {
     onColor ??= const Color.fromARGB(255, 244, 188, 49);
     offColor ??= Colors.grey;
@@ -129,14 +130,14 @@ class LampComponent extends CircleComponent with TapCallbacks {
   }
 
   void fadeOpacityTo(double opacity, {double? duration}) async {
-    add(
-      OpacityEffect.to(
-        opacity,
-        EffectController(
-          duration: duration ?? 0.5,
-        ),
-      ),
-    );
+    // add(
+    //   OpacityEffect.to(
+    //     opacity,
+    //     EffectController(
+    //       duration: duration ?? 0.5,
+    //     ),
+    //   ),
+    // );
     add(
       OpacityEffect.to(
         opacity,
