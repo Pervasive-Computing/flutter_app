@@ -55,7 +55,7 @@ class GraphState extends State<Graph> {
                   return '';
                 }
                 var minuteNow = DateTime.now().minute;
-                return ((number + minuteNow) % 24).floor().toString();
+                return ((number + minuteNow) % 60).floor().toString();
               }),
         ),
         'lightlevel': Variable(
