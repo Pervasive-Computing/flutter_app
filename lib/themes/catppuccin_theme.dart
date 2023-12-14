@@ -1,6 +1,7 @@
 import 'package:flame/palette.dart';
 import 'package:flutter/material.dart';
 import 'package:catppuccin_flutter/catppuccin_flutter.dart';
+import '../logger.dart';
 
 class CatppuccinTheme extends ThemeExtension<CatppuccinTheme> {
   late final Flavor? flavor;
@@ -201,12 +202,15 @@ class CatppuccinTheme extends ThemeExtension<CatppuccinTheme> {
 class LampTheme extends ThemeExtension<LampTheme> {
   late final Brightness? brightness;
   late final Color? lampColor;
+  late final Color? offColor;
 
   LampTheme({
     this.brightness,
     Color? lampColor,
+    Color? offColor,
   }) {
     this.lampColor = lampColor ?? Colors.yellow;
+    this.offColor = offColor ?? Colors.grey;
   }
 
   @override
@@ -216,6 +220,7 @@ class LampTheme extends ThemeExtension<LampTheme> {
     return LampTheme(
       brightness: brightness ?? this.brightness,
       lampColor: lampColor,
+      offColor: offColor,
     );
   }
 
@@ -226,6 +231,7 @@ class LampTheme extends ThemeExtension<LampTheme> {
       return LampTheme(
         brightness: brightness,
         lampColor: Color.lerp(lampColor, other.lampColor, t),
+        offColor: Color.lerp(offColor, other.offColor, t),
       );
     }
     return this;
@@ -236,6 +242,7 @@ ThemeData catppuccinTheme(Flavor flavor, {required BuildContext context}) {
   Color primaryColor = flavor.lavender;
   Color secondaryColor = flavor.mauve;
   Brightness brightness = flavor.base.computeLuminance() > 0.5 ? Brightness.light : Brightness.dark;
+  l.w("luminance: ${flavor.base.computeLuminance()}, brightness: $brightness");
 
   return ThemeData(
     useMaterial3: true,
@@ -269,10 +276,13 @@ ThemeData catppuccinTheme(Flavor flavor, {required BuildContext context}) {
     extensions: <ThemeExtension<dynamic>>[
       CatppuccinTheme(flavor: flavor),
       LampTheme(
-          brightness: brightness,
-          lampColor: brightness == Brightness.light
-              ? flavor.yellow
-              : catppuccin.latte.yellow.brighten(0.25)),
+        brightness: brightness,
+        lampColor:
+            brightness == Brightness.light ? flavor.yellow : catppuccin.latte.yellow.brighten(0.25),
+        offColor: brightness == Brightness.light
+            ? const Color.fromARGB(255, 180, 180, 180)
+            : const Color.fromARGB(255, 110, 110, 110),
+      ),
     ],
   );
 }

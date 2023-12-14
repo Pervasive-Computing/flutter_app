@@ -1,3 +1,4 @@
+import 'package:flame/palette.dart';
 import 'package:flutter/material.dart';
 import 'glass.dart';
 // import '../logger.dart';
@@ -33,6 +34,9 @@ class LoadingBarState extends State<LoadingBar> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final onColor = theme.extension<LampTheme>()!.lampColor!.withOpacity(0.5);
+    final offColor = theme.extension<LampTheme>()!.offColor!.withOpacity(0.5);
+
     return Container(
       height: 30,
       width: double.infinity,
@@ -51,8 +55,7 @@ class LoadingBarState extends State<LoadingBar> {
           height: double.infinity,
           width: double.infinity,
           decoration: BoxDecoration(
-            color: theme.colorScheme.onBackground,
-            //theme.extension<CatppuccinTheme>()!.yellow!, //theme.colorScheme.onPrimary,
+            color: Color.lerp(offColor, onColor, _progress)!,
             borderRadius: BorderRadius.circular(15.0),
           ),
         ),

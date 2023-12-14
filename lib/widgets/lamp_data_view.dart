@@ -8,7 +8,7 @@ import 'circle_icon_button.dart';
 import 'loading_bar.dart';
 
 class LampDataView extends StatefulWidget {
-  Lamp lamp = Lamp(
+  final Lamp lamp = Lamp(
     id: 'NaN',
     lightLevel: 0,
     x: 0,
@@ -37,20 +37,13 @@ class LampDataViewState extends State<LampDataView> {
   }
 
   void updateContent(Lamp lamp) {
-    // l.d("before setstate");
     setState(() {
       this.lamp = lamp;
-      // l.d("updateContent, lamp id: ${this.lamp.id}");
     });
-
     _graphKey.currentState?.setData(List<double>.filled(24, 0));
-
     SimulationAPI.reqLampData(lamp.id).then((value) {
-      // l.d("getLampData, lamp id: ${this.lamp.id}");
-      // l.w("lamp data: ${value.runtimeType}");
       _graphKey.currentState?.setData(value);
     });
-
     _loadingBarKey.currentState?.setProgress(this.lamp.lightLevel);
   }
 

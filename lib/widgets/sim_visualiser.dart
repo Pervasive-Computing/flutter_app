@@ -207,7 +207,7 @@ class SimVisualiser extends FlameGame
               onSelectCallbacks: [_lampTapCallback],
               onDeselectCallbacks: [_lampTapCallback],
               onColor: theme?.extension<LampTheme>()?.lampColor!,
-              offColor: theme?.extension<LampTheme>()?.lampColor!.darken(0.7),
+              offColor: theme?.extension<LampTheme>()?.offColor!,
             ))
         .toList();
     _lamps.addAll(lampComponents);
@@ -512,9 +512,10 @@ class SimVisualiser extends FlameGame
     }
 
     for (var lamp in _lamps) {
-      lamp.onColor = theme != null ? theme.extension<LampTheme>()!.lampColor! : Colors.yellow;
-      lamp.offColor =
-          theme != null ? theme.extension<LampTheme>()!.lampColor!.darken(0.7) : Colors.yellow;
+      // lamp.onColor = theme != null ? theme.extension<LampTheme>()!.lampColor! : Colors.yellow;
+      // lamp.offColor = theme != null ? theme.extension<LampTheme>()!.offColor! : Colors.yellow;
+      lamp.setOnColor(theme != null ? theme.extension<LampTheme>()!.lampColor! : Colors.yellow);
+      lamp.setOffColor(theme != null ? theme.extension<LampTheme>()!.offColor! : Colors.yellow);
     }
 
     _higlighter.paint.color = theme != null

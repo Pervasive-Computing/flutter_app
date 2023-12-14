@@ -62,7 +62,9 @@ class SimulationAPI {
     _lampsClient.payloads.listen((message) {
       var decoded = cbor.decode(message.sublist(lampsTopic.length, message.length)) as Map;
 
-      final levels = Map<String, double>.fromEntries((decoded).entries.map(
+      final changes = decoded['changes'] as Map;
+
+      final levels = Map<String, double>.fromEntries((changes).entries.map(
         (e) {
           return MapEntry(e.key.toString(), e.value as double);
         },

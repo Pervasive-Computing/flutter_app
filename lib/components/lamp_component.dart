@@ -118,6 +118,16 @@ class LampComponent extends CircleComponent with TapCallbacks {
           Color.lerp(Colors.grey, main.paint.color.withOpacity(lamp.lightLevel), lamp.lightLevel)!;
   }
 
+  void setOnColor(Color color) {
+    onColor = color;
+    main.paint.color = Color.lerp(offColor, onColor, lamp.lightLevel)!;
+  }
+
+  void setOffColor(Color color) {
+    offColor = color;
+    main.paint.color = Color.lerp(offColor, onColor, lamp.lightLevel)!;
+  }
+
   void fadeOpacityTo(double opacity, {double? duration}) async {
     add(
       OpacityEffect.to(
