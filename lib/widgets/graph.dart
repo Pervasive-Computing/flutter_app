@@ -20,14 +20,14 @@ class GraphState extends State<Graph> {
   List<Map<Object, Object>> _data = [];
 
   void setData(List<dynamic> values) {
-    l.d("Setting data: $values");
+    // l.d("Setting data: $values");
     // setTime();
     simTimeNow = SimulationAPI.getSimTimeNow();
     int remainingLenght = SimulationAPI.lampDataLength - values.length;
-    l.d("Remaining length: $remainingLenght");
+    // l.d("Remaining length: $remainingLenght");
     List<dynamic> paddedValues = List.filled(remainingLenght, 0.0, growable: true);
     paddedValues.addAll(values);
-    l.d("Padded values: $paddedValues");
+    // l.d("Padded values: $paddedValues");
 
     final dataObj = paddedValues.asMap().entries.map((e) {
       // l.d("e: $e, ${e.runtimeType}");
@@ -47,18 +47,9 @@ class GraphState extends State<Graph> {
   @override
   void initState() {
     super.initState();
-    // setTime();
     simTimeNow = SimulationAPI.getSimTimeNow();
     setData([]);
   }
-
-  // void setTime() {
-  //   final deltaTime = DateTime.now().difference(SimulationAPI.startingTime);
-  //   setState(() {
-  //     simTimeNow = SimulationAPI.simStartingTime.add(deltaTime);
-  //     l.d("Sim time now: $simTimeNow");
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -76,8 +67,7 @@ class GraphState extends State<Graph> {
                 if (number % 2 == 1) {
                   return '';
                 }
-                // int offset = simTimeNow.minute - SimulationAPI.lampDataLength;
-                int offset = 13 - SimulationAPI.lampDataLength;
+                int offset = simTimeNow.minute - SimulationAPI.lampDataLength;
                 int numb = (offset < 0 ? 60 + offset : offset) + number.toInt();
                 return (numb % 60).floor().toString();
               }),
