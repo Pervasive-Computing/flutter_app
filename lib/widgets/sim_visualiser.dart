@@ -90,7 +90,7 @@ class SimVisualiser extends FlameGame
     // Initialise the camera to follow the the vector _cameraTarget,
     // such that when _cameraTarget moves, the camera follows
     camera = CameraComponent(world: world)..viewfinder.zoom = 0.1;
-    _cameraTarget.position = Vector2(6000, -6000);
+    _cameraTarget.position = Vector2(12000, -13000);
     camera.follow(_cameraTarget);
     add(camera);
   }
