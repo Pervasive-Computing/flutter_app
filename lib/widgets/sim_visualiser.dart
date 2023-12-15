@@ -29,7 +29,7 @@ class SimVisualiser extends FlameGame
   bool _showCars = true;
   bool _showLamps = true;
   String? _selectedLampId;
-  final CircleComponent _higlighter = CircleComponent(
+  final CircleComponent _highlighter = CircleComponent(
     position: Vector2.zero(),
     radius: 100,
     anchor: Anchor.center,
@@ -216,7 +216,7 @@ class SimVisualiser extends FlameGame
   void _lampTapCallback(LampComponent lamp) {
     // l.w("lamp tapped: ${lamp.lamp.id}");
     if (_selectedLampId == lamp.lamp.id) {
-      world.remove(_higlighter);
+      world.remove(_highlighter);
       _selectedLampId = null;
       return;
     }
@@ -229,15 +229,15 @@ class SimVisualiser extends FlameGame
 
     final ThemeData? theme = context != null ? Theme.of(context!) : null;
     final Color highlightColor =
-        theme != null ? theme.colorScheme.onBackground : lamp.paint.color.brighten(0.8);
+        theme != null ? theme.extension<CatppuccinTheme>()!.mauve! : lamp.paint.color.brighten(0.8);
 
     _selectedLampId = lamp.lamp.id;
     final position = lamp.position;
-    _higlighter.position = position;
-    _higlighter.paint.color = highlightColor;
+    _highlighter.position = position;
+    _highlighter.paint.color = highlightColor;
     // _higlighter.paint.strokeWidth = 20;
-    _higlighter.radius = lamp.radius + _higlighter.paint.strokeWidth / 2;
-    world.add(_higlighter);
+    _highlighter.radius = lamp.radius + _highlighter.paint.strokeWidth / 2;
+    world.add(_highlighter);
   }
 
   // ╒════════════════════════════════════════════════════════════════════════════╕
@@ -518,9 +518,9 @@ class SimVisualiser extends FlameGame
       lamp.setOffColor(theme != null ? theme.extension<LampTheme>()!.offColor! : Colors.yellow);
     }
 
-    _higlighter.paint.color = theme != null
-        ? theme.colorScheme.onBackground.withOpacity(_showLamps ? 1 : 0)
-        : _higlighter.paint.color.withOpacity(_showLamps ? 1 : 0);
+    _highlighter.paint.color = theme != null
+        ? theme.extension<CatppuccinTheme>()!.mauve!.withOpacity(_showLamps ? 1 : 0)
+        : _highlighter.paint.color.withOpacity(_showLamps ? 1 : 0);
   }
 
   // ╒════════════════════════════════════════════════════════════════════════════╕
@@ -672,7 +672,7 @@ class SimVisualiser extends FlameGame
     for (var lamp in _lamps) {
       lamp.fadeOpacityTo(targetOpacity, duration: 0.25);
     }
-    _higlighter.add(
+    _highlighter.add(
       OpacityEffect.to(
         targetOpacity,
         EffectController(
@@ -741,14 +741,6 @@ class SimVisualiser extends FlameGame
     List<CarComponent> carsToRemove = [];
     for (final car in _cars) {
       Map<Object?, Object?>? carData = message[car.id];
-
-      // if (_cars.first == car && message.length < _cars.length) {
-      //   l.w("message.length < _cars.length");
-      // }
-
-      // l.w("car with id ${car.id} has data: $carData");
-      // l.w("_cars.length: ${_cars.length}");
-
       // for all cars that do already exist,
       // update their position and heading
       if (carData != null) {

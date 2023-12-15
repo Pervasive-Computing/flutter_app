@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:graphic/graphic.dart';
+import '../websocket/simulation_api.dart';
 import '../themes/catppuccin_theme.dart';
 import '../logger.dart';
 
@@ -13,10 +14,16 @@ class Graph extends StatefulWidget {
 }
 
 class GraphState extends State<Graph> {
+  // final simStartingTime = DateTime.parse("2023-12-14T22:00:00Z");
+  // final startingTime = DateTime.now();
+  late DateTime simTimeNow;
   List<Map<Object, Object>> _data = [];
 
   void setData(List<dynamic> values) {
-    int remainingLenght = 24 - values.length;
+    l.d("Setting data: $values");
+    // setTime();
+    simTimeNow = SimulationAPI.getSimTimeNow();
+    int remainingLenght = SimulationAPI.lampDataLength - values.length;
     l.d("Remaining length: $remainingLenght");
     List<dynamic> paddedValues = List.filled(remainingLenght, 0.0, growable: true);
     paddedValues.addAll(values);
@@ -24,12 +31,12 @@ class GraphState extends State<Graph> {
 
     final dataObj = paddedValues.asMap().entries.map((e) {
       // l.d("e: $e, ${e.runtimeType}");
-      int minute = e.key + 1;
+      int timeStep = e.key + 1;
       double lightlevel = (e.value + 0.0) * 100;
 
-      // l.d("Minute: $minute, Lightlevel: $lightlevel");
+      // l.d("TimeStep: $timeStep, Lightlevel: $lightlevel");
 
-      return {'minute': minute, 'lightlevel': lightlevel};
+      return {'time': timeStep, 'lightlevel': lightlevel};
     }).toList();
 
     setState(() {
@@ -40,8 +47,18 @@ class GraphState extends State<Graph> {
   @override
   void initState() {
     super.initState();
-    setData(List<dynamic>.filled(24, 0.0));
+    // setTime();
+    simTimeNow = SimulationAPI.getSimTimeNow();
+    setData([]);
   }
+
+  // void setTime() {
+  //   final deltaTime = DateTime.now().difference(SimulationAPI.startingTime);
+  //   setState(() {
+  //     simTimeNow = SimulationAPI.simStartingTime.add(deltaTime);
+  //     l.d("Sim time now: $simTimeNow");
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -49,18 +66,20 @@ class GraphState extends State<Graph> {
     return Chart(
       data: _data,
       variables: {
-        'minute': Variable(
-          accessor: (Map map) => map['minute'] as num,
+        'time': Variable(
+          accessor: (Map map) => map['time'] as num,
           scale: LinearScale(
               min: 0,
-              max: 24.99,
-              tickCount: 24,
+              max: SimulationAPI.lampDataLength + .99,
+              tickCount: SimulationAPI.lampDataLength,
               formatter: (number) {
                 if (number % 2 == 1) {
                   return '';
                 }
-                var minuteNow = DateTime.now().minute;
-                return ((minuteNow - number).abs() % 24).floor().toString();
+                // int offset = simTimeNow.minute - SimulationAPI.lampDataLength;
+                int offset = 13 - SimulationAPI.lampDataLength;
+                int numb = (offset < 0 ? 60 + offset : offset) + number.toInt();
+                return (numb % 60).floor().toString();
               }),
         ),
         'lightlevel': Variable(

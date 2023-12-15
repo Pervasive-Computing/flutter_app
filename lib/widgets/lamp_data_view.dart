@@ -41,7 +41,7 @@ class LampDataViewState extends State<LampDataView> {
     setState(() {
       this.lamp = lamp;
     });
-    _graphKey.currentState?.setData(List<dynamic>.filled(24, 0));
+    _graphKey.currentState?.setData([]);
     SimulationAPI.reqLampData(lamp.id).then((value) {
       _graphKey.currentState?.setData(value);
     });
