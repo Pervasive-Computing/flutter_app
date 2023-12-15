@@ -742,9 +742,9 @@ class SimVisualiser extends FlameGame
     for (final car in _cars) {
       Map<Object?, Object?>? carData = message[car.id];
 
-      if (_cars.first == car && message.length < _cars.length) {
-        l.w("message.length < _cars.length");
-      }
+      // if (_cars.first == car && message.length < _cars.length) {
+      //   l.w("message.length < _cars.length");
+      // }
 
       // l.w("car with id ${car.id} has data: $carData");
       // l.w("_cars.length: ${_cars.length}");
