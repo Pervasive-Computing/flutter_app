@@ -20,23 +20,27 @@ class ZoomButtons extends StatelessWidget {
       right: 0,
       bottom: 0,
       child: Glass(
-        padding: const EdgeInsets.symmetric(horizontal: 17),
+        // padding: const EdgeInsets.symmetric(horizontal: 17),
         height: 70,
         width: 123,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            CircleIconButton(
-              icon: Icons.remove,
-              color: theme.colorScheme.onBackground,
-              onPressed: onZoomOutPressed,
-            ),
-            CircleIconButton(
-              icon: Icons.add,
-              color: theme.colorScheme.onBackground,
-              onPressed: onZoomInPressed,
-            ),
-          ],
+        child: Center(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              CircleIconButton(
+                icon: Icons.remove,
+                color: theme.colorScheme.onBackground,
+                onPressed: onZoomOutPressed,
+              ),
+              const SizedBox(width: 10),
+              CircleIconButton(
+                icon: Icons.add,
+                color: theme.colorScheme.onBackground,
+                onPressed: onZoomInPressed,
+              ),
+            ],
+          ),
         ),
       ),
     );

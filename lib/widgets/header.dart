@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'glass.dart';
 import 'circle_icon_button.dart';
 import 'package:catppuccin_flutter/catppuccin_flutter.dart';
-// import '../logger.dart';
+import '../logger.dart';
 
 class Header extends StatefulWidget {
   final ValueNotifier<Flavor> themeNotifier;
@@ -62,6 +62,19 @@ class HeaderState extends State<Header> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    // windowHeight = MediaQuery.of(context).size.height;
+    final windowWidth = MediaQuery.of(context).size.width;
+
+    // l.w("windowWidth: $windowWidth");
+
+    final logo = Text(
+      windowWidth > 500 ? "UrbanOS" : "UOS",
+      style: theme.textTheme.headlineMedium?.copyWith(
+        fontWeight: FontWeight.w700,
+      ),
+    );
+
     return Glass(
       padding: const EdgeInsets.symmetric(horizontal: 17),
       height: widget.height,
@@ -81,12 +94,7 @@ class HeaderState extends State<Header> {
           ),
           Expanded(
             child: Center(
-              child: Text(
-                "UrbanOS",
-                style: theme.textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
+              child: logo,
             ),
           ),
           CircleIconButton(

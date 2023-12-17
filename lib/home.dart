@@ -42,6 +42,7 @@ class HomeState extends State<Home> {
   double windowHeight = 0;
   double sidebarHeight = 0;
   double sidebarWidth = 0;
+  double statusBar = 0;
 
   List<Lamp> lamps = [];
   final PageController controller =
@@ -122,7 +123,9 @@ class HomeState extends State<Home> {
     windowHeight = MediaQuery.of(context).size.height;
     windowWidth = MediaQuery.of(context).size.width;
 
-    sidebarHeight = windowHeight - padding * 3 - headerHeight;
+    statusBar = MediaQuery.of(context).padding.top;
+
+    sidebarHeight = windowHeight - padding * 3 - headerHeight - statusBar;
     if (windowWidth > 1500) {
       sidebarWidth = (windowWidth - padding * 2) * 0.3;
     } else if (windowWidth > 750) {
@@ -147,7 +150,8 @@ class HomeState extends State<Home> {
             game: _simulation,
           ),
           Padding(
-            padding: EdgeInsets.all(padding),
+            padding: EdgeInsets.only(
+                top: padding + statusBar, right: padding, bottom: padding, left: padding),
             child: Stack(
               clipBehavior: Clip.none,
               children: [
